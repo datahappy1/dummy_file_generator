@@ -33,6 +33,11 @@ The output file will be written like:
 ##.txt flat file:
 (considering column length is setup in config.json like Name:6 , Date:10, ID: 9) 
 
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+
 |Name--|Date------|ID-------|<br />
 |Frank |2017-12-30|123456789|<br />
 |Paul  |2016-01-12|987654321|<br />
