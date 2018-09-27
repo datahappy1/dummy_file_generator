@@ -31,22 +31,37 @@ AB3645  <br />
 The output file will be written like:
 
 ##.txt flat file:
-(considering column length is setup in config.json like Name:6 , Date:10, ID: 9) 
+(considering column length is setup in config.json for the columns used like
 
-| Name          | Date          | Date          | 
-| ------------- | ------------- | ------------- | 
-| Content Cell  | Content Cell  | Date          | 
-| Content Cell  | Content Cell  | Date          | 
+"columns":[
+        {
+          "column_name":"Name",
+          "column_len":6,
+          "datafile":"firstnames.txt"
+        },
+        {
+          "column_name":"Date",
+          "column_len":10,
+          "datafile":"dates.txt"
+        },
+        {
+          "column_name":"ID",
+          "column_len":9,
+          "datafile":"IDs.txt"
+        }
+      ]
 
-|Name--|Date------|ID-------|
-|Frank |2017-12-30|123456789|
-|Paul  |2016-01-12|987654321|
-|John  |2015-11-11|123      |
-|Frank |2008-01-03|456      |
-|Paul  |2017-12-30|AA123987 |
-|John  |2016-01-12|AB3645   |
 
-* Without the pipes and colons ofcourse:)
+| Name   | Date       | ID        | 
+| ------ | ---------- | --------- | 
+| Frank  | 2017-12-30 | 123456789 | 
+| Paul   | 2016-01-12 | 987654321 | 
+| John   | 2015-11-11 | 123       | 
+| Frank  | 2008-01-03 | 456       | 
+| Paul   | 2017-12-30 | AA123987  | 
+| John   | 2016-01-12 | AB3645    | 
+
+* Without the pipes and hyphens ofcourse:)
 
 ##.csv file:
 
