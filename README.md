@@ -34,7 +34,7 @@ The output file will be written like:
 (considering column length is setup in config.json like Name:6 , Date:10, ID: 9) 
 
 |Name  |Date      |ID       |<br />
-|------|----------|---------|<br />
+|:----:|:--------:|:-------:|<br />
 |Frank |2017-12-30|123456789|<br />
 |Paul  |2016-01-12|987654321|<br />
 |John  |2015-11-11|123      |<br />
@@ -42,7 +42,7 @@ The output file will be written like:
 |Paul  |2017-12-30|AA123987 |<br />
 |John  |2016-01-12|AB3645   |<br />
 
-*Without the pipes ofcourse:)
+* Without the pipes and colons ofcourse:)
 
 ##.csv file:
 
