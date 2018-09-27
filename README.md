@@ -33,18 +33,18 @@ The output file will be written like:
 ##.txt flat file:
 (considering column length is setup in config.json like Name:6 , Date:10, ID: 9) 
 
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| Name          | Date          | Date          | 
+| ------------- | ------------- | ------------- | 
+| Content Cell  | Content Cell  | Date          | 
+| Content Cell  | Content Cell  | Date          | 
 
-|Name--|Date------|ID-------|<br />
-|Frank |2017-12-30|123456789|<br />
-|Paul  |2016-01-12|987654321|<br />
-|John  |2015-11-11|123      |<br />
-|Frank |2008-01-03|456      |<br />
-|Paul  |2017-12-30|AA123987 |<br />
-|John  |2016-01-12|AB3645   |<br />
+|Name--|Date------|ID-------|
+|Frank |2017-12-30|123456789|
+|Paul  |2016-01-12|987654321|
+|John  |2015-11-11|123      |
+|Frank |2008-01-03|456      |
+|Paul  |2017-12-30|AA123987 |
+|John  |2016-01-12|AB3645   |
 
 * Without the pipes and colons ofcourse:)
 
