@@ -30,27 +30,11 @@ AB3645  <br />
 
 The output file will be written like:
 
-##.txt flat file:
-(considering column length is setup in config.json for the columns used like
-
-"columns":[
-        {
-          "column_name":"Name",
-          "column_len":6,
-          "datafile":"firstnames.txt"
-        },
-        {
-          "column_name":"Date",
-          "column_len":10,
-          "datafile":"dates.txt"
-        },
-        {
-          "column_name":"ID",
-          "column_len":9,
-          "datafile":"IDs.txt"
-        }
-      ]
-
+### .txt flat file:
+considering column length is setup in config.json for the columns used, like 
+* Name: column_len = 6
+* Date: column_len = 10
+* ID: column_len = 9
 
 | Name   | Date       | ID        | 
 | ------ | ---------- | --------- | 
@@ -63,7 +47,7 @@ The output file will be written like:
 
 * Without the pipes and hyphens ofcourse:)
 
-##.csv file:
+### .csv file:
 
 Name,Date,ID<br />
 Frank,2017-12-30,123456789<br />
