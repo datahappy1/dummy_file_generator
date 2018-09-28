@@ -3,18 +3,17 @@
 
 This tool is able to generate dummy csv or flat txt files based on the configuration settings you setup for your project(s).
 
-## How to setup a project in this tool
-Based on the datasets in your data_files directory, the tool loops through and generates the output files based on the following logic:
-Let's say you need to generate a dummy file containing 3 columns, Names, Dates and IDs. You set the column names, in case it's a flat file you setup the column lenghts and the data_file files accordingly inside the config.json file. 
+### How to setup a project in this tool
 
 Let's assume your data_files txt files look like these 3 below:
 
-Names.txt:  <br />
+firstnames.txt:  <br />
 Frank  <br />
 Paul  <br />
 John  <br />
+Fin  <br />
 
-Dates.txt:  <br />
+dates.txt:  <br />
 2017-12-30  <br />
 2016-01-12  <br />
 2015-11-11  <br />
@@ -28,26 +27,35 @@ IDs.txt:  <br />
 AA123987  <br />
 AB3645  <br />
 
-The output file will be written like:
 
-### .txt flat file:
-considering column length is setup in config.json for the columns used, like 
-* Name: column_len = 6
-* Date: column_len = 10
-* ID: column_len = 9
 
-| Name   | Date       | ID        | 
-| :----- | :--------- | :-------- | 
-| Frank  | 2017-12-30 | 123456789 | 
-| Paul   | 2016-01-12 | 987654321 | 
-| John   | 2015-11-11 | 123       | 
-| Frank  | 2008-01-03 | 456       | 
-| Paul   | 2017-12-30 | AA123987  | 
-| John   | 2016-01-12 | AB3645    | 
+#### output is a .csv file
+Let's say you need to generate a dummy .csv file containing 3 columns for Names, Dates and IDs. 
+The project element in your config.json would look like:
 
-* Without the pipes, colons and hyphens ofcourse:)
+    {
+      "project_name":"dummy1",
+      "file_type":"csv",
+      "file_extension":"csv",
+      "header":true,
+      "columns":[
+        {
+          "column_name":"Name",
+          "datafile":"firstnames.txt"
+        },
+        {
+          "column_name":"Date",
+          "datafile":"dates.txt"
+        },
+        {
+          "column_name":"ID",
+          "datafile":"IDs.txt"
+        }      
+      ]
+    }
 
-### .csv file:
+
+The output file will be written to a .csv file looking like this:
 
 Name,Date,ID<br />
 Frank,2017-12-30,123456789<br />
@@ -58,7 +66,49 @@ Paul,2017-12-30,AA123987<br />
 John,2016-01-12,AB3645<br />
 
 
-## How to run this tool
+
+#### output is a .txt flat file
+Let's say you need to generate a dummy .txt flat file containing 3 columns for Names, Dates and IDs with specific column lengths defined. 
+The project element in your config.json would look like:
+
+    {
+      "project_name":"dummy1",
+      "file_type":"flat",
+      "file_extension":"txt",
+      "header":true,
+      "columns":[
+        {
+          "column_name":"Name",
+          "column_len":6,
+          "datafile":"firstnames.txt"
+        },
+        {
+          "column_name":"Date",
+          "column_len":10,
+          "datafile":"dates.txt"
+        },
+        {
+          "column_name":"ID",
+          "column_len":9,
+          "datafile":"IDs.txt"
+        }      
+      ]
+    }
+
+
+The output file will be written to a .txt file looking like this:
+
+| Name   | Date       | ID        | 
+| :----- | :--------- | :-------- | 
+| Frank  | 2017-12-30 | 123456789 | 
+| Paul   | 2016-01-12 | 987654321 | 
+| John   | 2015-11-11 | 123       | 
+| Frank  | 2008-01-03 | 456       | 
+| Paul   | 2017-12-30 | AA123987  | 
+| John   | 2016-01-12 | AB3645    | 
+
+
+### How to run this tool
 The required arguments are :
 
 projectname -pn <br />
