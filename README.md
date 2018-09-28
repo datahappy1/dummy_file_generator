@@ -4,10 +4,13 @@
 This tool is able to generate dummy csv or flat txt files based on the configuration settings you setup for your project(s).
 It consumes arguments to define the projectname ( *based on the projectname, the correct settings from config.json file are loaded ),* filename defining the output file name, filesize to define the needed size (in kBs) of the output file and an optional argument defining the output files location in case it's different then the default location in /generated_files/..
 
-# [How this tool works](#how-this-tool-works)
-# [How to setup a new dummy file generator project](#how-to-setup-a-new-dummy-file-generator-project)
-# [How to run the program](#how-to-run-the-program)
-#[Important notes](#important-notes)
+[How this tool works](#how-this-tool-works)
+
+[How to setup a new dummy file generator project](#how-to-setup-a-new-dummy-file-generator-project)
+
+[How to run the program](#how-to-run-the-program)
+
+[Important notes](#important-notes)
 
 
 # How this tool works
