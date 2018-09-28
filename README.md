@@ -7,7 +7,7 @@ It consumes arguments to define the projectname ( *based on the projectname, the
 # [How this tool works](#how-this-tool-works)
 # [How to setup a new dummy file generator project](#how-to-setup-a-new-dummy-file-generator-project)
 # [How to run the program](#how-to-run-the-program)
-# [Important notes](#important-notes)
+#[Important notes](#important-notes)
 
 
 # How this tool works
