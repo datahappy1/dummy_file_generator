@@ -4,9 +4,11 @@
 This tool is able to generate dummy csv or flat txt files based on the configuration settings you setup for your project(s).
 It consumes arguments to define the projectname ( *based on the projectname, the correct settings from config.json file are loaded ),* filename defining the output file name, filesize to define the needed size (in kBs) of the output file and an optional argument defining the output files location in case it's different then the default location in /generated_files/..
 
-### How to setup a project in this tool
 
-Let's assume you want to generate dummy files based on the data in your /data_files/.. text files looking like these 3 below:
+
+### - How to setup a project in this tool
+
+Let's say you need to generate dummy files based on the content of the text files in your "data_files" folder, and these text files are looking like this:
 
 firstnames.txt:  <br />
 Frank  <br />
@@ -27,7 +29,7 @@ IDs.txt:  <br />
 AA123987  <br />
 AB3645  <br />
 
-#### output is a .csv file
+#### - How to generate a .csv file:
 Let's say you need to generate a dummy .csv file containing 3 columns for Names, Dates and IDs. 
 The project element in your config.json would need to be setup like:
 
@@ -62,7 +64,7 @@ Fin,2017-12-30,456<br />
 Frank,2016-01-12,AA123987<br />
 Paul,2015-11-11,AB3645<br />
 
-#### output is a .txt flat file
+#### - How to generate a .txt flat file:
 Let's say you need to generate a dummy .txt flat file containing 3 columns for Names, Dates and IDs with specific column lengths defined. 
 The project element in your config.json would need to be setup like:
 
@@ -101,7 +103,9 @@ The output file will be written to a .txt file looking like this:
 | Frank  | 2016-01-12 | AA123987  | 
 | Paul   | 2015-11-11 | AB3645    | 
 
-### How to run this tool
+
+
+### - How to run this tool
 The required arguments are :
 
 projectname -pn <br />
