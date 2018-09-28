@@ -6,7 +6,7 @@ import sys
 
 def load_file(data_file_name):
 
-    # strip tests from abspath to support pytest running integration tests
+    # strip tests from abspath to support pytest running integration and performance tests
     # using os.system(__main__.py) from one level up in hierarchy
     project_path = os.path.abspath(os.curdir).strip('tests')
     data_files_path = project_path, 'data_files', data_file_name
@@ -26,7 +26,7 @@ def load_file(data_file_name):
 ###############################################################################
 
 
-# integration tests file load
+# integration and perf. tests file load
 test_file = load_file(data_file_name='test.txt')
 
 # the real data files load
@@ -37,7 +37,7 @@ ids_file = load_file(data_file_name='IDs.txt')
 
 
 def return_csv_value(data_file_name, iterator):
-    # integration tests
+    # integration and perf. tests
     if data_file_name == 'test.txt':
         return test_file[iterator] + ','
 
@@ -57,7 +57,7 @@ def return_csv_value(data_file_name, iterator):
 
 
 def return_flat_value(data_file_name, column_len, iterator):
-    # integration tests
+    # integration and perf. tests
     if data_file_name == 'test.txt':
         return (test_file[iterator] + util.whitespace_generator(int(column_len) - len(test_file[iterator])))[:int(column_len)]
 
@@ -79,7 +79,7 @@ def return_flat_value(data_file_name, column_len, iterator):
 def min_data_file_len(data_file_list):
     data_file_len_list = []
 
-    # integration tests
+    # integration and perf. tests
     if 'test.txt' in data_file_list:
         data_file_len_list.append(eval('len(test_file)'))
 
@@ -96,7 +96,7 @@ def min_data_file_len(data_file_list):
 
 
 def return_count(data_file_name):
-    # integration tests
+    # integration and perf. tests
     if data_file_name == 'test.txt':
         return len(test_file)
 
