@@ -3,14 +3,14 @@ import utils as util
 import os.path
 import sys
 
-project_path = os.path.abspath(os.curdir).strip('tests')
-
 
 def load_file(data_file_name):
-    try:
-        data_files_path = project_path, 'data_files', data_file_name
-        data_files_path = os.sep.join(data_files_path)
 
+    project_path = os.path.abspath(os.curdir).strip('tests')
+    data_files_path = project_path, 'data_files', data_file_name
+    data_files_path = os.sep.join(data_files_path)
+
+    try:
         with open(data_files_path, 'r') as file:
             data = file.read()
             return data.split('\n')
