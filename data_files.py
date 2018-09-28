@@ -6,6 +6,8 @@ import sys
 
 def load_file(data_file_name):
 
+    # strip tests from abspath to support pytest running integration tests
+    # using os.system(__main__.py) from one level up in hierarchy
     project_path = os.path.abspath(os.curdir).strip('tests')
     data_files_path = project_path, 'data_files', data_file_name
     data_files_path = os.sep.join(data_files_path)
