@@ -5,11 +5,11 @@ This tool is able to generate dummy csv or flat txt files based on the configura
 It consumes arguments to define the projectname ( *based on the projectname, the correct settings from config.json file are loaded ),* filename defining the output file name, filesize to define the needed size (in kBs) of the output file and an optional argument defining the output files location in case it's different then the default location in /generated_files/..
 
 ## - [How this tool works]
-## - [How to setup a new dummy file generator project in this tool]
+## - [How to setup a new dummy file generator project]
 ## - [How to run the program]
 ## - [Important notes]
 
-### -- How to setup a new dummy file generator project in this tool:
+### - How to setup a new dummy file generator project:
 
 Let's say you need to generate dummy files based on the content of the text files in your "data_files" folder, and these text files are looking like this:
 
@@ -32,7 +32,7 @@ IDs.txt:  <br />
 AA123987  <br />
 AB3645  <br />
 
-#### -- How to generate a .csv file:
+#### - How to generate a .csv file:
 Let's say you need to generate a dummy .csv file containing 3 columns for Names, Dates and IDs. 
 The project element in your config.json would need to be setup like:
 
@@ -67,7 +67,7 @@ Fin,2017-12-30,456<br />
 Frank,2016-01-12,AA123987<br />
 Paul,2015-11-11,AB3645<br />
 
-#### -- How to generate a .txt flat file:
+#### - How to generate a .txt flat file:
 Let's say you need to generate a dummy .txt flat file containing 3 columns for Names, Dates and IDs with specific column lengths defined. 
 The project element in your config.json would need to be setup like:
 
@@ -108,7 +108,7 @@ The output file will be written to a .txt file looking like this:
 
 
 
-### -- How to run the program:
+### - How to run the program:
 The required arguments are :
 
 projectname -pn <br />
@@ -124,7 +124,7 @@ Run as:
 Pytest unit, integration and performance testing is also a part of this tool.
 Run `pip install pytest` and then just run the command `pytest` in the project folder
 
-### -- Important Notes:
+### - Important Notes:
 - To preserve the pytest integration and performance tests, do not remove test_csv and test_flatfile projects configurations from config.json
 - Whenever you need to add a new source file in the data_file folder, just follow the logic of handling these files in data_files.py and add there your new source file accordingly
 - Feel free to contribute to this project
