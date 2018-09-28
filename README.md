@@ -4,10 +4,10 @@
 This tool is able to generate dummy csv or flat txt files based on the configuration settings you setup for your project(s).
 It consumes arguments to define the projectname ( *based on the projectname, the correct settings from config.json file are loaded ),* filename defining the output file name, filesize to define the needed size (in kBs) of the output file and an optional argument defining the output files location in case it's different then the default location in /generated_files/..
 
-## - [How this tool works](https://github.com/datahappy1/dummy_file_generator#--how-this-tool-works-1)
-## - [How to setup a new dummy file generator project](https://github.com/datahappy1/dummy_file_generator#--how-to-setup-a-new-dummy-file-generator-project-1)
-## - [How to run the program](https://github.com/datahappy1/dummy_file_generator#--how-to-run-the-program-1)
-## - [Important notes](https://github.com/datahappy1/dummy_file_generator#--important-notes-1)
+## [How this tool works](https://github.com/datahappy1/dummy_file_generator#--how-this-tool-works-1)
+## [How to setup a new dummy file generator project](https://github.com/datahappy1/dummy_file_generator#--how-to-setup-a-new-dummy-file-generator-project-1)
+## [How to run the program](https://github.com/datahappy1/dummy_file_generator#--how-to-run-the-program-1)
+## [Important notes](https://github.com/datahappy1/dummy_file_generator#--important-notes-1)
 
 
 ### - How this tool works:
@@ -60,7 +60,7 @@ The project element in your config.json would need to be setup like:
       ]
     }
 
-The output file will be written to a .csv file looking like this:
+The output file will be written to a .csv file with first few rows looking like this:
 
 Name,Date,ID<br />
 Frank,2017-12-30,123456789<br />
@@ -98,7 +98,7 @@ The project element in your config.json would need to be setup like:
       ]
     }
 
-The output file will be written to a .txt file looking like this:
+The output file will be written to a .txt file with first few rows looking like this:
 
 | Name   | Date       | ID        | 
 | :----- | :--------- | :-------- | 
