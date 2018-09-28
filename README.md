@@ -37,7 +37,7 @@ considering column length is setup in config.json for the columns used, like
 * ID: column_len = 9
 
 | Name   | Date       | ID        | 
-| ------ | ---------- | --------- | 
+| :----- | :--------- | :-------- | 
 | Frank  | 2017-12-30 | 123456789 | 
 | Paul   | 2016-01-12 | 987654321 | 
 | John   | 2015-11-11 | 123       | 
@@ -45,7 +45,7 @@ considering column length is setup in config.json for the columns used, like
 | Paul   | 2017-12-30 | AA123987  | 
 | John   | 2016-01-12 | AB3645    | 
 
-* Without the pipes and hyphens ofcourse:)
+* Without the pipes, colons and hyphens ofcourse:)
 
 ### .csv file:
 
