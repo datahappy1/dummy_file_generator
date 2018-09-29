@@ -135,6 +135,6 @@ Pytest (version 3.8.1) unit, integration and performance testing is also a part 
 Run `pip install pytest` and then just run the command `pytest` in the project folder
 
 # Important Notes
-- To preserve the pytest integration and performance tests, do not remove test_csv and test_flatfile projects configurations from config.json
+- To preserve the pytest integration and performance tests, do not remove test_csv and test_flatfile projects configurations from config.json and also keep test.txt file in the data_files directory
 - Whenever you need to add a new source file in the data_file folder, just follow the logic of handling these files in data_files.py and add there your new source file accordingly
 - Feel free to contribute to this project
