@@ -38,6 +38,8 @@ def referential_result_loader():
         return referential_result_data_var
 
 
+# assuming the referential_result_integration_test_csv.csv file and
+# the file generated in this test with test.txt data_file is the same content
 def test_integration_csv():
     test_run_data_var = test_runner()
     referential_result_data_var = referential_result_loader()
