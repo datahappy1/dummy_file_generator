@@ -2,11 +2,11 @@
 # dummy csv or flat text files generator written in Python 3.7
 
 This tool is able to generate dummy csv or flat txt files based on the configuration settings you setup for your project(s).
-It consumes arguments to define: 
+It consumes arguments defining: 
 - projectname ( *based on the projectname, the correct settings from config.json file are loaded ),* 
 - filename defining the output file name
 - filesize to define the needed size (in kBs) of the output file 
-- generated files location is an optional argument defining the output files location in case it's different then the default location in /generated_files/..
+- generated files location (optional argument) defining the output files location in case it's different then the default location in /generated_files/..
 
 [How this tool works](#how-this-tool-works)
 
@@ -139,6 +139,10 @@ Pytest (version 3.8.1) unit, integration and performance testing is also a part 
 Run `pip install pytest` and then just run the command `pytest` in the project folder
 
 # Important Notes
-- To preserve the pytest integration and performance tests, do not remove test_csv and test_flatfile projects configurations from config.json and also keep test.txt file in the data_files directory
+- To preserve the existing pytest integration and performance tests, do not remove: 
+    - test_csv and test_flatfile projects configurations from config.json
+    - test.txt file in the data_files directory
+    - referential_result_integration_test_csv.csv and referential_result_integration_test_flatfile.txt from generated_files/tests folder
+
 - Whenever you need to add a new source file in the data_file folder, just follow the logic of handling these files in data_files.py and add there your new source file accordingly
 - Feel free to contribute to this project
