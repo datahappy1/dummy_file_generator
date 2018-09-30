@@ -20,7 +20,7 @@ It consumes arguments defining:
 # How this tool works
 ![alt text][diagram]
 
-[diagram]: https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/diagram.jpg "How this tool works"
+[diagram]: https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/diagram.png "How this tool works"
 
 
 # How to setup a new dummy file generator project
