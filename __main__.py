@@ -65,7 +65,6 @@ def main():
                                                       + column['datafile'] + '"))[1])')
 
                     header_row_str = util.return_csv_header(column_list=column_name_list)
-
                     column_stmt_first_loop_str = util.list_to_stmt(statement=column_stmt_first_loop, add_plus_sign=True, add_comma=True)
                     column_stmt_more_loops_str = util.list_to_stmt(statement=column_stmt_more_loops, add_plus_sign=True, add_comma=True)
 
@@ -86,9 +85,7 @@ def main():
                                                       + '",divmod(iterator,data_files.return_count("'
                                                       + column['datafile'] + '"))[1])')
 
-                    header_row_str = util.return_flat_header(column_name_list=column_name_list,
-                                                             column_len_list=column_len_list)
-
+                    header_row_str = util.return_flat_header(column_name_list=column_name_list, column_len_list=column_len_list)
                     column_stmt_first_loop_str = util.list_to_stmt(statement=column_stmt_first_loop, add_plus_sign=True, add_comma=False)
                     column_stmt_more_loops_str = util.list_to_stmt(statement=column_stmt_more_loops, add_plus_sign=True, add_comma=False)
 
