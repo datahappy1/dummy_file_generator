@@ -71,15 +71,10 @@ The project element in your config.json would need to be setup like:
       ]
     }
 
-The output file will be written to a .csv file with first few rows looking like this:
+The output file will be written to a .csv file with the first few rows looking like this:  
+![alt text][csv]
 
-Name,Date,ID<br />
-Frank,2017-12-30,123456789<br />
-Paul,2016-01-12,987654321<br />
-John,2015-11-11,123<br />
-Fin,2017-12-30,456<br />
-Frank,2016-01-12,AA123987<br />
-Paul,2015-11-11,AB3645<br />
+[csv]: https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/csv_demo.PNG "csv"
 
 ### - How to generate a .txt flat file:
 Let's say you need to generate a dummy .txt flat file containing 3 columns for Names, Dates and IDs with specific column lengths defined. 
@@ -109,18 +104,10 @@ The project element in your config.json would need to be setup like:
       ]
     }
 
-The output file will be written to a .txt file with first few rows looking like this:
+The output file will be written to a .txt file with the first few rows looking like this:  
+![alt text][flat]
 
-| Name   | Date       | ID        | 
-| :----- | :--------- | :-------- | 
-| Frank  | 2017-12-30 | 123456789 | 
-| Paul   | 2016-01-12 | 987654321 | 
-| John   | 2015-11-11 | 123       | 
-| Fin    | 2017-12-30 | 456       | 
-| Frank  | 2016-01-12 | AA123987  | 
-| Paul   | 2015-11-11 | AB3645    | 
-
-
+[flat]: https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/flatfile_demo.PNG "flat"
 
 # How to run the program
 The required arguments are :
