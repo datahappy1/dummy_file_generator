@@ -5,6 +5,8 @@ import utils as util
 import logging
 import sys
 import os.path
+import io
+import settings
 from datetime import datetime
 
 
@@ -64,6 +66,9 @@ def main():
 
                     header_row_str = util.return_csv_header(column_list=column_name_list)
 
+                    column_stmt_first_loop_str = util.list_to_stmt(statement=column_stmt_first_loop, add_plus_sign=True, add_comma=True)
+                    column_stmt_more_loops_str = util.list_to_stmt(statement=column_stmt_more_loops, add_plus_sign=True, add_comma=True)
+
                 # flat file statements
                 elif file_type == "flat":
                     for column in project['columns']:
@@ -84,13 +89,12 @@ def main():
                     header_row_str = util.return_flat_header(column_name_list=column_name_list,
                                                              column_len_list=column_len_list)
 
+                    column_stmt_first_loop_str = util.list_to_stmt(statement=column_stmt_first_loop, add_plus_sign=True, add_comma=False)
+                    column_stmt_more_loops_str = util.list_to_stmt(statement=column_stmt_more_loops, add_plus_sign=True, add_comma=False)
+
                 else:
                     logging.error(f'No such file type as {file_type} can be used, only csv or flat types are supported!')
                     sys.exit(1)
-
-                column_stmt_first_loop_str = util.list_to_stmt(statement=column_stmt_first_loop, add_plus_sign=True)
-                column_stmt_more_loops_str = util.list_to_stmt(statement=column_stmt_more_loops, add_plus_sign=True)
-
                 break
         else:
             logging.error(f'No such project as {project_name} defined in config.json configuration file!')
@@ -104,11 +108,12 @@ def main():
     output_file_extension = file_extension
     output_file_name = generated_files_location + file_name + '.' + output_file_extension
     min_data_file_len = data_files.min_data_file_len(data_file_list)
+    file_encoding = settings.file_encoding
 
     ###########################################################################
     # 4: writing the output file
     ###########################################################################
-    with open(output_file_name, 'w') as output_file:
+    with io.open(output_file_name, 'w', encoding=file_encoding) as output_file:
         execution_start_time = datetime.now()
         print(f'File {output_file_name} processing started at {execution_start_time}')
 

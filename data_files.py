@@ -1,19 +1,21 @@
 import logging
+import io
 import utils as util
 import os.path
 import sys
+import settings
 
 
 def load_file(data_file_name):
-
     # strip tests from abspath to support pytest running integration and performance tests
     # using os.system(__main__.py) from one level up in hierarchy
     project_path = os.path.abspath(os.curdir).strip('tests')
     data_files_path = project_path, 'data_files', data_file_name
     data_files_path = os.sep.join(data_files_path)
+    file_encoding = settings.file_encoding
 
     try:
-        with open(data_files_path, 'r') as file:
+        with io.open(data_files_path, 'r', encoding=file_encoding) as file:
             data = file.read()
             return data.split('\n')
     except IOError:
@@ -39,17 +41,17 @@ ids_file = load_file(data_file_name='IDs.txt')
 def return_csv_value(data_file_name, iterator):
     # integration and perf. tests
     if data_file_name == 'test.txt':
-        return test_file[iterator] + ','
+        return test_file[iterator]
 
     # the real data files
     elif data_file_name == 'firstnames.txt':
-        return first_names_file[iterator] + ','
+        return first_names_file[iterator]
     elif data_file_name == 'lastnames.txt':
-        return last_names_file[iterator] + ','
+        return last_names_file[iterator]
     elif data_file_name == 'dates.txt':
-        return dates_file[iterator] + ','
+        return dates_file[iterator]
     elif data_file_name == 'IDs.txt':
-        return ids_file[iterator] + ','
+        return ids_file[iterator]
     else:
         logging.error(f'Error when calling function return_csv_value with data_file_name: {data_file_name} ,'
                       f'No such data file in data_files dir!')
