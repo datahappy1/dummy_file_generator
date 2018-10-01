@@ -120,7 +120,7 @@ The optional arguments are :
 generated_files_location -gf <br />
 
 Run as:
-`python __main__.py -pn dummy1 -fn dummy1file.csv -fs 256`
+`python __main__.py -pn dummy1 -fn dummy1file -fs 256`
 
 Pytest (version 3.8.1) unit, integration and performance testing is also a part of this tool.
 Run `pip install pytest` and then just run the command `pytest` in the project folder
