@@ -1,46 +1,32 @@
+import sys
 import os.path
 
+main_dir = (os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(main_dir)
 
-# set the correct directory to enable both pytest runs and manual specific test runs
-p = os.getcwd().split(os.sep)
-if p[(len(p)-1)] == 'tests':
-    os.chdir(os.path.dirname(os.getcwd()))
-else:
-    pass
+from dummy_file_generator.dummy_file_generator import main
 
 
-def test_runner():
-    main_file_path = str(os.path.abspath(os.curdir)).strip('tests')
-    main_file_path = main_file_path, '__main__.py'
-    main_file_path = os.sep.join(main_file_path)
-
+# assuming the referential_result_integration_test_flatfile.txt file and
+# the file generated in this test with test.txt data_file loaded in is having the same content
+def test_integration_flatfile():
     filename = "tests", "test_run_result_integration_test_flatfile"
     filename = os.sep.join(filename)
 
-    os.system(main_file_path + " -pn test_flatfile -fn " + filename + " -fs 256")
+    main("test_flatfile", filename, 256, 'generated_files'+os.sep)
 
-    generated_files = str(os.path.abspath(os.curdir))
-    generated_files = generated_files, 'generated_files', (filename + '.txt')
-    generated_files = os.sep.join(generated_files)
+    generated_file_path = str(os.path.abspath(os.curdir))
+    generated_file_path = generated_file_path, 'generated_files', (filename + '.txt')
+    generated_file_path = os.sep.join(generated_file_path)
 
-    with open(generated_files, 'r') as test_run_file:
+    with open(generated_file_path, 'r') as test_run_file:
         test_run_data_var = test_run_file.read()
-        return test_run_data_var
 
-
-def referential_result_loader():
     ref_test_file_path = str(os.path.abspath(os.curdir)).strip('tests')
     ref_test_file_path = ref_test_file_path, 'generated_files', 'tests', 'referential_result_integration_test_flatfile.txt'
     ref_test_file_path = os.sep.join(ref_test_file_path)
 
     with open(ref_test_file_path, 'r') as referential_result_file:
         referential_result_data_var = referential_result_file.read()
-        return referential_result_data_var
 
-
-# assuming the referential_result_integration_test_flatfile.txt file and
-# the file generated in this test with test.txt data_file is the same content
-def test_integration_flatfile():
-    test_run_data_var = test_runner()
-    referential_result_data_var = referential_result_loader()
     assert test_run_data_var == referential_result_data_var

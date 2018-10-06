@@ -10,7 +10,7 @@ import settings
 from datetime import datetime
 
 
-def main():
+def args():
     ###########################################################################
     # 0: parsing and storing arguments
     ###########################################################################
@@ -27,6 +27,10 @@ def main():
     file_size = parsed.filesize
     generated_files_location = parsed.generated_files_location
 
+    main(project_name, file_name, file_size, generated_files_location)
+
+
+def main(project_name, file_name, file_size, generated_files_location=''):
     ###########################################################################
     # 1: reading configuration json for project and file paths setup
     ###########################################################################
@@ -142,4 +146,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    args()
