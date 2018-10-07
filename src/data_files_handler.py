@@ -1,9 +1,8 @@
 import logging
 import io
-import utils as util
 import os.path
 import sys
-import settings
+from src import settings, utils as util
 
 
 def load_file(data_file_name):

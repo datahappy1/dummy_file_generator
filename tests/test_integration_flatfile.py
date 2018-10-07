@@ -4,20 +4,20 @@ import os.path
 main_dir = (os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 sys.path.append(main_dir)
 
-from dummy_file_generator.dummy_file_generator import main
+from src import dummy_file_generator
 
 
 # assuming the referential_result_integration_test_flatfile.txt file and
 # the file generated in this test with test.txt data_file loaded in is having the same content
-def test_integration_flatfile():
-    filename = "tests", "test_run_result_integration_test_flatfile"
-    filename = os.sep.join(filename)
+def test_integration_csv():
+    filename = "test_run_result_integration_test_flatfile"
 
-    main("test_flatfile", filename, 256, 'generated_files'+os.sep)
+    dummy_file_generator.main("test_flatfile", filename, 250, 'generated_files' + os.sep + 'tests' + os.sep)
 
-    generated_file_path = str(os.path.abspath(os.curdir))
-    generated_file_path = generated_file_path, 'generated_files', (filename + '.txt')
-    generated_file_path = os.sep.join(generated_file_path)
+    generated_file_path = str(os.path.abspath(os.curdir)).strip('tests')
+    generated_file_path = generated_file_path + 'generated_files' + os.sep +'tests' + os.sep + (filename + '.txt')
+    #generated_file_path = os.sep.join(generated_file_path)
+
 
     with open(generated_file_path, 'r') as test_run_file:
         test_run_data_var = test_run_file.read()

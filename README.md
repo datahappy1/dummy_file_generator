@@ -123,7 +123,7 @@ Run as:
 `python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`
 
 Pytest (version 3.8.1) unit, integration and performance testing is also a part of this tool.
-Run `pip install pytest` and then just run the command `pytest` in the project folder
+Run `pip install pytest` and then just `CD tests/` and run the command `pytest-3`
 
 # Important Notes
 - To preserve the existing pytest integration and performance tests, do not remove: 

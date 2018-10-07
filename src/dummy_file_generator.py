@@ -1,12 +1,10 @@
 import argparse
 import json
-import data_files_handler as data_files
-import utils as util
+from src import data_files_handler as data_files, settings, utils as util
 import logging
 import sys
 import os.path
 import io
-import settings
 from datetime import datetime
 
 
@@ -34,8 +32,8 @@ def main(project_name, file_name, file_size, generated_files_location=''):
     ###########################################################################
     # 1: reading configuration json for project and file paths setup
     ###########################################################################
-
-    project_path = os.path.join(os.sep, os.path.abspath(os.curdir) + os.sep)
+    project_path = os.path.abspath(os.curdir).strip('tests'),'src'+ os.sep
+    project_path = os.sep.join(project_path)
 
     with open(project_path + 'config.json') as f:
         data = json.load(f)
@@ -107,7 +105,11 @@ def main(project_name, file_name, file_size, generated_files_location=''):
     iterator = 0
     output_file_size = file_size
     output_file_extension = file_extension
-    output_file_name = generated_files_location + os.sep + file_name + '.' + output_file_extension
+    output_file_name = '..' + os.sep + generated_files_location + file_name + '.' + output_file_extension
+
+    #output_file_name = os.sep.join(output_file_name)
+
+    print('zz',output_file_name)
     min_data_file_len = data_files.DataFiles.min_data_file_len(data_file_list)
     file_encoding = settings.file_encoding
 
