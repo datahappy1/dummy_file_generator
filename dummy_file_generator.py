@@ -1,6 +1,6 @@
 import argparse
 import json
-import data_files as data_files
+import data_files_handler as data_files
 import utils as util
 import logging
 import sys
@@ -62,13 +62,13 @@ def main(project_name, file_name, file_size, generated_files_location=''):
                         column_name_list.append(column['column_name'])
                         data_file_list.append(column['datafile'])
 
-                        column_stmt_first_loop.append('data_files.return_csv_value("' + column['datafile']
+                        column_stmt_first_loop.append('data_files.ReturnValues.return_csv_value("' + column['datafile']
                                                       + '",iterator)')
-                        column_stmt_more_loops.append('data_files.return_csv_value("' + column['datafile']
-                                                      + '",divmod(iterator,data_files.return_count("'
+                        column_stmt_more_loops.append('data_files.ReturnValues.return_csv_value("' + column['datafile']
+                                                      + '",divmod(iterator,data_files.ReturnHelpers.return_count("'
                                                       + column['datafile'] + '"))[1])')
 
-                    header_row_str = util.return_csv_header(column_list=column_name_list)
+                    header_row_str = util.Headers.return_csv_header(column_list=column_name_list)
                     column_stmt_first_loop_str = util.list_to_stmt(statement=column_stmt_first_loop, add_plus_sign=True, add_comma=True)
                     column_stmt_more_loops_str = util.list_to_stmt(statement=column_stmt_more_loops, add_plus_sign=True, add_comma=True)
 
@@ -81,15 +81,15 @@ def main(project_name, file_name, file_size, generated_files_location=''):
 
                         data_file_list.append(column['datafile'])
 
-                        column_stmt_first_loop.append('data_files.return_flat_value("' + column['datafile']
+                        column_stmt_first_loop.append('data_files.ReturnValues.return_flat_value("' + column['datafile']
                                                       + '","' + str(column['column_len'])
                                                       + '",iterator)')
-                        column_stmt_more_loops.append('data_files.return_flat_value("' + column['datafile']
+                        column_stmt_more_loops.append('data_files.ReturnValues.return_flat_value("' + column['datafile']
                                                       + '","' + str(column['column_len'])
-                                                      + '",divmod(iterator,data_files.return_count("'
+                                                      + '",divmod(iterator,data_files.ReturnHelpers.return_count("'
                                                       + column['datafile'] + '"))[1])')
 
-                    header_row_str = util.return_flat_header(column_name_list=column_name_list, column_len_list=column_len_list)
+                    header_row_str = util.Headers.return_flat_header(column_name_list=column_name_list, column_len_list=column_len_list)
                     column_stmt_first_loop_str = util.list_to_stmt(statement=column_stmt_first_loop, add_plus_sign=True, add_comma=False)
                     column_stmt_more_loops_str = util.list_to_stmt(statement=column_stmt_more_loops, add_plus_sign=True, add_comma=False)
 
@@ -108,7 +108,7 @@ def main(project_name, file_name, file_size, generated_files_location=''):
     output_file_size = file_size
     output_file_extension = file_extension
     output_file_name = generated_files_location + file_name + '.' + output_file_extension
-    min_data_file_len = data_files.min_data_file_len(data_file_list)
+    min_data_file_len = data_files.ReturnHelpers.min_data_file_len(data_file_list)
     file_encoding = settings.file_encoding
 
     ###########################################################################

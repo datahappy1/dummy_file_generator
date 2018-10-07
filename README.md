@@ -131,5 +131,5 @@ Run `pip install pytest` and then just run the command `pytest` in the project f
     - test.txt file in the data_files folder
     - referential_result_integration_test_csv.csv and referential_result_integration_test_flatfile.txt from generated_files/tests folder
 
-- Whenever you need to add a new source file in the data_file folder, just follow the logic of handling these files in data_files.py and add there your new source file accordingly
+- Whenever you need to add a new source file in the data_file folder, just follow the logic of handling these files in data_files_handler.py and add there your new source file accordingly
 - Feel free to contribute to this project
