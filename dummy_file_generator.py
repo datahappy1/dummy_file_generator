@@ -19,7 +19,7 @@ def args():
     parser.add_argument('-pn', '--projectname', type=str, required=True)
     parser.add_argument('-fn', '--filename', type=str, required=True)
     parser.add_argument('-fs', '--filesize', type=int, required=True)
-    parser.add_argument('-gf', '--generated_files_location', type=str, required=False, default='generated_files/')
+    parser.add_argument('-gf', '--generated_files_location', type=str, required=False, default='generated_files')
     parsed = parser.parse_args()
 
     project_name = parsed.projectname
@@ -62,10 +62,10 @@ def main(project_name, file_name, file_size, generated_files_location=''):
                         column_name_list.append(column['column_name'])
                         data_file_list.append(column['datafile'])
 
-                        column_stmt_first_loop.append('data_files.ReturnValues.return_csv_value("' + column['datafile']
+                        column_stmt_first_loop.append('data_files.DataFiles.return_csv_value("' + column['datafile']
                                                       + '",iterator)')
-                        column_stmt_more_loops.append('data_files.ReturnValues.return_csv_value("' + column['datafile']
-                                                      + '",divmod(iterator,data_files.ReturnHelpers.return_count("'
+                        column_stmt_more_loops.append('data_files.DataFiles.return_csv_value("' + column['datafile']
+                                                      + '",divmod(iterator,data_files.DataFiles.return_count("'
                                                       + column['datafile'] + '"))[1])')
 
                     header_row_str = util.Headers.return_csv_header(column_list=column_name_list)
@@ -81,12 +81,12 @@ def main(project_name, file_name, file_size, generated_files_location=''):
 
                         data_file_list.append(column['datafile'])
 
-                        column_stmt_first_loop.append('data_files.ReturnValues.return_flat_value("' + column['datafile']
+                        column_stmt_first_loop.append('data_files.DataFiles.return_flat_value("' + column['datafile']
                                                       + '","' + str(column['column_len'])
                                                       + '",iterator)')
-                        column_stmt_more_loops.append('data_files.ReturnValues.return_flat_value("' + column['datafile']
+                        column_stmt_more_loops.append('data_files.DataFiles.return_flat_value("' + column['datafile']
                                                       + '","' + str(column['column_len'])
-                                                      + '",divmod(iterator,data_files.ReturnHelpers.return_count("'
+                                                      + '",divmod(iterator,data_files.DataFiles.return_count("'
                                                       + column['datafile'] + '"))[1])')
 
                     header_row_str = util.Headers.return_flat_header(column_name_list=column_name_list, column_len_list=column_len_list)
@@ -107,8 +107,8 @@ def main(project_name, file_name, file_size, generated_files_location=''):
     iterator = 0
     output_file_size = file_size
     output_file_extension = file_extension
-    output_file_name = generated_files_location + file_name + '.' + output_file_extension
-    min_data_file_len = data_files.ReturnHelpers.min_data_file_len(data_file_list)
+    output_file_name = generated_files_location + os.sep + file_name + '.' + output_file_extension
+    min_data_file_len = data_files.DataFiles.min_data_file_len(data_file_list)
     file_encoding = settings.file_encoding
 
     ###########################################################################
