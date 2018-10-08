@@ -120,7 +120,12 @@ The optional arguments are :
 generated_files_location -gf <br />
 
 Run as:
-`python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`
+On Linux:
+`export PYTHONPATH=$PYTHONPATH:/...path to your dummy_file_generator folder.../src`
+CD to project root folder and run
+`python src/dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`
+
+On Windows:
 
 Pytest (version 3.8.1) unit, integration and performance testing is also a part of this tool.
 Run `pip install pytest` and then just `CD tests/` and run the command `pytest-3`
