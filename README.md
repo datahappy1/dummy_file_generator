@@ -12,7 +12,7 @@ It consumes arguments defining:
 
 [How to setup a new dummy file generator project](#how-to-setup-a-new-dummy-file-generator-project)
 
-[How to run the program](#how-to-run-the-program)
+[How to install and run the program](#how-to-install-and-run-the-program)
 
 [Important notes](#important-notes)
 
@@ -111,14 +111,14 @@ The output file will be written to a .txt file with the first few rows looking l
 
 # How to install and run the program
 To install:
-`git clone https://www.github.com/datahappy1/dummy_file_generator dummy_file_generator` 
-
-On Windows:
-`CD dummy_file_generator`
-`CD src`
-`set PYTHONPATH=%PYTHONPATH%;C:\dummy_file_generator\`
-
-On nix:
+`git clone https://www.github.com/datahappy1/dummy_file_generator dummy_file_generator` <br />
+<br />
+On Windows:<br />
+`CD dummy_file_generator`<br />
+`CD src`<br />
+`set PYTHONPATH=%PYTHONPATH%;C:\dummy_file_generator\`<br />
+<br />
+On Linux:
 
 
 To run:
