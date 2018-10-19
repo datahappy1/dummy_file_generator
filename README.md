@@ -137,9 +137,9 @@ settings.py will be used
 
 Run the command to execute as:<br />
 with desired filesize argument:<br />
-`python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`
+`python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`<br />
 with desired rowcount argument:<br />
-`python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`
+`python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`<br />
 
 
 
