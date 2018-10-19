@@ -21,5 +21,5 @@ def test_integration_flatfile():
     execution_end_time = datetime.now()
     duration = (execution_end_time - execution_start_time).seconds
 
-    duration_threshold = 300
+    duration_threshold = 3
     assert duration < duration_threshold
