@@ -16,24 +16,25 @@ def args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-pn', '--projectname', type=str, required=True)
     parser.add_argument('-fn', '--filename', type=str, required=True)
-    parser.add_argument('-fs', '--filesize', type=int, required=True)
+    parser.add_argument('-fs', '--filesize', type=int, required=False, default=0)
+    parser.add_argument('-rc', '--rowcount', type=int, required=False, default=0)
     parser.add_argument('-gf', '--generated_files_location', type=str, required=False, default='generated_files')
     parsed = parser.parse_args()
 
     project_name = parsed.projectname
     file_name = parsed.filename
     file_size = parsed.filesize
+    row_count = parsed.rowcount
     generated_files_location = parsed.generated_files_location
 
-    main(project_name, file_name, file_size, generated_files_location)
+    main(project_name, file_name, file_size, row_count, generated_files_location)
 
 
-def main(project_name, file_name, file_size, generated_files_location=''):
+def main(project_name, file_name, file_size, row_count, generated_files_location=''):
     ###########################################################################
     # 1: reading configuration json for project and file paths setup
     ###########################################################################
-    project_path = os.path.abspath(os.curdir).strip('tests'),'src'+ os.sep
-    project_path = os.sep.join(project_path)
+    project_path = os.path.abspath(os.curdir).strip('src').strip('tests') + os.sep
 
     with open(project_path + 'config.json') as f:
         data = json.load(f)
@@ -104,14 +105,15 @@ def main(project_name, file_name, file_size, generated_files_location=''):
     ###########################################################################
     iterator = 0
     output_file_size = file_size
-    output_file_extension = file_extension
-    output_file_name = '..' + os.sep + generated_files_location + file_name + '.' + output_file_extension
+    output_file_extension = '.' + file_extension
+    output_file_name = os.sep.join(['..', generated_files_location, file_name + output_file_extension])
 
-    #output_file_name = os.sep.join(output_file_name)
-
-    print('zz',output_file_name)
     min_data_file_len = data_files.DataFiles.min_data_file_len(data_file_list)
     file_encoding = settings.file_encoding
+
+    if row_count == 0 and file_size == 0:
+        # default row_count from settings.py in case no row counts or no file size args provided:
+        row_count = settings.default_row_count
 
     ###########################################################################
     # 4: writing the output file
@@ -123,7 +125,7 @@ def main(project_name, file_name, file_size, generated_files_location=''):
         if bool(header):
             output_file.write(header_row_str)
 
-        while output_file.tell() < output_file_size:
+        while output_file.tell() < output_file_size or iterator < row_count:
             if iterator < min_data_file_len:
                 output_file.write(eval(column_stmt_first_loop_str)+'\n')
             else:

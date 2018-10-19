@@ -12,14 +12,14 @@ from src import dummy_file_generator
 # alter this referential value based on your HW resources
 def test_integration_flatfile():
     filename = "test_run_result_performance_test_flatfile"
-    generated_file_path = 'generated_files' + os.sep + 'tests' + os.sep
+    generated_file_path = os.sep.join(['generated_files', 'tests'])
 
     execution_start_time = datetime.now()
 
-    dummy_file_generator.main("test_flatfile", filename, 250, generated_file_path)
+    dummy_file_generator.main("test_flatfile", filename, 10485766, 0, generated_file_path)
 
     execution_end_time = datetime.now()
     duration = (execution_end_time - execution_start_time).seconds
 
-    duration_threshold = 3
+    duration_threshold = 300
     assert duration < duration_threshold

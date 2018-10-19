@@ -111,12 +111,12 @@ The output file will be written to a .txt file with the first few rows looking l
 
 # How to install and run the program
 To install:
-`git clone https://www.github.com/datahappy1/dummy_file_generator dummy_file_generator` <br />
+`git clone https://www.github.com/datahappy1/dummy_file_generator C:\dummy_file_generator` <br />
 <br />
 On Windows:<br />
-`CD dummy_file_generator`<br />
-`CD src`<br />
+`cd dummy_file_generator\src`<br />
 `set PYTHONPATH=%PYTHONPATH%;C:\dummy_file_generator\`<br />
+`python dummy_file_generator.py -pn YourProjectName -fn YourGeneratedFileName -fs 256`<br />
 <br />
 On Linux:
 
@@ -126,16 +126,26 @@ You need to set the required arguments :
 
 projectname -pn <br />
 filename -fn <br />
-filesize -fs (in kB)
 
 The optional arguments are :
+filesize -fs (in kB)
+rowcount -rc
 generated_files_location -gf <br />
 
+*note if you do NOT specify the filesize and do NOT specify the rowcount, the default value (100) from
+settings.py will be used
+
 Run the command to execute as:
+with desired filesize argument:
 `python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`
+with desired rowcount argument:
+`python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`
+
+
 
 Pytest (version 3.8.1) unit, integration and performance testing is also a part of this tool.
-Run `pip install pytest` and then just `CD tests` and run the command `pytest-3`
+Run `pip install pytest` and then just `cd tests` and run the command `pytest`
+
 
 # Important Notes
 - To preserve the existing pytest integration and performance tests, do not remove: 
