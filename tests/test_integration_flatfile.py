@@ -13,7 +13,7 @@ def test_integration_flatfile():
     filename = "test_run_result_integration_test_flatfile"
     generated_file_path = os.sep.join(['generated_files', 'tests'])
 
-    dummy_file_generator.main("test_flatfile", filename, 0, 0, generated_file_path)
+    dummy_file_generator.main("test_flatfile", filename, 0, 100, generated_file_path)
 
     generated_file_path = str(os.path.abspath(os.curdir)).strip('tests')
     generated_file_path = os.sep.join([generated_file_path, 'generated_files', 'tests', filename + '.txt'])
