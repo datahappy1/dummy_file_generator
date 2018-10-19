@@ -111,7 +111,7 @@ The output file will be written to a .txt file with the first few rows looking l
 
 # How to install and run the program
 To install:
-`git clone https://www.github.com/datahappy1/dummy_file_generator C:\dummy_file_generator` <br />
+`git clone https://www.github.com/datahappy1/dummy_file_generator dummy_file_generator` <br />
 <br />
 On Windows:<br />
 `cd dummy_file_generator\src`<br />
