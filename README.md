@@ -122,7 +122,7 @@ On Windows:<br />
 On Linux:
 
 
-To run:
+To run:<br />
 You need to set the required arguments :
 
 projectname -pn <br />
@@ -137,7 +137,7 @@ generated_files_location -gf <br />
 *note if you do NOT specify the filesize and do NOT specify the rowcount, the default value (100) from
 settings.py will be used
 
-Run the command to execute as:<br />
+Run this command to execute:<br />
 - with the -fs argument to set the desired filesize of 256 kB :<br />
 `python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`<br />
 - with the -rc argument to set the desired rowcount of 1000 rows :<br />
