@@ -135,10 +135,10 @@ generated_files_location -gf <br />
 *note if you do NOT specify the filesize and do NOT specify the rowcount, the default value (100) from
 settings.py will be used
 
-Run the command to execute as:
-with desired filesize argument:
+Run the command to execute as:<br />
+with desired filesize argument:<br />
 `python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`
-with desired rowcount argument:
+with desired rowcount argument:<br />
 `python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`
 
 
