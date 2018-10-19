@@ -23,6 +23,3 @@ def test_integration_csv():
 
     duration_threshold = 3
     assert duration < duration_threshold
-
-
-test_integration_csv()
