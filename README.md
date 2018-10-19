@@ -5,7 +5,8 @@ This tool is able to generate dummy csv or flat txt files based on the configura
 It consumes arguments defining: 
 - projectname ( *based on the projectname, the correct settings from config.json file are loaded ),* 
 - filename defining the output file name
-- filesize to define the needed size (in kBs) of the output file 
+- filesize (optional argument) defining the desired size (in kBs) of the output file 
+- rowcount (optional argument) defining the desired row count of the output file
 - generated files location (optional argument) defining the output files location in case it's different then the default location in /generated_files/..
 
 [How this tool works](#how-this-tool-works)
@@ -136,9 +137,9 @@ generated_files_location -gf <br />
 settings.py will be used
 
 Run the command to execute as:<br />
-with desired filesize argument:<br />
+- with the -fs argument to set the desired filesize of 256 kB :<br />
 `python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`<br />
-with desired rowcount argument:<br />
+- with the -rc argument to set the desired rowcount of 1000 rows :<br />
 `python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`<br />
 
 
