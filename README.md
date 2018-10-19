@@ -129,8 +129,9 @@ projectname -pn <br />
 filename -fn <br />
 
 The optional arguments are :
-filesize -fs (in kB)
-rowcount -rc
+
+filesize -fs (in kB) <br />
+rowcount -rc <br />
 generated_files_location -gf <br />
 
 *note if you do NOT specify the filesize and do NOT specify the rowcount, the default value (100) from
