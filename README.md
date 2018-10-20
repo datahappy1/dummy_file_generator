@@ -145,9 +145,10 @@ Run this command to execute:<br />
 
 
 
-Pytest (version 3.8.1) unit, integration and performance testing is also a part of this tool.
+Pytest (version 3.9.1) unit, integration and performance testing is also a part of this tool.
 Run `pip install pytest` and then just `cd tests` and run the command `pytest`
 
+( Alternatively you can `pip install -r requirements.txt` to install Pytest )
 
 # Important Notes
 - To preserve the existing pytest integration and performance tests, do not remove: 
