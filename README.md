@@ -117,10 +117,9 @@ The output file will be written to a .txt file with the first few rows looking l
 On Windows:<br />
 `cd dummy_file_generator\src`<br />
 `set PYTHONPATH=%PYTHONPATH%;C:\dummy_file_generator\`<br />
-`python dummy_file_generator.py -pn YourProjectName -fn YourGeneratedFileName -fs 256`<br />
 <br />
 On Linux:
-
+TODO
 
 ### To run:<br />
 You need to set the required arguments :
@@ -139,9 +138,11 @@ settings.py will be used
 
 Run this command to execute:<br />
 - with the -fs argument to set the desired filesize of 256 kB :<br />
+`cd src`<br />
 `python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`<br />
 - with the -rc argument to set the desired rowcount of 1000 rows :<br />
-`python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`<br />
+`cd src`<br />
+python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`<br />
 
 
 ### Pytest
