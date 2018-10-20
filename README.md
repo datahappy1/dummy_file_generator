@@ -142,7 +142,7 @@ Run this command to execute:<br />
 `python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`<br />
 - with the -rc argument to set the desired rowcount of 1000 rows :<br />
 `cd src`<br />
-python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`<br />
+`python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`<br />
 
 
 ### Pytest
