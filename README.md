@@ -133,7 +133,7 @@ filesize -fs (in kB) <br />
 rowcount -rc <br />
 generated_files_location -gf <br />
 
-*note if you do NOT specify the filesize and do NOT specify the rowcount, the default value (100) from
+*note if you do NOT specify the filesize and do NOT specify the rowcount, the default row_count value ( set to 100 ) from
 settings.py will be used
 
 Run this command to execute:<br />
