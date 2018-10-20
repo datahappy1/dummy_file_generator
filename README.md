@@ -111,7 +111,7 @@ The output file will be written to a .txt file with the first few rows looking l
 [flat]: https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/flatfile_demo.PNG "flat"
 
 # How to install and run the program
-To install:
+### To install:
 `git clone https://www.github.com/datahappy1/dummy_file_generator dummy_file_generator` <br />
 <br />
 On Windows:<br />
@@ -122,7 +122,7 @@ On Windows:<br />
 On Linux:
 
 
-To run:<br />
+### To run:<br />
 You need to set the required arguments :
 
 projectname -pn <br />
@@ -144,7 +144,7 @@ Run this command to execute:<br />
 `python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`<br />
 
 
-
+### Pytest
 Pytest (version 3.9.1) unit, integration and performance testing is also a part of this tool.
 Run `pip install pytest` and then just `cd tests` and run the command `pytest`
 
