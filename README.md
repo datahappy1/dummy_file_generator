@@ -32,8 +32,16 @@ On Windows:<br />
 `cd dummy_file_generator\src`<br />
 `set PYTHONPATH=%PYTHONPATH%;C:\dummy_file_generator\`<br />
 <br />
-On Linux:
-TODO
+On Linux:<br />
+TODO<br />
+<br />
+
+Pytest (version 3.9.1) unit, integration and performance tests are also a part of this tool.
+To make sure you're working with a healthy version, install Pytest running `pip install pytest`<br /> 
+( Alternatively you can run the command `pip install -r requirements.txt` to install Pytest )<br />
+<br />
+
+To run the tests, just `cd tests` and run the command `pytest`
 
 ### To run:<br />
 You need to set the required arguments :
@@ -57,13 +65,6 @@ Run this command to execute:<br />
 - with the -rc argument to set the desired rowcount of 1000 rows :<br />
 `cd src`<br />
 `python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`<br />
-
-
-### Pytest
-Pytest (version 3.9.1) unit, integration and performance testing is also a part of this tool.
-Run `pip install pytest` and then just `cd tests` and run the command `pytest`
-
-( Alternatively you can run the command `pip install -r requirements.txt` to install Pytest )
 
 
 # How to setup a new dummy file generator project
