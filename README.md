@@ -40,6 +40,7 @@ A permanent solution is to:<br />
 -In the Environment variables dialog, click the “New” button in the top half of the dialog, to make a new user variable:<br />
 -Give the variable name as PYTHONPATH and the value is the path to the code directory. Choose OK and OK again to save this variable.<br />
 -Now open a cmd Window (Windows key, then type cmd and press Return). Type: `echo %PYTHONPATH%` to confirm the environment variable is correctly set.<br />
+
 *This Pythonpath setup tutorial was taken from https://bic-berkeley.github.io/psych-214-fall-2016/using_pythonpath.html
 <br />
 <br />
@@ -66,7 +67,7 @@ filesize -fs (in kB) <br />
 rowcount -rc <br />
 generated_files_location -gf <br />
 
-*note if you do NOT specify the filesize and do NOT specify the rowcount, the default row_count value ( set to 100 ) from
+*Note if you do NOT specify the filesize and do NOT specify the rowcount, the default row_count value ( set to 100 ) from
 settings.py will be used
 
 Run this command to execute:<br />
