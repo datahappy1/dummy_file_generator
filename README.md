@@ -29,8 +29,19 @@ It consumes arguments defining:
 `git clone https://www.github.com/datahappy1/dummy_file_generator dummy_file_generator` <br />
 <br />
 On Windows:<br />
-`cd dummy_file_generator\src`<br />
+
+You need to set the PYTHONPATH like this:
 `set PYTHONPATH=%PYTHONPATH%;C:\dummy_file_generator\`<br />
+<br />
+A permanent solution is to:
+-Go to the Windows menu, right-click on “Computer” and select “Properties”:
+-From the computer properties dialog, select “Advanced system settings” on the left:
+-From the advanced system settings dialog, choose the “Environment variables” button:
+-In the Environment variables dialog, click the “New” button in the top half of the dialog, to make a new user variable:
+-Give the variable name as PYTHONPATH and the value is the path to the code directory. Choose OK and OK again to save this variable.
+-Now open a cmd Window (Windows key, then type cmd and press Return). Type: `echo %PYTHONPATH%` to confirm the environment variable is correctly set.
+*This tutorial was taken from https://bic-berkeley.github.io/psych-214-fall-2016/using_pythonpath.html
+<br />
 <br />
 On Linux:<br />
 TODO<br />
