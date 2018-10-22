@@ -1,8 +1,13 @@
 import logging
+import sys
 
 
 def whitespace_generator(i):
-    return i * ' '
+    if int(i):
+        return i * ' '
+    else:
+        logging.error(f'utils.whitespace_generator method(i) error : i is not integer')
+        sys.exit(1)
 
 
 def list_to_stmt(statement, add_plus_sign, add_comma):
