@@ -40,7 +40,7 @@ A permanent solution is to:<br />
 -In the Environment variables dialog, click the “New” button in the top half of the dialog, to make a new user variable:<br />
 -Give the variable name as PYTHONPATH and the value is the path to the code directory. Choose OK and OK again to save this variable.<br />
 -Now open a cmd Window (Windows key, then type cmd and press Return). Type: `echo %PYTHONPATH%` to confirm the environment variable is correctly set.<br />
-*This Pythonpath tutorial was taken from https://bic-berkeley.github.io/psych-214-fall-2016/using_pythonpath.html
+*This Pythonpath setup tutorial was taken from https://bic-berkeley.github.io/psych-214-fall-2016/using_pythonpath.html
 <br />
 <br />
 On Linux:<br />
