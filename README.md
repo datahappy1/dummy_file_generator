@@ -28,7 +28,7 @@ It consumes arguments defining:
 ### To install:
 `git clone https://www.github.com/datahappy1/dummy_file_generator dummy_file_generator` <br />
 <br />
-On Windows:<br />
+#### On Windows:<br />
 
 You need to set the PYTHONPATH like this:
 `set PYTHONPATH=%PYTHONPATH%;C:\dummy_file_generator\`<br />
@@ -44,10 +44,11 @@ A permanent solution is to:<br />
 *This Pythonpath setup tutorial was taken from https://bic-berkeley.github.io/psych-214-fall-2016/using_pythonpath.html
 <br />
 <br />
-On Linux:<br />
+#### On Linux:<br />
 TODO<br />
 <br />
 
+#### Pytest testing:<br />
 Pytest (version 3.9.1) unit, integration and performance tests are also a part of this tool.
 To make sure you're working with a healthy version, install Pytest running `pip install pytest`<br /> 
 ( Alternatively you can run the command `pip install -r requirements.txt` to install Pytest )<br />
