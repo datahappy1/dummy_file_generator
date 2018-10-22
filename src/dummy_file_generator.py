@@ -112,7 +112,7 @@ def main(project_name, file_name, file_size, row_count, generated_files_location
     file_encoding = settings.file_encoding
 
     if row_count == 0 and file_size == 0:
-        # default row_count from settings.py in case no row counts or no file size args provided:
+        # use default row_count from settings.py in case no row counts and no file size args provided:
         row_count = settings.default_row_count
 
     ###########################################################################

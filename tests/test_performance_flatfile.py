@@ -8,7 +8,7 @@ sys.path.append(main_dir)
 from src import dummy_file_generator
 
 
-# assuming 1Mb flat file will get written under 3 seconds
+# assuming 1MB flat file will get written under 3 seconds
 # alter this referential value based on your HW resources
 def test_integration_flatfile():
     filename = "test_run_result_performance_test_flatfile"

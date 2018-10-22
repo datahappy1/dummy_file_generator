@@ -85,15 +85,15 @@ class DataFiles:
             data_file_len_list.append(eval('len(DataFiles.test_file)'))
 
         # the real data files
-        if 'firstnames.txt' in data_file_list:
+        elif 'firstnames.txt' in data_file_list:
             data_file_len_list.append(eval('len(DataFiles.first_names_file)'))
-        if 'lastnames.txt' in data_file_list:
+        elif 'lastnames.txt' in data_file_list:
             data_file_len_list.append(eval('len(DataFiles.last_names_file)'))
-        if 'dates.txt' in data_file_list:
+        elif 'dates.txt' in data_file_list:
             data_file_len_list.append(eval('len(DataFiles.dates_file)'))
-        if 'IDs.txt' in data_file_list:
+        elif 'IDs.txt' in data_file_list:
             data_file_len_list.append(eval('len(DataFiles.ids_file)'))
-        if len(data_file_len_list) == 0:
+        elif len(data_file_len_list) == 0:
             logging.error(f'Error when calling function min_data_file_len with data_file_list: {data_file_list}')
             sys.exit(1)
         return min(eval(str(data_file_len_list)))

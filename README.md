@@ -5,14 +5,15 @@ This tool is able to generate dummy csv or flat txt files based on the configura
 It consumes arguments defining: 
 - projectname ( *based on the projectname, the correct settings from config.json file are loaded ),* 
 - filename defining the output file name
-- filesize to define the needed size (in kBs) of the output file 
+- filesize (optional argument) defining the desired size (in kBs) of the output file 
+- rowcount (optional argument) defining the desired row count of the output file
 - generated files location (optional argument) defining the output files location in case it's different then the default location in /generated_files/..
 
 [How this tool works](#how-this-tool-works)
 
-[How to setup a new dummy file generator project](#how-to-setup-a-new-dummy-file-generator-project)
-
 [How to install and run the program](#how-to-install-and-run-the-program)
+
+[How to setup a new dummy file generator project](#how-to-setup-a-new-dummy-file-generator-project)
 
 [Important notes](#important-notes)
 
@@ -21,6 +22,60 @@ It consumes arguments defining:
 ![alt text][diagram]
 
 [diagram]: https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/diagram.png "How this tool works"
+
+
+# How to install and run the program
+### To install:
+`git clone https://www.github.com/datahappy1/dummy_file_generator dummy_file_generator` <br />
+<br />
+On Windows:<br />
+
+You need to set the PYTHONPATH like this:
+`set PYTHONPATH=%PYTHONPATH%;C:\dummy_file_generator\`<br />
+<br />
+A permanent solution is to:<br />
+-Go to the Windows menu, right-click on “Computer” and select “Properties”:<br />
+-From the computer properties dialog, select “Advanced system settings” on the left:<br />
+-From the advanced system settings dialog, choose the “Environment variables” button:<br />
+-In the Environment variables dialog, click the “New” button in the top half of the dialog, to make a new user variable:<br />
+-Give the variable name as PYTHONPATH and the value is the path to the code directory. Choose OK and OK again to save this variable.<br />
+-Now open a cmd Window (Windows key, then type cmd and press Return). Type: `echo %PYTHONPATH%` to confirm the environment variable is correctly set.<br />
+*This Pythonpath setup tutorial was taken from https://bic-berkeley.github.io/psych-214-fall-2016/using_pythonpath.html
+<br />
+<br />
+On Linux:<br />
+TODO<br />
+<br />
+
+Pytest (version 3.9.1) unit, integration and performance tests are also a part of this tool.
+To make sure you're working with a healthy version, install Pytest running `pip install pytest`<br /> 
+( Alternatively you can run the command `pip install -r requirements.txt` to install Pytest )<br />
+<br />
+
+To run the tests, just `cd tests` and run the command `pytest`
+
+### To run:<br />
+You need to set the required arguments :
+
+projectname -pn <br />
+filename -fn <br />
+
+The optional arguments are :
+
+filesize -fs (in kB) <br />
+rowcount -rc <br />
+generated_files_location -gf <br />
+
+*note if you do NOT specify the filesize and do NOT specify the rowcount, the default row_count value ( set to 100 ) from
+settings.py will be used
+
+Run this command to execute:<br />
+- with the -fs argument to set the desired filesize of 256 kB :<br />
+`cd src`<br />
+`python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`<br />
+- with the -rc argument to set the desired rowcount of 1000 rows :<br />
+`cd src`<br />
+`python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`<br />
 
 
 # How to setup a new dummy file generator project
@@ -108,43 +163,6 @@ The output file will be written to a .txt file with the first few rows looking l
 ![alt text][flat]
 
 [flat]: https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/flatfile_demo.PNG "flat"
-
-# How to install and run the program
-To install:
-`git clone https://www.github.com/datahappy1/dummy_file_generator dummy_file_generator` <br />
-<br />
-On Windows:<br />
-`cd dummy_file_generator\src`<br />
-`set PYTHONPATH=%PYTHONPATH%;C:\dummy_file_generator\`<br />
-`python dummy_file_generator.py -pn YourProjectName -fn YourGeneratedFileName -fs 256`<br />
-<br />
-On Linux:
-
-
-To run:
-You need to set the required arguments :
-
-projectname -pn <br />
-filename -fn <br />
-
-The optional arguments are :
-filesize -fs (in kB)
-rowcount -rc
-generated_files_location -gf <br />
-
-*note if you do NOT specify the filesize and do NOT specify the rowcount, the default value (100) from
-settings.py will be used
-
-Run the command to execute as:<br />
-with desired filesize argument:<br />
-`python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`<br />
-with desired rowcount argument:<br />
-`python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`<br />
-
-
-
-Pytest (version 3.8.1) unit, integration and performance testing is also a part of this tool.
-Run `pip install pytest` and then just `cd tests` and run the command `pytest`
 
 
 # Important Notes
