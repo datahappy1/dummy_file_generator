@@ -6,7 +6,7 @@ def whitespace_generator(i):
     if int(i):
         return i * ' '
     else:
-        logging.error(f'utils.whitespace_generator method(i) error : i is not integer')
+        logging.error(f'whitespace_generator error - variable i is not integer')
         sys.exit(1)
 
 
