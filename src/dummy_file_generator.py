@@ -34,7 +34,7 @@ def main(project_name, file_name, file_size, row_count, generated_files_location
     ###########################################################################
     # 1: reading configuration json for project and file paths setup
     ###########################################################################
-    project_path = os.path.abspath(os.curdir).strip('src').strip('tests') + os.sep
+    project_path = os.path.abspath(os.curdir).replace('src', '').replace('tests', '') + os.sep
 
     with open(project_path + 'config.json') as f:
         data = json.load(f)
@@ -106,7 +106,7 @@ def main(project_name, file_name, file_size, row_count, generated_files_location
     iterator = 0
     output_file_size = file_size
     output_file_extension = '.' + file_extension
-    output_file_name = os.sep.join(['..', generated_files_location, file_name + output_file_extension])
+    output_file_name = os.sep.join(['.', generated_files_location, file_name + output_file_extension])
 
     min_data_file_len = data_files.DataFiles.min_data_file_len(data_file_list)
     file_encoding = settings.file_encoding

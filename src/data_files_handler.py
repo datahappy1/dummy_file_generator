@@ -6,9 +6,9 @@ from src import settings, utils as util
 
 
 def load_file(data_file_name):
-    # strip tests from abspath to support pytest running integration and performance tests
+    # remove strings from abspath to support pytest running integration and performance tests
     # from /tests folder
-    project_path = os.path.abspath(os.curdir).strip('src').strip('tests')
+    project_path = os.path.abspath(os.curdir).replace('src', '').replace('tests', '')
     data_files_path = os.sep.join([project_path, 'data_files', data_file_name])
     file_encoding = settings.file_encoding
 
