@@ -71,11 +71,13 @@ generated_files_location -gf <br />
 *Note if you do NOT specify the filesize and do NOT specify the rowcount, the default row_count value ( set to 100 ) from
 settings.py will be used
 
-Run this command to execute:<br />
+Run these commands to execute:<br />
 - with the -fs argument to set the desired filesize of 256 kB :<br />
-`python dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`<br />
+`cd dummy_file_generator`<br />
+`python c:\dummy_file_generator\dummy_file_generator.py -pn dummy1 -fn dummy1file -fs 256`<br />
 - with the -rc argument to set the desired rowcount of 1000 rows :<br />
-`python dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`<br />
+`cd dummy_file_generator`<br />
+`python c:\dummy_file_generator\dummy_file_generator.py -pn dummy1 -fn dummy1file -rc 1000`<br />
 
 
 # How to setup a new dummy file generator project
