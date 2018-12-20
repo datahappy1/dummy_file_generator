@@ -28,10 +28,7 @@ def args():
     file_name = parsed.filename
     file_size = parsed.filesize
     row_count = parsed.rowcount
-
     generated_files_location = parsed.generated_files_location
-
-    logging.info("Arguments parsed successfully")
 
     obj = DummyFileGenerator(project_name, file_name, file_size, row_count,
                              generated_files_location)
