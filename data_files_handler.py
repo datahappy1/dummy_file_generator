@@ -38,14 +38,11 @@ class DataSets:
     """
     class for data sets handling
     """
-    def __init__(self):
-        """
-        init self
-        """
-        self.ids = load_file_to_list('ids.txt')
-        self.first_names = load_file_to_list('first_names.txt')
-        self.last_names = load_file_to_list('last_names.txt')
-        self.dates = load_file_to_list('dates.txt')
+    test = load_file_to_list('test.txt')
+    ids = load_file_to_list('ids.txt')
+    first_names = load_file_to_list('first_names.txt')
+    last_names = load_file_to_list('last_names.txt')
+    dates = load_file_to_list('dates.txt')
 
 
 def get_data_set(data_set_name):
