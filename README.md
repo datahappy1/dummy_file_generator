@@ -54,7 +54,7 @@ To make sure you're working with a healthy version, install Pytest running `pip 
 ( Alternatively you can run the command `pip install -r requirements.txt` to install Pytest )<br />
 <br />
 
-To run the tests, just `cd tests` and run the command `pytest`
+To run the tests, just `cd dummy_file_generator` and run the command `pytest`
 
 ### To run:<br />
 You need to set the required arguments :
