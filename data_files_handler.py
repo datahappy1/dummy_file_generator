@@ -13,6 +13,16 @@ def whitespace_generator(i):
     return int(i) * ' '
 
 
+def list_to_str(columns):
+    """
+    list to str function
+    :param columns: list
+    :return: string
+    """
+    columns = str(columns).strip('[]').split(', ')
+    return columns
+
+
 def load_file_to_list(data_set_name):
     """
     load a data file from disk and return as list
@@ -28,10 +38,14 @@ class DataSets:
     """
     class for data sets handling
     """
-    IDs = load_file_to_list('IDs.txt')
-    firstnames = load_file_to_list('firstnames.txt')
-    lastnames = load_file_to_list('lastnames.txt')
-    dates = load_file_to_list('dates.txt')
+    def __init__(self):
+        """
+        init self
+        """
+        self.ids = load_file_to_list('ids.txt')
+        self.first_names = load_file_to_list('first_names.txt')
+        self.last_names = load_file_to_list('last_names.txt')
+        self.dates = load_file_to_list('dates.txt')
 
 
 def get_data_set(data_set_name):
@@ -70,15 +84,13 @@ def flat_row_output(columns, column_lengths):
     :param column_lengths:
     :return: output flat data row
     """
-    columns = str(columns).strip('[]')
-    columns = columns.split(', ')
-    column_lengths = str(column_lengths).strip('[]')
-    whitespaces = column_lengths.split(', ')
+    columns = list_to_str(columns)
+    column_lengths = list_to_str(column_lengths)
     row = []
 
     for index, column in enumerate(columns):
         column = column.strip("'")
-        whitespace = int(whitespaces[index])
+        whitespace = int(column_lengths[index])
         value = get_data_set(column)[randint(0, len(get_data_set(column))-1)]
         value = value + whitespace_generator(whitespace - len(value))
         row.append(value)
@@ -94,9 +106,7 @@ def csv_row_header(columns, csv_value_separator):
     :return: csv row header
     """
     header_row = []
-
-    columns = str(columns).strip('[]')
-    columns = columns.split(', ')
+    columns = list_to_str(columns)
 
     for column in columns:
         column = column.strip("'")
@@ -112,8 +122,7 @@ def csv_row_output(columns, csv_value_separator):
     :param csv_value_separator:
     :return: output csv data row
     """
-    columns = str(columns).strip('[]')
-    columns = columns.split(', ')
+    columns = list_to_str(columns)
     row = []
 
     for column in columns:

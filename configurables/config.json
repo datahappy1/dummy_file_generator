@@ -51,11 +51,11 @@
       "columns":[
         {
           "column_name":"firstname",
-          "datafile":"firstnames.txt"
+          "datafile":"first_names.txt"
         },
         {
           "column_name":"lastname",
-          "datafile":"lastnames.txt"
+          "datafile":"last_names.txt"
         },
         {
           "column_name":"dateofregistration",
@@ -72,12 +72,12 @@
         {
           "column_name":"Identifier",
           "column_len":13,
-          "datafile":"IDs.txt"
+          "datafile":"ids.txt"
         },
         {
           "column_name":"lastname",
           "column_len":14,
-          "datafile":"lastnames.txt"
+          "datafile":"last_names.txt"
         },
         {
           "column_name":"dateofbirth",
