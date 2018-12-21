@@ -13,7 +13,7 @@ def test_performance_csv():
     :return: assertion result
     """
     filename = "test_run_result_performance"
-    generated_file_path = os.sep.join(['\generated_files', 'tests'])
+    generated_file_path = os.sep.join(['generated_files', 'tests'])
 
     execution_start_time = datetime.now()
 
