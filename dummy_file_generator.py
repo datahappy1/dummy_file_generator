@@ -50,6 +50,9 @@ class DummyFileGenerator:
         self.column_name_list = []
         self.column_len_list = []
         self.data_file_list = []
+        self.header = None
+        self.file_type = None
+        self.file_extension = None
 
     def read_config(self):
         """

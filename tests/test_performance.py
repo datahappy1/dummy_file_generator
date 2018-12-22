@@ -24,6 +24,8 @@ def test_performance_csv():
     duration = (execution_end_time - execution_start_time).seconds
     duration_threshold = 3
 
+    os.remove(os.sep.join([generated_file_path, 'test_run_result_performance.csv']))
+
     assert duration < duration_threshold
 
 
@@ -44,5 +46,7 @@ def test_performance_flat():
     execution_end_time = datetime.now()
     duration = (execution_end_time - execution_start_time).seconds
     duration_threshold = 3
+
+    os.remove(os.sep.join([generated_file_path, 'test_run_result_performance.txt']))
 
     assert duration < duration_threshold

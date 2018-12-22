@@ -1,6 +1,8 @@
 # dummy_file_generator
 # dummy csv or flat text files generator written in Python 3.7
 
+![](https://github.com/datahappy1/dummy_file_generator/blob/master/rating.svg)
+
 This tool is able to generate dummy csv or flat txt files based on the configuration settings you setup for your project(s).
 It consumes arguments defining: 
 - projectname ( *based on the projectname, the correct settings from config.json file are loaded ),* 
