@@ -29,9 +29,10 @@ def args():
     file_size = parsed.filesize
     row_count = parsed.rowcount
     generated_files_location = parsed.generated_files_location
+    kwargs = {"project_name": project_name, "file_name": file_name, "file_size": file_size,
+              "row_count": row_count, "generated_files_location": generated_files_location}
 
-    obj = DummyFileGenerator(project_name, file_name, file_size, row_count,
-                             generated_files_location)
+    obj = DummyFileGenerator(**kwargs)
     DummyFileGenerator.main(obj)
 
 
@@ -39,28 +40,23 @@ class DummyFileGenerator:
     """
     main project class
     """
-    def __init__(self, project_name, file_name, file_size, row_count,
-                 generated_files_location):
-        self.project_name = project_name
-        self.config_path = os.sep.join([os.path.join(os.path.dirname(__file__)), 'configurables'])
-        self.file_name = file_name
-        self.file_size = file_size
-        self.row_count = row_count
-        self.generated_files_location = generated_files_location
+    def __init__(self, **kwargs):
         self.column_name_list = []
         self.column_len_list = []
         self.data_file_list = []
         self.header = None
         self.file_type = None
         self.file_extension = None
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def read_config(self):
         """
         read config json file function
         :return:
         """
-        project_name = self.project_name
-        config_path = self.config_path
+        project_name = self.project_name  # pylint: disable=no-member
+        config_path = os.sep.join([os.path.join(os.path.dirname(__file__)), 'configurables'])
 
         with open(config_path + os.sep + 'config.json') as file:
             data = json.load(file)
@@ -75,6 +71,9 @@ class DummyFileGenerator:
                         self.data_file_list.append(str(column['datafile']).replace('.txt', ''))
                         if self.file_type == "flat":
                             self.column_len_list.append(column['column_len'])
+                    break
+            else:
+                raise ValueError("No such project found in config.json")
 
     def write_output(self):
         """
@@ -84,23 +83,18 @@ class DummyFileGenerator:
         column_name_list = self.column_name_list
         column_len_list = self.column_len_list
         data_file_list = self.data_file_list
-
-        output_file_size = self.file_size
-        row_count = self.row_count
+        output_file_size = self.file_size  # pylint: disable=no-member
+        row_count = self.row_count  # pylint: disable=no-member
         output_file_extension = '.' + self.file_extension
-        output_file_name = os.sep.join(['.', self.generated_files_location,
-                                        self.file_name + output_file_extension])
-
-        file_line_ending = FILE_LINE_ENDING
-        file_encoding = FILE_ENCODING
-        csv_value_separator = CSV_VALUE_SEPARATOR
+        output_file_name = os.sep.join(['.', self.generated_files_location,  # pylint: disable=no-member
+                                        self.file_name + output_file_extension])  # pylint: disable=no-member
 
         if row_count == 0 and output_file_size == 0:
             # use default row_count from settings.py in case no row counts
             # and no file size args provided:
             row_count = DEFAULT_ROW_COUNT
 
-        with io.open(output_file_name, 'w', encoding=file_encoding) as output_file:
+        with io.open(output_file_name, 'w', encoding=FILE_ENCODING) as output_file:
             execution_start_time = datetime.now()
             logging.info('File %s processing started at %s', output_file_name,
                          execution_start_time)
@@ -108,21 +102,21 @@ class DummyFileGenerator:
             if bool(self.header):
                 if self.file_type == "csv":
                     output_file.write(data_files.csv_row_header(column_name_list,
-                                                                csv_value_separator)
-                                      + file_line_ending)
+                                                                CSV_VALUE_SEPARATOR)
+                                      + FILE_LINE_ENDING)
                 elif self.file_type == "flat":
                     output_file.write(data_files.flat_row_header(column_name_list,
                                                                  column_len_list)
-                                      + file_line_ending)
+                                      + FILE_LINE_ENDING)
 
             iterator = 1
             while output_file.tell() < output_file_size or iterator < row_count:
                 if self.file_type == "csv":
-                    row = data_files.csv_row_output(data_file_list, csv_value_separator)
+                    row = data_files.csv_row_output(data_file_list, CSV_VALUE_SEPARATOR)
                 elif self.file_type == "flat":
                     row = data_files.flat_row_output(data_file_list, column_len_list)
 
-                output_file.write(row + file_line_ending)
+                output_file.write(row + FILE_LINE_ENDING)
                 iterator = iterator + 1
 
                 if divmod(iterator, 10000)[1] == 1:
