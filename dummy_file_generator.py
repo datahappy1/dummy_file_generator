@@ -96,8 +96,7 @@ class DummyFileGenerator:
 
         with io.open(output_file_name, 'w', encoding=FILE_ENCODING) as output_file:
             execution_start_time = datetime.now()
-            logging.info('File %s processing started at %s', output_file_name,
-                         execution_start_time)
+            logging.info('File %s processing started at %s', output_file_name, execution_start_time)
 
             if bool(self.header):
                 if self.file_type == "csv":
@@ -115,7 +114,6 @@ class DummyFileGenerator:
                     row = data_files.csv_row_output(data_file_list, CSV_VALUE_SEPARATOR)
                 elif self.file_type == "flat":
                     row = data_files.flat_row_output(data_file_list, column_len_list)
-
                 output_file.write(row + FILE_LINE_ENDING)
                 iterator = iterator + 1
 
@@ -126,11 +124,7 @@ class DummyFileGenerator:
 
             execution_end_time = datetime.now()
             duration = (execution_end_time - execution_start_time).seconds
-
-            if duration > 1000:
-                duration = str(duration / 60) + ' minutes'
-            else:
-                duration = str(duration) + ' seconds'
+            duration = str(duration/60) + ' mins' if duration > 1000 else str(duration) + ' secs'
 
             logging.info('File %s processing finished at %s\n '
                          '%s kB file with %s rows written in %s',
