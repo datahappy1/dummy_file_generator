@@ -1,8 +1,9 @@
 """
 test units
 """
-from data_files_handler import load_file_to_list, get_data_set, flat_row_header, csv_row_header,\
-    flat_row_output, csv_row_output
+from data_files_handler import load_file_to_list, get_data_set
+from lib.flat_writer import flat_row_header, flat_row_output
+from lib.csv_writer import csv_row_header, csv_row_output
 
 
 def replace_multiple(main_string, to_be_replaced, new_string):

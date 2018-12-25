@@ -5,7 +5,8 @@ import os.path
 import io
 import logging
 from datetime import datetime
-import data_files_handler as data_files
+from lib.flat_writer import flat_row_header, flat_row_output
+from lib.csv_writer import csv_row_header, csv_row_output
 from configurables.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, FILE_LINE_ENDING, \
     CSV_VALUE_SEPARATOR
 
@@ -100,20 +101,18 @@ class DummyFileGenerator:
 
             if bool(self.header):
                 if self.file_type == "csv":
-                    output_file.write(data_files.csv_row_header(column_name_list,
-                                                                CSV_VALUE_SEPARATOR)
+                    output_file.write(csv_row_header(column_name_list, CSV_VALUE_SEPARATOR)
                                       + FILE_LINE_ENDING)
                 elif self.file_type == "flat":
-                    output_file.write(data_files.flat_row_header(column_name_list,
-                                                                 column_len_list)
+                    output_file.write(flat_row_header(column_name_list, column_len_list)
                                       + FILE_LINE_ENDING)
 
             iterator = 1
             while output_file.tell() < output_file_size or iterator < row_count:
                 if self.file_type == "csv":
-                    row = data_files.csv_row_output(data_file_list, CSV_VALUE_SEPARATOR)
+                    row = csv_row_output(data_file_list, CSV_VALUE_SEPARATOR)
                 elif self.file_type == "flat":
-                    row = data_files.flat_row_output(data_file_list, column_len_list)
+                    row = flat_row_output(data_file_list, column_len_list)
                 output_file.write(row + FILE_LINE_ENDING)
                 iterator = iterator + 1
 
