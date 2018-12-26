@@ -2,22 +2,9 @@
 test units
 """
 from data_files_handler import load_file_to_list, get_data_set
+from lib.utils import replace_multiple
 from lib.flat_writer import flat_row_header, flat_row_output
 from lib.csv_writer import csv_row_header, csv_row_output
-
-
-def replace_multiple(main_string, to_be_replaced, new_string):
-    """
-    helper function to iterate over the strings to be replaced
-    :param main_string:
-    :param to_be_replaced:
-    :param new_string:
-    :return: string with replacements
-    """
-    for elem in to_be_replaced:
-        if elem in main_string:
-            main_string = main_string.replace(elem, new_string)
-    return main_string
 
 
 def test_unit_data_files_handler_load_file_to_list():
@@ -38,7 +25,7 @@ def test_unit_data_files_handler_get_data_set():
     assert output == ['test1', 'test2', 'test3']
 
 
-def test_unit_data_files_handler_flat_row_header():
+def test_unit_flat_writer_flat_row_header():
     """
     unit test flat header
     :return: assert flat header output works as expected
@@ -47,7 +34,7 @@ def test_unit_data_files_handler_flat_row_header():
     assert output == 'test1 test2  test3   '
 
 
-def test_unit_data_files_handler_csv_row_header():
+def test_unit_csv_writer_csv_row_header():
     """
     unit test csv header
     :return: assert csv header output works as expected
@@ -57,7 +44,7 @@ def test_unit_data_files_handler_csv_row_header():
     assert output == 'test1|test2|test3|'
 
 
-def test_unit_data_files_handler_flat_row_output():
+def test_unit_flat_writer_flat_row_output():
     """
     unit test flat row output
     :return: assert flat row output works as expected
@@ -70,7 +57,7 @@ def test_unit_data_files_handler_flat_row_output():
     assert l_output == r_output
 
 
-def test_unit_data_files_handler_csv_row_output():
+def test_unit_csv_writer_csv_row_output():
     """
     unit test csv row output
     :return: assert csv row output works as expected
