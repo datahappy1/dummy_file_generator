@@ -19,7 +19,7 @@ def test_unit_data_files_handler_load_file_to_list():
 def test_unit_data_files_handler_get_data_set():
     """
     unit test get_data_set
-    :return: assert get_data_set return correct output
+    :return: assert get_data_set works as expected
     """
     output = get_data_set('test')
     assert output == ['test1', 'test2', 'test3']
