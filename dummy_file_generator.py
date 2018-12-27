@@ -84,7 +84,7 @@ class DummyFileGenerator:
         column_name_list = self.column_name_list
         column_len_list = self.column_len_list
         data_file_list = self.data_file_list
-        output_file_size = self.file_size  # pylint: disable=no-member
+        output_file_size = self.file_size * 1024  # pylint: disable=no-member
         row_count = self.row_count  # pylint: disable=no-member
         output_file_extension = '.' + self.file_extension
         output_file_name = os.sep.join(['.', self.generated_files_location,  # pylint: disable=no-member
@@ -119,16 +119,18 @@ class DummyFileGenerator:
                 if divmod(iterator, 10000)[1] == 1:
                     logging.info('%s rows written', iterator-1)
 
+            # to get the file_size even when only row_count arg used
+            output_file_size = output_file.tell()
             output_file.close()
 
             execution_end_time = datetime.now()
             duration = (execution_end_time - execution_start_time).seconds
-            duration = str(duration/60) + ' mins' if duration > 1000 else str(duration) + ' secs'
+            duration = str(duration/60) + ' min.' if duration > 1000 else str(duration) + ' sec.'
 
             logging.info('File %s processing finished at %s\n '
                          '%s kB file with %s rows written in %s',
                          output_file_name, execution_end_time,
-                         output_file_size/1024, iterator, duration)
+                         output_file_size / 1024, iterator, duration)
 
     def main(self):
         """

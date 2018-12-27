@@ -17,7 +17,7 @@ def test_performance_csv():
 
     execution_start_time = datetime.now()
 
-    kwargs = {"project_name": "test_csv", "file_name": filename, "file_size": 1048576,
+    kwargs = {"project_name": "test_csv", "file_name": filename, "file_size": 1024,
               "row_count": 0, "generated_files_location": generated_file_path}
 
     obj = dfg(**kwargs)
@@ -43,7 +43,7 @@ def test_performance_flat():
 
     execution_start_time = datetime.now()
 
-    kwargs = {"project_name": "test_flatfile", "file_name": filename, "file_size": 1048576,
+    kwargs = {"project_name": "test_flatfile", "file_name": filename, "file_size": 1024,
               "row_count": 0, "generated_files_location": generated_file_path}
 
     obj = dfg(**kwargs)
