@@ -130,7 +130,7 @@ The project element in your config.json would need to be setup like:
       ]
     }
 
-The output file will be written to a .csv file with the first few rows possibly looking like this:<br />
+The output file will be written to a .csv file with the first few rows looking for example like this:<br />
 ![alt text][csv]
 
 [csv]: https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/csv_demo.PNG "csv"
@@ -163,7 +163,7 @@ The project element in your config.json would need to be setup like:
       ]
     }
 
-The output file will be written to a .txt file with the first few rows possibly looking like this:<br />
+The output file will be written to a .txt file with the first few rows looking for example like this:<br />
 ![alt text][flat]
 
 [flat]: https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/flatfile_demo.PNG "flat"
