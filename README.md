@@ -47,7 +47,19 @@ A permanent solution is to:<br />
 <br />
 <br />
 #### On Linux:<br />
-TODO<br />
+Open your favorite terminal program<br />
+Open the file ~/.bashrc in your text editor – e.g. atom ~/.bashrc<br />
+Add the following line to the end:<br />
+<br />
+`export PYTHONPATH=/home/my_user/code`<br />
+Save the file.<br />
+
+Close your terminal application<br />
+
+Start your terminal application again, to read in the new settings, and type this:<br />
+<br />
+`echo $PYTHONPATH`<br />
+It should show something like /home/my_user/code<br />
 <br />
 
 #### Pytest testing:<br />
