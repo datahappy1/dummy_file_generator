@@ -29,6 +29,7 @@ It consumes arguments defining:
 # How to install and run the program
 ### To install:
 `git clone https://www.github.com/datahappy1/dummy_file_generator dummy_file_generator` <br />
+`cd c:\dummy_file_generator` <br />
 `pip install -r requirements.txt` <br />
 <br />
 #### On Windows:<br />
