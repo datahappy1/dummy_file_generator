@@ -2,14 +2,20 @@
 test performance
 """
 import os.path
+import pytest
 from datetime import datetime
 from dummy_file_generator import DummyFileGenerator as dfg
 
 
-def test_performance_csv():
+@pytest.mark.parametrize(
+    "test_input, test_file_extension, expected_duration", [
+    ("test_csv", ".csv", 1),
+    ("test_flatfile", ".txt", 1)
+    ])
+def test_performance(test_input, test_file_extension, expected_duration):
     """
-    assuming 1MB csv file will get written under 3 seconds
-    alter this referential value based on your HW resources
+    assuming 1MB csv or 1 MB flat text file will get written under 1 second,
+    you can alter the referential value "expected_duration" based on your HW resources
     :return: assertion result
     """
     filename = "test_run_result_performance"
@@ -17,7 +23,7 @@ def test_performance_csv():
 
     execution_start_time = datetime.now()
 
-    kwargs = {"project_name": "test_csv", "file_name": filename, "file_size": 1024,
+    kwargs = {"project_name": test_input, "file_name": filename, "file_size": 1024,
               "row_count": 0, "generated_files_location": generated_file_path}
 
     obj = dfg(**kwargs)
@@ -25,34 +31,7 @@ def test_performance_csv():
 
     execution_end_time = datetime.now()
     duration = (execution_end_time - execution_start_time).seconds
-    duration_threshold = 3
 
-    os.remove(os.sep.join([generated_file_path, 'test_run_result_performance.csv']))
+    os.remove(os.sep.join([generated_file_path, 'test_run_result_performance' + test_file_extension]))
 
-    assert duration < duration_threshold
-
-
-def test_performance_flat():
-    """
-    assuming 1MB flat txt file will get written under 3 seconds
-    alter this referential value based on your HW resources
-    :return: assertion result
-    """
-    filename = "test_run_result_performance"
-    generated_file_path = os.sep.join(['generated_files', 'tests'])
-
-    execution_start_time = datetime.now()
-
-    kwargs = {"project_name": "test_flatfile", "file_name": filename, "file_size": 1024,
-              "row_count": 0, "generated_files_location": generated_file_path}
-
-    obj = dfg(**kwargs)
-    dfg.main(obj)
-
-    execution_end_time = datetime.now()
-    duration = (execution_end_time - execution_start_time).seconds
-    duration_threshold = 3
-
-    os.remove(os.sep.join([generated_file_path, 'test_run_result_performance.txt']))
-
-    assert duration < duration_threshold
+    assert duration < expected_duration
