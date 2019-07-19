@@ -114,7 +114,7 @@ class DummyFileGenerator:
                 elif self.file_type == "flat":
                     row = flat_row_output(data_file_list, column_len_list)
                 output_file.write(row + FILE_LINE_ENDING)
-                iterator = iterator + 1
+                iterator += 1
 
                 if divmod(iterator, 10000)[1] == 1:
                     logging.info('%s rows written', iterator-1)
