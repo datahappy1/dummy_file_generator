@@ -5,10 +5,10 @@ import os.path
 import io
 import logging
 from datetime import datetime
-from lib.flat_writer import flat_row_header, flat_row_output
-from lib.csv_writer import csv_row_header, csv_row_output
-from configurables.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, FILE_LINE_ENDING, \
-    CSV_VALUE_SEPARATOR
+from dummy_file_generator.lib.flat_writer import flat_row_header, flat_row_output
+from dummy_file_generator.lib.csv_writer import csv_row_header, csv_row_output
+from dummy_file_generator.configurables.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
+    FILE_LINE_ENDING, CSV_VALUE_SEPARATOR
 
 
 def args():
