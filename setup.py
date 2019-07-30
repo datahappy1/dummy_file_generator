@@ -7,7 +7,7 @@ setuptools.setup(
     name="dummy-file-generator",
     version="0.0.1",
     author="datahappy1",
-    author_email="p.prudky@seznam.cz",
+    author_email="",
     description="A simplistic dummy flat text/csv file generator",
     long_description=long_description,
     long_description_content_type="text/markdown",
