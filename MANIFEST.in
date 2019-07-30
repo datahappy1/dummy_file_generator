@@ -1,0 +1,1 @@
+recursive-include dummy_file_generator/data_files *
