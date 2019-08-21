@@ -35,5 +35,5 @@ def csv_row_output(columns, csv_value_separator):
         column = column.strip("'")
         value = get_data_set(column)[randint(0, len(get_data_set(column))-1)]
         row.append(value)
-    row = csv_value_separator.join(row) + csv_value_separator
+    row = csv_value_separator.join(row)
     return row

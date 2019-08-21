@@ -1,1 +1,4 @@
-name = "dummy_file_generator"
+"""
+init
+"""
+NAME = "dummy_file_generator"
