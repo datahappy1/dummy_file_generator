@@ -7,11 +7,11 @@ import pytest
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 
 @pytest.mark.parametrize(
-    "test_input, test_file_extension, expected_duration", [
+    "test_project, test_file_extension, expected_duration", [
         ("test_csv", ".csv", 1),
         ("test_flatfile", ".txt", 1)
     ])
-def test_performance(test_input, test_file_extension, expected_duration):
+def test_performance(test_project, test_file_extension, expected_duration):
     """
     assuming 1MB csv or 1 MB flat text file will get written under 1 second,
     you can alter the referential value "expected_duration" based on your HW resources
@@ -22,8 +22,8 @@ def test_performance(test_input, test_file_extension, expected_duration):
 
     execution_start_time = datetime.now()
 
-    kwargs = {"project_name": test_input, "file_size": 1024,
-              "row_count": 0, "absolute_path": generated_file_path}
+    kwargs = {"project_name": test_project, "absolute_path": generated_file_path,
+              "file_size": 1024, "row_count": 0}
 
     obj = Dfg(**kwargs)
     Dfg.main(obj)
