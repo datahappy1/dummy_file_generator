@@ -42,6 +42,7 @@ settings.py will be used
 
 Run these commands to execute:<br />
 - with the -fs argument to set the desired filesize of 256 kB :<br />
+`cd dummy_file_generator`<br />
 `python c:\dummy_file_generator\__main__.py -pn dummy1 -ap c:\myfiles\dummy1file.csv -fs 256`<br />
 - with the -rc argument to set the desired rowcount of 1000 rows :<br />
 `cd dummy_file_generator`<br />
