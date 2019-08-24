@@ -19,34 +19,38 @@ It consumes arguments defining:
 
 # How to install and run the program
 ### To install:
-`git clone dummy_file_generator c:\dummy_file_generator\`<br />
-and set `PYTHONPATH` to this folder
+`git clone git clone https://github.com/datahappy1/dummy_file_generator c:\dummy_file_generator\`<br />
+
+`cd c:\dummy_file_generator\dummy_file_generator`
+
+You can also set the `PYTHONPATH` to the folder `c:\dummy_file_generator`
 
 #### Pytest testing:<br />
 Pytest unit and performance tests are also a part of this tool.
 You can install Pytest with `pip install pytest`<br /> 
+To run tests:<br />
+`cd c:\dummy_file_generator\dummy_file_generator`<br />
+`pytest`<br />
 
 ### To run:<br />
 You need to set the required arguments :
-
-projectname -pn <br />
-absolutepath -ap <br />
+projectname `-pn` <br />
+absolutepath `-ap` <br />
 
 The optional arguments are :
-
-filesize -fs (in kB) <br />
-rowcount -rc <br />
+filesize `-fs` (in kB) <br />
+rowcount `-rc` <br />
 
 *Note if you do NOT specify the filesize and do NOT specify the rowcount, the default row_count value ( set to 100 ) from
 settings.py will be used
 
 Run these commands to execute:<br />
 - with the -fs argument to set the desired filesize of 256 kB :<br />
-`cd dummy_file_generator`<br />
-`python c:\dummy_file_generator\__main__.py -pn dummy1 -ap c:\myfiles\dummy1file.csv -fs 256`<br />
+`cd c:\dummy_file_generator\dummy_file_generator`<br />
+`python c:\dummy_file_generator\dummy_file_generator\__main__.py -pn dummy1 -ap c:\myfiles\dummy1file.csv -fs 256`<br />
 - with the -rc argument to set the desired rowcount of 1000 rows :<br />
-`cd dummy_file_generator`<br />
-`python c:\dummy_file_generator\__main__.py -pn dummy1 -ap c:\myfiles\dummy1file.csv -rc 1000`<br />
+`cd c:\dummy_file_generator\dummy_file_generator`<br />
+`python c:\dummy_file_generator\dummy_file_generator\__main__.py -pn dummy1 -ap c:\myfiles\dummy1file.csv -rc 1000`<br />
 
 *You are strongly encouraged to use Python virtual environment
 
