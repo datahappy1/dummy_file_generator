@@ -19,11 +19,9 @@ It consumes arguments defining:
 
 # How to install and run the program
 ### To install:
-`git clone git clone https://github.com/datahappy1/dummy_file_generator c:\dummy_file_generator\`<br />
+`git clone https://github.com/datahappy1/dummy_file_generator c:\dummy_file_generator\`<br />
 
 `cd c:\dummy_file_generator\dummy_file_generator`
-
-You can also set the `PYTHONPATH` to the folder `c:\dummy_file_generator`
 
 #### Pytest testing:<br />
 Pytest unit and performance tests are also a part of this tool.
