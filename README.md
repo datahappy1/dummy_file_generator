@@ -22,7 +22,7 @@ It consumes arguments defining:
 `pip install dummy_file_generator`
 
 #### Pytest testing:<br />
-Pytest (version 3.9.1) unit and performance tests are also a part of this tool.
+Pytest unit and performance tests are also a part of this tool.
 Install Pytest with `pip install pytest`<br /> 
 
 ### To run:<br />
