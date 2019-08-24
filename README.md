@@ -19,11 +19,12 @@ It consumes arguments defining:
 
 # How to install and run the program
 ### To install:
-`pip install dummy_file_generator`
+`git clone dummy_file_generator c:\dummy_file_generator\`<br />
+and set `PYTHONPATH` to this folder
 
 #### Pytest testing:<br />
 Pytest unit and performance tests are also a part of this tool.
-Install Pytest with `pip install pytest`<br /> 
+You can install Pytest with `pip install pytest`<br /> 
 
 ### To run:<br />
 You need to set the required arguments :
@@ -41,20 +42,13 @@ settings.py will be used
 
 Run these commands to execute:<br />
 - with the -fs argument to set the desired filesize of 256 kB :<br />
+`cd dummy_file_generator`<br />
 `python c:\dummy_file_generator\__main__.py -pn dummy1 -ap c:\myfiles\dummy1file.csv -fs 256`<br />
 - with the -rc argument to set the desired rowcount of 1000 rows :<br />
 `cd dummy_file_generator`<br />
 `python c:\dummy_file_generator\__main__.py -pn dummy1 -ap c:\myfiles\dummy1file.csv -rc 1000`<br />
 
-*You are strongly encouraged to use Python virtual environment, for example on Windows:<br />
-1: install virtualenv: `pip install virtualenv`<br />
-2: switch dir context: `cd c:\dummy_file_generator`<br />
-3: spin up the virtual env: `python -m virtualenv dfg`<br />
-4: switch dir context and activate: `cd dfg/Scripts` and run `activate.bat`<br />
-5: install the dummy_file_generator tool from pip: `python -m pip install --index-url https://pypi.org/simple/ --no-deps dummy_file_generator`<br />
-6: run pytest: `(dfg) c:\dummy_file_generator\dfg\Lib\site-packages\dummy_file_generator>pytest`<br />
-7: run the tool to generate a dummy file: `(dfg) c:\dummy_file_generator\dfg\Lib\site-packages\dummy_file_generator>__main__.py -pn dummy1 -ap c:\myfiles\dummy1file.csv -fs 256`<br />
-8: once finished, deactivate the virtual env: `deactivate.bat`<br />
+*You are strongly encouraged to use Python virtual environment
 
 # How to setup a new dummy file generator project
 
