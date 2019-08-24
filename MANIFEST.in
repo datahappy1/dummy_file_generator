@@ -1,0 +1,2 @@
+include dummy_file_generator/data_files/*.txt
+include dummy_file_generator/configurables/*.json

@@ -1,10 +1,10 @@
 """
 test units
 """
-from data_files_handler import load_file_to_list, get_data_set
-from lib.utils import replace_multiple
-from lib.flat_writer import flat_row_header, flat_row_output
-from lib.csv_writer import csv_row_header, csv_row_output
+from dummy_file_generator.data_files_handler import load_file_to_list, get_data_set
+from dummy_file_generator.lib.utils import replace_multiple
+from dummy_file_generator.lib.flat_writer import flat_row_header, flat_row_output
+from dummy_file_generator.lib.csv_writer import csv_row_header, csv_row_output
 
 
 def test_unit_data_files_handler_load_file_to_list():
@@ -66,6 +66,6 @@ def test_unit_csv_writer_csv_row_output():
     l_output = csv_row_output('test, test, test', csv_row_separator)
     l_output = replace_multiple(l_output, '123', '')
 
-    r_output = replace_multiple('test1|test2|test3|', '123', '')
+    r_output = replace_multiple('test1|test2|test3', '123', '')
 
     assert l_output == r_output
