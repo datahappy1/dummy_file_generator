@@ -3,7 +3,6 @@
         {
             "project_name":"test_csv",
             "file_type":"csv",
-            "file_extension":"csv",
             "header":true,
             "columns":[
                 {
@@ -23,7 +22,6 @@
         {
             "project_name":"test_flatfile",
             "file_type":"flat",
-            "file_extension":"txt",
             "header":true,
             "columns":[
                 {
@@ -46,7 +44,6 @@
         {
             "project_name":"dummy1",
             "file_type":"csv",
-            "file_extension":"csv",
             "header":true,
             "columns":[
                 {
@@ -66,7 +63,6 @@
         {
             "project_name":"dummy2",
             "file_type":"flat",
-            "file_extension":"txt",
             "header":true,
             "columns":[
                 {

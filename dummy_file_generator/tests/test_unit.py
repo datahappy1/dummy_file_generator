@@ -66,6 +66,6 @@ def test_unit_csv_writer_csv_row_output():
     l_output = csv_row_output('test, test, test', csv_row_separator)
     l_output = replace_multiple(l_output, '123', '')
 
-    r_output = replace_multiple('test1|test2|test3|', '123', '')
+    r_output = replace_multiple('test1|test2|test3', '123', '')
 
     assert l_output == r_output
