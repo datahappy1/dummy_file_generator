@@ -3,12 +3,13 @@ dummy csv or flat text files generator written in Python 3.7
 
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/rating.svg)
 
-     |                                    _|_) |                                          |<br />
-  _` | |   | __ `__ \  __ `__ \  |   |   |   | |  _ \      _` |  _ \ __ \   _ \  __| _` | __|  _ \   __|<br />
- (   | |   | |   |   | |   |   | |   |   __| | |  __/     (   |  __/ |   |  __/ |   (   | |   (   | |<br />
-\__,_|\__,_|_|  _|  _|_|  _|  _|\__, |  _|  _|_|\___|    \__, |\___|_|  _|\___|_|  \__,_|\__|\___/ _|<br />
-                                ____/_____|        _____||___/<br />
-<br />
+`
+     |                                    _|_) |                                          |
+  _` | |   | __ `__ \  __ `__ \  |   |   |   | |  _ \      _` |  _ \ __ \   _ \  __| _` | __|  _ \   __|
+ (   | |   | |   |   | |   |   | |   |   __| | |  __/     (   |  __/ |   |  __/ |   (   | |   (   | |
+\__,_|\__,_|_|  _|  _|_|  _|  _|\__, |  _|  _|_|\___|    \__, |\___|_|  _|\___|_|  \__,_|\__|\___/ _|
+                                ____/_____|        _____||___/
+`
 
 This tool is able to generate dummy csv or flat txt files based on the configuration settings you setup for your project(s).
 It consumes arguments defining: 
