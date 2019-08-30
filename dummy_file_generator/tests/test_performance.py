@@ -13,7 +13,7 @@ from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
     ])
 def test_performance(test_project, test_file_extension, expected_duration):
     """
-    assuming 1MB csv or 1 MB flat text file will get written under 1 second,
+    assuming 1MB csv or 1 MB flat text file will get written under 1 or in 1 second,
     you can alter the referential value "expected_duration" based on your HW resources
     :return: assertion result
     """
@@ -33,4 +33,4 @@ def test_performance(test_project, test_file_extension, expected_duration):
 
     os.remove(generated_file_path)
 
-    assert duration < expected_duration
+    assert duration <= expected_duration
