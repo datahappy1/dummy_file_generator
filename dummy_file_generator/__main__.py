@@ -32,24 +32,31 @@ class DummyFileGenerator:
         :return:
         """
         project_name = self.project_name  # pylint: disable=no-member
-        config_path = os.sep.join([os.path.join(os.path.dirname(__file__)),
-                                   'configurables', 'config.json'])
 
-        with open(config_path) as file:
-            data = json.load(file)
+        try:
+            if self.config_json:
+                data = json.load(self.config_json)  # pylint: disable=no-member
 
-            for project in data['project']:
-                if project['project_name'] == project_name:
-                    self.header = project['header']
-                    self.file_type = project['file_type']
-                    for column in project['columns']:
-                        self.column_name_list.append(column['column_name'])
-                        self.data_file_list.append(str(column['datafile']).replace('.txt', ''))
-                        if self.file_type == "flat":
-                            self.column_len_list.append(column['column_len'])
-                    break
-            else:
-                raise ValueError("No such project found in config.json")
+        except AttributeError:
+            config_path = os.sep.join([os.path.join(os.path.dirname(__file__)),
+                                       'configurables', 'config.json'])
+            with open(config_path) as file:
+                data = json.load(file)
+
+        for project in data['project']:
+            if project['project_name'] == project_name:
+                self.header = project['header']
+                self.file_type = project['file_type']
+                for column in project['columns']:
+                    self.column_name_list.append(column['column_name'])
+                    self.data_file_list.append(str(column['datafile']).replace('.txt', ''))
+                    if self.file_type == "flat":
+                        self.column_len_list.append(column['column_len'])
+                break
+        else:
+            _message=('No such project as %s found in config.json', project_name)
+            logging.error(_message)
+            raise ValueError(_message)
 
     def write_output(self):
         """
@@ -113,7 +120,7 @@ class DummyFileGenerator:
         :return:
         """
         # set logging levels for main function console output
-        logging.getLogger().setLevel(logging.INFO)
+        logging.getLogger().setLevel(self.logging_level) # pylint: disable=no-member
 
         DummyFileGenerator.read_config(self)
         DummyFileGenerator.write_output(self)
@@ -129,8 +136,10 @@ def args():
     parser.add_argument('-ap', '--absolutepath', type=str, required=True)
     parser.add_argument('-fs', '--filesize', type=int, required=False, default=0)
     parser.add_argument('-rc', '--rowcount', type=int, required=False, default=0)
+    parser.add_argument('-ll', '--loglevel', type=str, required=False, default="INFO")
 
-    parser.add_argument('-cjl', '--config_json_location', type=str, required=False, default=None)
+    parser.add_argument('-cjn', '--config_json', type=str, required=False, default=None)
+    parser.add_argument('-dfp', '--data_files_path', type=str, required=False, default=None)
     parser.add_argument('-drc', '--default_rowcount', type=int, required=False, default=100)
     parser.add_argument('-fen', '--file_encoding', type=str, required=False, default="utf8")
     parser.add_argument('-fle', '--file_line_ending', type=str, required=False, default="\n")
@@ -142,8 +151,10 @@ def args():
     file_size = parsed.filesize
     row_count = parsed.rowcount
     absolute_path = parsed.absolutepath
+    logging_level = parsed.loglevel
 
-    config_json_location = parsed.config_json_location
+    config_json = parsed.config_json
+    data_files_path = parsed.data_files_path
     default_rowcount = parsed.default_rowcount
     file_encoding = parsed.file_encoding
     file_line_ending = parsed.file_line_ending
@@ -151,11 +162,13 @@ def args():
 
     kwargs = {"project_name": project_name, "absolute_path": absolute_path,
               "file_size": file_size, "row_count": row_count,
-              "config_json_location": config_json_location,
-              "settings_override":{"default_rowcount": default_rowcount,
-                                   "file_encoding": file_encoding,
-                                   "file_line_ending": file_line_ending,
-                                   "csv_value_separator": csv_value_separator}
+              "logging_level": logging_level,
+              "library_override":{"config_json_location": config_json,
+                                  "data_files_path": data_files_path,
+                                  "default_rowcount": default_rowcount,
+                                  "file_encoding": file_encoding,
+                                  "file_line_ending": file_line_ending,
+                                  "csv_value_separator": csv_value_separator}
               }
 
     return kwargs

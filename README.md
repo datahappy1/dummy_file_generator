@@ -3,13 +3,8 @@ dummy csv or flat text files generator written in Python 3.7
 
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/rating.svg)
 
-```bash
-     |                                    _|_) |                                          |
-  _` | |   | __ `__ \  __ `__ \  |   |   |   | |  _ \      _` |  _ \ __ \   _ \  __| _` | __|  _ \   __|
- (   | |   | |   |   | |   |   | |   |   __| | |  __/     (   |  __/ |   |  __/ |   (   | |   (   | |
-\__,_|\__,_|_|  _|  _|_|  _|  _|\__, |  _|  _|_|\___|    \__, |\___|_|  _|\___|_|  \__,_|\__|\___/ _|
-                                ____/_____|        _____||___/
-```
+![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/dfg_logo.PNG)
+
 
 This tool is able to generate dummy csv or flat txt files based on the configuration settings you setup for your project(s).
 It consumes arguments defining: 
