@@ -1,5 +1,7 @@
 """ data files handler module """
 import os
+from os import listdir
+from os.path import isfile, join
 
 
 def load_file_to_list(data_set_name, data_files_path=None):
@@ -19,16 +21,15 @@ def load_file_to_list(data_set_name, data_files_path=None):
     return data_set.read().split("\n")
 
 
-class DataSets:
+data_files = [f for f in listdir("C:\dummy_file_generator\dummy_file_generator\data_files")
+              if isfile(join("C:\dummy_file_generator\dummy_file_generator\data_files", f)) and
+              str(f).endswith('.txt')]
+
+class DataSets():
     """
     class for data sets handling
     """
-    test = load_file_to_list('test.txt')
-    ids = load_file_to_list('ids.txt')
-    first_names = load_file_to_list('first_names.txt')
-    last_names = load_file_to_list('last_names.txt')
-    dates = load_file_to_list('dates.txt')
-
+    pass
 
 def get_data_set(data_set_name):
     """
@@ -37,4 +38,8 @@ def get_data_set(data_set_name):
     :return: data_set
     """
     data_set = DataSets()
+
+    for data_file in data_files:
+        setattr(data_set, data_file.replace('.txt', ''), load_file_to_list(data_file))
+
     return getattr(data_set, data_set_name)

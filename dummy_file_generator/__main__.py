@@ -139,7 +139,6 @@ def args():
     parser.add_argument('-ll', '--loglevel', type=str, required=False, default="INFO")
 
     parser.add_argument('-cjn', '--config_json', type=str, required=False, default=None)
-    parser.add_argument('-dfp', '--data_files_path', type=str, required=False, default=None)
     parser.add_argument('-drc', '--default_rowcount', type=int, required=False, default=100)
     parser.add_argument('-fen', '--file_encoding', type=str, required=False, default="utf8")
     parser.add_argument('-fle', '--file_line_ending', type=str, required=False, default="\n")
@@ -154,7 +153,6 @@ def args():
     logging_level = parsed.loglevel
 
     config_json = parsed.config_json
-    data_files_path = parsed.data_files_path
     default_rowcount = parsed.default_rowcount
     file_encoding = parsed.file_encoding
     file_line_ending = parsed.file_line_ending
@@ -164,7 +162,6 @@ def args():
               "file_size": file_size, "row_count": row_count,
               "logging_level": logging_level,
               "library_override":{"config_json_location": config_json,
-                                  "data_files_path": data_files_path,
                                   "default_rowcount": default_rowcount,
                                   "file_encoding": file_encoding,
                                   "file_line_ending": file_line_ending,
