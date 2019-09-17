@@ -10,7 +10,7 @@ from os.path import isfile, join
 from random import randint
 from datetime import datetime
 
-from dummy_file_generator.lib.utils import list_to_str, whitespace_generator
+from dummy_file_generator.lib.utils import list_to_str, whitespace_generator, load_file_to_list
 from dummy_file_generator.configurables.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, CSV_VALUE_SEPARATOR
 
@@ -18,32 +18,24 @@ DATA_FILES_PATH = "C:\dummy_file_generator\dummy_file_generator\data_files"
 DATA_FILES = [f for f in listdir(DATA_FILES_PATH) if isfile(join(DATA_FILES_PATH, f)) and str(f).endswith('.txt')]
 
 
-def load_file_to_list(data_set_name, data_files_path=None):
+class DummyFileGenerator:
     """
-    load a data file from disk and return as list
-    :param data_set_name:
-    :param data_files_path:
-    :return: list
+    main project class
     """
-    if data_files_path:
-        data_files_dir_path = os.path.join(data_files_path)
-    else:
-        data_file_path = os.path.dirname(__file__)
-        data_files_dir_path = os.path.join(data_file_path, 'data_files')
 
-    data_set = open(str(data_files_dir_path) + os.sep + data_set_name)
-    return data_set.read().split("\n")
+    def __init__(self, **kwargs):
+        self.column_name_list = []
+        self.column_len_list = []
+        self.data_file_list = []
+        self.header = None
+        self.file_type = None
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
+        for data_file in DATA_FILES:
+            setattr(self, data_file.replace('.txt', ''),load_file_to_list(data_file, data_files_path=DATA_FILES_PATH))
 
-class DataSets():
-    """
-    class for data sets handling
-    """
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def csv_row_header(columns, csv_value_separator):
+    def csv_row_header(self, columns, csv_value_separator):
         """
         csv row header
         :param columns:
@@ -59,8 +51,7 @@ class DataSets():
         header_row = csv_value_separator.join(header_row) + csv_value_separator
         return header_row
 
-    @staticmethod
-    def csv_row_output(columns, csv_value_separator):
+    def csv_row_output(self, columns, csv_value_separator):
         """
         function for generating csv output data row
         :param columns:
@@ -72,13 +63,12 @@ class DataSets():
 
         for column in columns:
             column = column.strip("'")
-            value = DummyFileGenerator.get_data_set(column)[randint(0, len(DummyFileGenerator.get_data_set(column))-1)]
+            value = DummyFileGenerator.__getattribute__(self, column)[randint(0, len(DummyFileGenerator.__getattribute__(self, column))-1)]
             row.append(value)
         row = csv_value_separator.join(row)
         return row
 
-    @staticmethod
-    def flat_row_header(columns, column_lengths):
+    def flat_row_header(self, columns, column_lengths):
         """
         flat row header
         :param columns:
@@ -96,8 +86,7 @@ class DataSets():
         header_row = "".join(header_row)
         return header_row
 
-    @staticmethod
-    def flat_row_output(columns, column_lengths):
+    def flat_row_output(self, columns, column_lengths):
         """
         function for generating flat output data row
         :param columns:
@@ -111,43 +100,11 @@ class DataSets():
         for index, column in enumerate(columns):
             column = column.strip("'")
             whitespace = int(column_lengths[index])
-            value = DummyFileGenerator.get_data_set(column)[randint(0, len(DummyFileGenerator.get_data_set(column))-1)]
+            value = DummyFileGenerator.__getattribute__(self, column)[randint(0, len(DummyFileGenerator.__getattribute__(self, column))-1)]
             value = value + whitespace_generator(whitespace - len(value))
             row.append(value)
         row = ''.join(row)
         return row
-
-
-class DummyFileGenerator:
-    """
-    main project class
-    """
-
-    def __init__(self, **kwargs):
-        self.column_name_list = []
-        self.column_len_list = []
-        self.data_file_list = []
-        self.header = None
-        self.file_type = None
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-    class D:
-        pass
-
-    def get_data_set(data_set_name):
-        """
-        function for dynamic data_set list retrieval
-        :param data_set_name:
-        :return: data_set
-        """
-        data_set = DummyFileGenerator.D()
-
-        for data_file in DATA_FILES:
-            setattr(data_set, data_file.replace('.txt', ''),
-                    load_file_to_list(data_file, data_files_path=DATA_FILES_PATH))
-
-        return getattr(data_set, data_set_name)
 
     def read_config(self):
         """
@@ -206,18 +163,18 @@ class DummyFileGenerator:
 
             if bool(self.header):
                 if self.file_type == "csv":
-                    output_file.write(DataSets.csv_row_header( column_name_list, CSV_VALUE_SEPARATOR)
+                    output_file.write(self.csv_row_header( column_name_list, CSV_VALUE_SEPARATOR)
                                       + FILE_LINE_ENDING)
                 elif self.file_type == "flat":
-                    output_file.write(DataSets.flat_row_header( column_name_list, column_len_list)
+                    output_file.write(self.flat_row_header( column_name_list, column_len_list)
                                       + FILE_LINE_ENDING)
 
             iterator = 1
             while output_file.tell() < output_file_size or iterator < row_count:
                 if self.file_type == "csv":
-                    row = DataSets.csv_row_output(data_file_list, CSV_VALUE_SEPARATOR)
+                    row = self.csv_row_output(data_file_list, CSV_VALUE_SEPARATOR)
                 elif self.file_type == "flat":
-                    row = DataSets.flat_row_output( data_file_list, column_len_list)
+                    row = self.flat_row_output( data_file_list, column_len_list)
                 output_file.write(row + FILE_LINE_ENDING)
                 iterator += 1
 

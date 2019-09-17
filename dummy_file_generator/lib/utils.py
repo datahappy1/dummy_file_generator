@@ -1,5 +1,5 @@
 """ general utilities library """
-
+import os
 
 def whitespace_generator(i):
     """
@@ -18,6 +18,23 @@ def list_to_str(columns):
     """
     columns = str(columns).strip('[]').split(', ')
     return columns
+
+
+def load_file_to_list(data_set_name, data_files_path=None):
+    """
+    load a data file from disk and return as list
+    :param data_set_name:
+    :param data_files_path:
+    :return: list
+    """
+    if data_files_path:
+        data_files_dir_path = os.path.join(data_files_path)
+    else:
+        data_file_path = os.path.dirname(__file__)
+        data_files_dir_path = os.path.join(data_file_path, 'data_files')
+
+    data_set = open(str(data_files_dir_path) + os.sep + data_set_name)
+    return data_set.read().split("\n")
 
 
 def replace_multiple(main_string, to_be_replaced, new_string):
