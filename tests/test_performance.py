@@ -23,7 +23,7 @@ def test_performance(test_project, test_file_extension, expected_duration):
     execution_start_time = datetime.now()
 
     kwargs = {"project_name": test_project, "absolute_path": generated_file_path,
-              "file_size": 1024, "row_count": 0}
+              "file_size": 1024, "row_count": 0, "logging_level": "INFO"}
 
     obj = Dfg(**kwargs)
     Dfg.main(obj)
