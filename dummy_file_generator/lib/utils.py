@@ -11,9 +11,9 @@ def whitespace_generator(i) -> str:
     return int(i) * ' '
 
 
-def list_to_list_of_str(columns) -> list:
+def add_quotes_to_list_items(columns) -> list:
     """
-    list to list of str function
+    list to quoted item list function
     :param columns: list
     :return: list of strings
     """
