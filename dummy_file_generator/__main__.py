@@ -14,26 +14,28 @@ from dummy_file_generator.lib.utils import list_to_str, whitespace_generator, lo
 from dummy_file_generator.configurables.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, CSV_VALUE_SEPARATOR
 
-DATA_FILES_PATH = "C:\dummy_file_generator\dummy_file_generator\data_files"
-DATA_FILES = [f for f in listdir(DATA_FILES_PATH) if isfile(join(DATA_FILES_PATH, f)) and str(f).endswith('.txt')]
-
 
 class DummyFileGenerator:
     """
     main project class
     """
-
-    def __init__(self, **kwargs):
+    def __init__(self, data_files_location,**kwargs):
         self.column_name_list = []
         self.column_len_list = []
         self.data_file_list = []
         self.header = None
         self.file_type = None
+        self.data_files_location = data_files_location
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+        DATA_FILES = [f for f in listdir(self.data_files_location) if
+                      isfile(join(self.data_files_location, f)) and str(f).endswith('.txt')]
+
         for data_file in DATA_FILES:
-            setattr(self, data_file.replace('.txt', ''),load_file_to_list(data_file, data_files_path=DATA_FILES_PATH))
+            setattr(self, data_file.replace('.txt', ''),
+                    load_file_to_list(data_file, data_files_location=self.data_files_location))
+
 
     def csv_row_header(self, columns, csv_value_separator):
         """
@@ -63,7 +65,8 @@ class DummyFileGenerator:
 
         for column in columns:
             column = column.strip("'")
-            value = DummyFileGenerator.__getattribute__(self, column)[randint(0, len(DummyFileGenerator.__getattribute__(self, column))-1)]
+            _val = DummyFileGenerator.__getattribute__(self, column)
+            value = _val[randint(0, len(_val)-1)]
             row.append(value)
         row = csv_value_separator.join(row)
         return row
@@ -100,7 +103,8 @@ class DummyFileGenerator:
         for index, column in enumerate(columns):
             column = column.strip("'")
             whitespace = int(column_lengths[index])
-            value = DummyFileGenerator.__getattribute__(self, column)[randint(0, len(DummyFileGenerator.__getattribute__(self, column))-1)]
+            _val = DummyFileGenerator.__getattribute__(self, column)
+            value = _val[randint(0, len(_val)-1)]
             value = value + whitespace_generator(whitespace - len(value))
             row.append(value)
         row = ''.join(row)
@@ -219,6 +223,8 @@ def args():
     parser.add_argument('-ll', '--loglevel', type=str, required=False, default="INFO")
 
     parser.add_argument('-cjn', '--config_json', type=str, required=False, default=None)
+    parser.add_argument('-dfl', '--data_files_location', type=str, required=False,
+                        default=os.sep.join((os.getcwd(),'data_files')))
     parser.add_argument('-drc', '--default_rowcount', type=int, required=False, default=100)
     parser.add_argument('-fen', '--file_encoding', type=str, required=False, default="utf8")
     parser.add_argument('-fle', '--file_line_ending', type=str, required=False, default="\n")
@@ -231,6 +237,7 @@ def args():
     row_count = parsed.rowcount
     absolute_path = parsed.absolutepath
     logging_level = parsed.loglevel
+    data_files_location = parsed.data_files_location
 
     config_json = parsed.config_json
     default_rowcount = parsed.default_rowcount
@@ -241,6 +248,7 @@ def args():
     kwargs = {"project_name": project_name, "absolute_path": absolute_path,
               "file_size": file_size, "row_count": row_count,
               "logging_level": logging_level,
+              "data_files_location": data_files_location,
               "library_override":{"config_json_location": config_json,
                                   "default_rowcount": default_rowcount,
                                   "file_encoding": file_encoding,

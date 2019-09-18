@@ -1,7 +1,8 @@
 """ general utilities library """
 import os
+from dummy_file_generator.configurables.settings import FILE_LINE_ENDING
 
-def whitespace_generator(i):
+def whitespace_generator(i) -> str:
     """
     whitespaces generator function
     :param i:
@@ -10,7 +11,8 @@ def whitespace_generator(i):
     return int(i) * ' '
 
 
-def list_to_str(columns):
+def list_to_str(columns) -> list:
+    #TODO rename,not list to str as it returns list
     """
     list to str function
     :param columns: list
@@ -20,24 +22,20 @@ def list_to_str(columns):
     return columns
 
 
-def load_file_to_list(data_set_name, data_files_path=None):
+def load_file_to_list(data_set_name, data_files_location) -> list:
     """
-    load a data file from disk and return as list
+    load a data file from disk and return as a list
     :param data_set_name:
-    :param data_files_path:
+    :param data_files_location:
     :return: list
     """
-    if data_files_path:
-        data_files_dir_path = os.path.join(data_files_path)
-    else:
-        data_file_path = os.path.dirname(__file__)
-        data_files_dir_path = os.path.join(data_file_path, 'data_files')
-
-    data_set = open(str(data_files_dir_path) + os.sep + data_set_name)
-    return data_set.read().split("\n")
+    data_files_dir_path = os.path.join(data_files_location)
+    data_set = open(os.sep.join((str(data_files_dir_path),data_set_name)))
+    data_set = data_set.read().split(FILE_LINE_ENDING)
+    return data_set
 
 
-def replace_multiple(main_string, to_be_replaced, new_string):
+def replace_multiple(main_string, to_be_replaced, new_string) -> str:
     """
     helper function to iterate over the strings to be replaced
     :param main_string:

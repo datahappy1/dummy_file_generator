@@ -18,6 +18,7 @@ def test_performance(test_project, test_file_extension, expected_duration):
     :return: assertion result
     """
     filename = "test_run_result_performance" + test_file_extension
+    data_files_location = "C:\dummy_file_generator\dummy_file_generator\data_files"
     generated_file_path = os.sep.join(['generated_files', 'tests', filename])
 
     execution_start_time = datetime.now()
@@ -25,7 +26,7 @@ def test_performance(test_project, test_file_extension, expected_duration):
     kwargs = {"project_name": test_project, "absolute_path": generated_file_path,
               "file_size": 1024, "row_count": 0, "logging_level": "INFO"}
 
-    obj = Dfg(**kwargs)
+    obj = Dfg(data_files_location=data_files_location ,**kwargs)
     Dfg.main(obj)
 
     execution_end_time = datetime.now()
