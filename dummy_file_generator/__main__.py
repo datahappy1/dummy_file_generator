@@ -10,7 +10,7 @@ from os.path import isfile, join
 from random import randint
 from datetime import datetime
 
-from dummy_file_generator.lib.utils import list_to_str, whitespace_generator, load_file_to_list
+from dummy_file_generator.lib.utils import list_to_list_of_str, whitespace_generator, load_file_to_list
 from dummy_file_generator.configurables.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, CSV_VALUE_SEPARATOR
 
@@ -44,7 +44,7 @@ class DummyFileGenerator:
         :param csv_value_separator:
         :return: csv row header
         """
-        columns = list_to_str(columns)
+        columns = list_to_list_of_str(columns)
         header_row = []
 
         for column in columns:
@@ -60,7 +60,7 @@ class DummyFileGenerator:
         :param csv_value_separator:
         :return: output csv data row
         """
-        columns = list_to_str(columns)
+        columns = list_to_list_of_str(columns)
         row = []
 
         for column in columns:
@@ -96,8 +96,8 @@ class DummyFileGenerator:
         :param column_lengths:
         :return: output flat data row
         """
-        columns = list_to_str(columns)
-        column_lengths = list_to_str(column_lengths)
+        columns = list_to_list_of_str(columns)
+        column_lengths = list_to_list_of_str(column_lengths)
         row = []
 
         for index, column in enumerate(columns):

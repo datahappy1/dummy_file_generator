@@ -11,12 +11,11 @@ def whitespace_generator(i) -> str:
     return int(i) * ' '
 
 
-def list_to_str(columns) -> list:
-    #TODO rename,not list to str as it returns list
+def list_to_list_of_str(columns) -> list:
     """
-    list to str function
+    list to list of str function
     :param columns: list
-    :return: string
+    :return: list of strings
     """
     columns = str(columns).strip('[]').split(', ')
     return columns
