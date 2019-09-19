@@ -29,7 +29,7 @@ def test_performance(test_project, test_file_extension, expected_duration):
               "file_size": 1024, "row_count": 0, "logging_level": "INFO"}
 
     obj = Dfg(data_files_location=DATA_FILES_LOCATION ,**kwargs)
-    Dfg.main(obj)
+    Dfg.executor(obj)
 
     execution_end_time = datetime.now()
     duration = (execution_end_time - execution_start_time).seconds

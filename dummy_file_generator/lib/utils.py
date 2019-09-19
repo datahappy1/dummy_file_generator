@@ -2,6 +2,9 @@
 import os
 from dummy_file_generator.configurables.settings import FILE_LINE_ENDING
 
+class CustomException(Exception):
+    pass
+
 def whitespace_generator(i) -> str:
     """
     whitespaces generator function

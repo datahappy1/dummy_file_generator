@@ -10,7 +10,8 @@ from os.path import isfile, join
 from random import randint
 from datetime import datetime
 
-from dummy_file_generator.lib.utils import add_quotes_to_list_items, whitespace_generator, load_file_to_list
+from dummy_file_generator.lib.utils import CustomException, add_quotes_to_list_items, \
+    whitespace_generator, load_file_to_list
 from dummy_file_generator.configurables.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, CSV_VALUE_SEPARATOR
 
@@ -19,25 +20,25 @@ class DummyFileGenerator:
     """
     main project class
     """
-    def __init__(self, data_files_location,**kwargs):
+
+    def __init__(self, **kwargs):
         self.column_name_list = []
         self.column_len_list = []
         self.data_file_list = []
         self.header = None
         self.file_type = None
-        self.data_files_location = data_files_location
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-        DATA_FILES = [f for f in listdir(self.data_files_location) if
+        data_files = [f for f in listdir(self.data_files_location) if
                       isfile(join(self.data_files_location, f)) and str(f).endswith('.txt')]
 
-        for data_file in DATA_FILES:
+        for data_file in data_files:
             setattr(self, data_file.replace('.txt', ''),
                     load_file_to_list(data_file, data_files_location=self.data_files_location))
 
-
-    def csv_row_header(self, columns, csv_value_separator):
+    @staticmethod
+    def csv_row_header(columns, csv_value_separator):
         """
         csv row header
         :param columns:
@@ -53,6 +54,27 @@ class DummyFileGenerator:
         header_row = csv_value_separator.join(header_row) + csv_value_separator
         return header_row
 
+
+    @staticmethod
+    def flat_row_header(columns, column_lengths):
+        """
+        flat row header
+        :param columns:
+        :param column_lengths:
+        :return: flat row header
+        """
+        header_row = []
+
+        for i, j in zip(columns, column_lengths):
+            if len(i) > j:
+                raise CustomException("Header value for %s is longer then expected column length "
+                                      "set in config.json file (%s)!", i, j)
+            else:
+                header_row.append(str(i) + whitespace_generator(j - len(i)))
+        header_row = "".join(header_row)
+        return header_row
+
+
     def csv_row_output(self, columns, csv_value_separator):
         """
         function for generating csv output data row
@@ -66,28 +88,10 @@ class DummyFileGenerator:
         for column in columns:
             column = column.strip("'")
             _val = DummyFileGenerator.__getattribute__(self, column)
-            value = _val[randint(0, len(_val)-1)]
+            value = _val[randint(0, len(_val) - 1)]
             row.append(value)
         row = csv_value_separator.join(row)
         return row
-
-    def flat_row_header(self, columns, column_lengths):
-        """
-        flat row header
-        :param columns:
-        :param column_lengths:
-        :return: flat row header
-        """
-        header_row = []
-
-        for i, j in zip(columns, column_lengths):
-            if len(i) > j:
-                logging.error('Header value for %s is longer then expected column length '
-                              'set in config.json file (%s)!', i, j)
-            else:
-                header_row.append(str(i) + whitespace_generator(j - len(i)))
-        header_row = "".join(header_row)
-        return header_row
 
     def flat_row_output(self, columns, column_lengths):
         """
@@ -104,7 +108,7 @@ class DummyFileGenerator:
             column = column.strip("'")
             whitespace = int(column_lengths[index])
             _val = DummyFileGenerator.__getattribute__(self, column)
-            value = _val[randint(0, len(_val)-1)]
+            value = _val[randint(0, len(_val) - 1)]
             value = value + whitespace_generator(whitespace - len(value))
             row.append(value)
         row = ''.join(row)
@@ -138,7 +142,7 @@ class DummyFileGenerator:
                         self.column_len_list.append(column['column_len'])
                 break
         else:
-            _message=('No such project as %s found in config.json', project_name)
+            _message = ('No such project as %s found in config.json', project_name)
             logging.error(_message)
             raise ValueError(_message)
 
@@ -167,10 +171,10 @@ class DummyFileGenerator:
 
             if bool(self.header):
                 if self.file_type == "csv":
-                    output_file.write(self.csv_row_header( column_name_list, CSV_VALUE_SEPARATOR)
+                    output_file.write(self.csv_row_header(column_name_list, CSV_VALUE_SEPARATOR)
                                       + FILE_LINE_ENDING)
                 elif self.file_type == "flat":
-                    output_file.write(self.flat_row_header( column_name_list, column_len_list)
+                    output_file.write(self.flat_row_header(column_name_list, column_len_list)
                                       + FILE_LINE_ENDING)
 
             iterator = 1
@@ -178,7 +182,7 @@ class DummyFileGenerator:
                 if self.file_type == "csv":
                     row = self.csv_row_output(data_file_list, CSV_VALUE_SEPARATOR)
                 elif self.file_type == "flat":
-                    row = self.flat_row_output( data_file_list, column_len_list)
+                    row = self.flat_row_output(data_file_list, column_len_list)
                 output_file.write(row + FILE_LINE_ENDING)
                 iterator += 1
 
@@ -198,13 +202,13 @@ class DummyFileGenerator:
                          output_file_name, execution_end_time,
                          output_file_size / 1024, iterator, duration)
 
-    def main(self):
+    def executor(self):
         """
         main function
         :return:
         """
         # set logging levels for main function console output
-        logging.getLogger().setLevel(self.logging_level) # pylint: disable=no-member
+        logging.getLogger().setLevel(self.logging_level)  # pylint: disable=no-member
 
         DummyFileGenerator.read_config(self)
         DummyFileGenerator.write_output(self)
@@ -224,7 +228,7 @@ def args():
 
     parser.add_argument('-cjn', '--config_json', type=str, required=False, default=None)
     parser.add_argument('-dfl', '--data_files_location', type=str, required=False,
-                        default=os.sep.join((os.getcwd(),'data_files')))
+                        default=os.sep.join((os.getcwd(), 'data_files')))
     parser.add_argument('-drc', '--default_rowcount', type=int, required=False, default=100)
     parser.add_argument('-fen', '--file_encoding', type=str, required=False, default="utf8")
     parser.add_argument('-fle', '--file_line_ending', type=str, required=False, default="\n")
@@ -249,11 +253,11 @@ def args():
               "file_size": file_size, "row_count": row_count,
               "logging_level": logging_level,
               "data_files_location": data_files_location,
-              "library_override":{"config_json_location": config_json,
-                                  "default_rowcount": default_rowcount,
-                                  "file_encoding": file_encoding,
-                                  "file_line_ending": file_line_ending,
-                                  "csv_value_separator": csv_value_separator}
+              "library_override": {"config_json_location": config_json,
+                                   "default_rowcount": default_rowcount,
+                                   "file_encoding": file_encoding,
+                                   "file_line_ending": file_line_ending,
+                                   "csv_value_separator": csv_value_separator}
               }
 
     return kwargs
@@ -262,4 +266,4 @@ def args():
 if __name__ == "__main__":
     kwargs = args()
     obj = DummyFileGenerator(**kwargs)
-    DummyFileGenerator.main(obj)
+    DummyFileGenerator.executor(obj)

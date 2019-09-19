@@ -32,7 +32,7 @@ def test_unit_flat_writer_flat_row_header():
     :return: assert flat header output works as expected
     """
 
-    output = DummyFileGenerator.flat_row_header(DFG, ['test1', 'test2', 'test3'], [6, 7, 8])
+    output = DummyFileGenerator.flat_row_header(['test1', 'test2', 'test3'], [6, 7, 8])
     assert output == 'test1 test2  test3   '
 
 
@@ -43,7 +43,7 @@ def test_unit_csv_writer_csv_row_header():
     """
 
     csv_row_separator = '|'
-    output = DummyFileGenerator.csv_row_header(DFG, 'test1, test2, test3', csv_row_separator)
+    output = DummyFileGenerator.csv_row_header('test1, test2, test3', csv_row_separator)
     assert output == 'test1|test2|test3|'
 
 
