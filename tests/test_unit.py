@@ -2,7 +2,7 @@
 test units
 """
 import os
-from dummy_file_generator.lib.utils import replace_multiple, load_file_to_list
+from dummy_file_generator.lib.utils import replace_multiple, read_file_return_content_and_content_list_length
 from dummy_file_generator.__main__ import DummyFileGenerator
 
 DATA_FILES_LOCATION = os.sep.join((os.getcwd(),'data_files'))
@@ -13,16 +13,16 @@ def test_unit_lib_load_file_to_list():
     unit test load_file_to_list
     :return: assert load_file_to_list works as expected
     """
-    output = load_file_to_list('test.txt', data_files_location=DATA_FILES_LOCATION)
+    output = read_file_return_content_and_content_list_length('test.txt', data_files_location=DATA_FILES_LOCATION)[0]
     assert output == ['test1', 'test2', 'test3']
 
 
-def test_unit_init_DummyFileGenerator_get_data_set():
+def test_unit_init_dummyfilegenerator_get_data_set():
     """
     unit test get_data_set
-    :return: assert get_data_set works as expected
+    :return: assert getting a data set works as expected
     """
-    output = DFG.__getattribute__('test')
+    output = DFG.__getattribute__('test')[0]
     assert output == ['test1', 'test2', 'test3']
 
 

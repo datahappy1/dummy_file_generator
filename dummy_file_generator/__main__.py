@@ -11,7 +11,7 @@ from random import randint
 from datetime import datetime
 
 from dummy_file_generator.lib.utils import CustomException, add_quotes_to_list_items, \
-    whitespace_generator, load_file_to_list
+    whitespace_generator, read_file_return_content_and_content_list_length
 from dummy_file_generator.configurables.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, CSV_VALUE_SEPARATOR
 
@@ -35,7 +35,7 @@ class DummyFileGenerator:
 
         for data_file in data_files:
             setattr(self, data_file.replace('.txt', ''),
-                    load_file_to_list(data_file, data_files_location=self.data_files_location))
+                    read_file_return_content_and_content_list_length(data_file, data_files_location=self.data_files_location))
 
     @staticmethod
     def csv_row_header(columns, csv_value_separator):
@@ -55,6 +55,7 @@ class DummyFileGenerator:
         return header_row
 
 
+    # TODO add decorator to look for custom exception and log it
     @staticmethod
     def flat_row_header(columns, column_lengths):
         """
@@ -87,8 +88,8 @@ class DummyFileGenerator:
 
         for column in columns:
             column = column.strip("'")
-            _val = DummyFileGenerator.__getattribute__(self, column)
-            value = _val[randint(0, len(_val) - 1)]
+            _val,_len = DummyFileGenerator.__getattribute__(self, column)
+            value = _val[randint(0, _len)]
             row.append(value)
         row = csv_value_separator.join(row)
         return row
@@ -107,8 +108,8 @@ class DummyFileGenerator:
         for index, column in enumerate(columns):
             column = column.strip("'")
             whitespace = int(column_lengths[index])
-            _val = DummyFileGenerator.__getattribute__(self, column)
-            value = _val[randint(0, len(_val) - 1)]
+            _val,_len = DummyFileGenerator.__getattribute__(self, column)
+            value = _val[randint(0, _len)]
             value = value + whitespace_generator(whitespace - len(value))
             row.append(value)
         row = ''.join(row)
