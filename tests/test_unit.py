@@ -1,10 +1,11 @@
 """
 test units
 """
+import os
 from dummy_file_generator.lib.utils import replace_multiple, load_file_to_list
 from dummy_file_generator.__main__ import DummyFileGenerator
 
-DATA_FILES_LOCATION = "C:\dummy_file_generator\dummy_file_generator\data_files"
+DATA_FILES_LOCATION = os.sep.join((os.getcwd(),'data_files'))
 DFG = DummyFileGenerator(data_files_location=DATA_FILES_LOCATION)
 
 def test_unit_lib_load_file_to_list():
