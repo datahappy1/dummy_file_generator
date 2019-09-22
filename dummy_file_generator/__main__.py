@@ -164,7 +164,8 @@ class DummyFileGenerator:
         """
         if not os.path.exists(os.path.dirname(self.absolute_path)):  # pylint: disable=no-member
             os.makedirs(os.path.dirname(self.absolute_path))  # pylint: disable=no-member
-            self.logger.info('Target folder not exists, created %s', self.absolute_path) # pylint: disable=no-member
+            self.logger.info('Target folder not exists, created %s',
+                             os.path.dirname(self.absolute_path)) # pylint: disable=no-member
 
         column_name_list = self.column_name_list
         column_len_list = self.column_len_list
