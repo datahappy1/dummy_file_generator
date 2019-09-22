@@ -1,16 +1,15 @@
 """ dummy file generator main runner """
 import argparse
 import json
-import os
 import io
+import os
+import sys
 import logging
 
-from os import listdir
-from os.path import isfile, join
 from random import randint
 from datetime import datetime
 
-from dummy_file_generator.lib.utils import CustomException, add_quotes_to_list_items, \
+from dummy_file_generator.lib.utils import add_quotes_to_list_items, \
     whitespace_generator, read_file_return_content_and_content_list_length
 from dummy_file_generator.configurables.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, CSV_VALUE_SEPARATOR
@@ -30,12 +29,19 @@ class DummyFileGenerator:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-        data_files = [f for f in listdir(self.data_files_location) if
-                      isfile(join(self.data_files_location, f)) and str(f).endswith('.txt')]
+        data_files = [f for f in os.listdir(self.data_files_location) if # pylint: disable=no-member
+                      os.path.isfile(os.path.join(self.data_files_location, f)) # pylint: disable=no-member
+                      and str(f).endswith('.txt')]
 
         for data_file in data_files:
             setattr(self, data_file.replace('.txt', ''),
-                    read_file_return_content_and_content_list_length(data_file, data_files_location=self.data_files_location))
+                    read_file_return_content_and_content_list_length(data_file,
+                                                                     data_files_location=
+                                                                     self.data_files_location)) # pylint: disable=no-member
+        # set logging levels for main function console output
+        logging.basicConfig(level=self.logging_level) # pylint: disable=no-member
+        self.logger = logging.getLogger(__name__)
+
 
     @staticmethod
     def csv_row_header(columns, csv_value_separator):
@@ -55,9 +61,7 @@ class DummyFileGenerator:
         return header_row
 
 
-    # TODO add decorator to look for custom exception and log it
-    @staticmethod
-    def flat_row_header(columns, column_lengths):
+    def flat_row_header(self, columns, column_lengths):
         """
         flat row header
         :param columns:
@@ -68,8 +72,8 @@ class DummyFileGenerator:
 
         for i, j in zip(columns, column_lengths):
             if len(i) > j:
-                raise CustomException("Header value for %s is longer then expected column length "
-                                      "set in config.json file (%s)!", i, j)
+                self.logger.error('Header value %s is longer then expected column length '
+                                  'set in config.json file!', i)
             else:
                 header_row.append(str(i) + whitespace_generator(j - len(i)))
         header_row = "".join(header_row)
@@ -88,11 +92,12 @@ class DummyFileGenerator:
 
         for column in columns:
             column = column.strip("'")
-            _val,_len = DummyFileGenerator.__getattribute__(self, column)
+            _val, _len = DummyFileGenerator.__getattribute__(self, column)
             value = _val[randint(0, _len)]
             row.append(value)
         row = csv_value_separator.join(row)
         return row
+
 
     def flat_row_output(self, columns, column_lengths):
         """
@@ -108,12 +113,16 @@ class DummyFileGenerator:
         for index, column in enumerate(columns):
             column = column.strip("'")
             whitespace = int(column_lengths[index])
-            _val,_len = DummyFileGenerator.__getattribute__(self, column)
+            _val, _len = DummyFileGenerator.__getattribute__(self, column)
             value = _val[randint(0, _len)]
+            if whitespace - len(value) < 0:
+                self.logger.error('Column value %s is longer then expected '
+                                  'column length set in config.json file!', value)
             value = value + whitespace_generator(whitespace - len(value))
             row.append(value)
         row = ''.join(row)
         return row
+
 
     def read_config(self):
         """
@@ -144,8 +153,9 @@ class DummyFileGenerator:
                 break
         else:
             _message = ('No such project as %s found in config.json', project_name)
-            logging.error(_message)
+            self.logger.error(_message)
             raise ValueError(_message)
+
 
     def write_output(self):
         """
@@ -154,6 +164,7 @@ class DummyFileGenerator:
         """
         if not os.path.exists(os.path.dirname(self.absolute_path)):  # pylint: disable=no-member
             os.makedirs(os.path.dirname(self.absolute_path))  # pylint: disable=no-member
+            self.logger.info('Target folder not exists, created %s', self.absolute_path) # pylint: disable=no-member
 
         column_name_list = self.column_name_list
         column_len_list = self.column_len_list
@@ -168,7 +179,8 @@ class DummyFileGenerator:
 
         with io.open(output_file_name, 'w', encoding=FILE_ENCODING) as output_file:
             execution_start_time = datetime.now()
-            logging.info('File %s processing started at %s', output_file_name, execution_start_time)
+            self.logger.info('File %s processing started at %s', output_file_name,
+                             execution_start_time)
 
             if bool(self.header):
                 if self.file_type == "csv":
@@ -184,11 +196,16 @@ class DummyFileGenerator:
                     row = self.csv_row_output(data_file_list, CSV_VALUE_SEPARATOR)
                 elif self.file_type == "flat":
                     row = self.flat_row_output(data_file_list, column_len_list)
+                else:
+                    self.logger.error('Unknown file_type %s, supported options are csv and flat',
+                                      self.file_type)
+                    sys.exit(1)
+
                 output_file.write(row + FILE_LINE_ENDING)
                 iterator += 1
 
                 if divmod(iterator, 10000)[1] == 1:
-                    logging.info('%s rows written', iterator - 1)
+                    self.logger.info('%s rows written', iterator - 1)
 
             # to get the file_size even when only row_count arg used
             output_file_size = output_file.tell()
@@ -198,19 +215,17 @@ class DummyFileGenerator:
             duration = (execution_end_time - execution_start_time).seconds
             duration = str(duration / 60) + ' min.' if duration > 1000 else str(duration) + ' sec.'
 
-            logging.info('File %s processing finished at %s\n '
-                         '%s kB file with %s rows written in %s',
-                         output_file_name, execution_end_time,
-                         output_file_size / 1024, iterator, duration)
+            self.logger.info('File %s processing finished at %s', output_file_name,
+                             execution_end_time)
+            self.logger.info('%s kB file with %s rows written in %s', output_file_size / 1024,
+                             iterator, duration)
+
 
     def executor(self):
         """
         main function
         :return:
         """
-        # set logging levels for main function console output
-        logging.getLogger().setLevel(self.logging_level)  # pylint: disable=no-member
-
         DummyFileGenerator.read_config(self)
         DummyFileGenerator.write_output(self)
 
@@ -225,7 +240,7 @@ def args():
     parser.add_argument('-ap', '--absolutepath', type=str, required=True)
     parser.add_argument('-fs', '--filesize', type=int, required=False, default=0)
     parser.add_argument('-rc', '--rowcount', type=int, required=False, default=0)
-    parser.add_argument('-ll', '--loglevel', type=str, required=False, default="INFO")
+    parser.add_argument('-ll', '--logging_level', type=str, required=False, default="INFO")
 
     parser.add_argument('-cjn', '--config_json', type=str, required=False, default=None)
     parser.add_argument('-dfl', '--data_files_location', type=str, required=False,
@@ -238,13 +253,12 @@ def args():
     parsed = parser.parse_args()
 
     project_name = parsed.projectname
+    absolute_path = parsed.absolutepath
     file_size = parsed.filesize
     row_count = parsed.rowcount
-    absolute_path = parsed.absolutepath
-    logging_level = parsed.loglevel
-    data_files_location = parsed.data_files_location
-
+    logging_level = parsed.logging_level
     config_json = parsed.config_json
+    data_files_location = parsed.data_files_location
     default_rowcount = parsed.default_rowcount
     file_encoding = parsed.file_encoding
     file_line_ending = parsed.file_line_ending
@@ -265,6 +279,6 @@ def args():
 
 
 if __name__ == "__main__":
-    kwargs = args()
-    obj = DummyFileGenerator(**kwargs)
-    DummyFileGenerator.executor(obj)
+    KWARGS = args()
+    OBJ = DummyFileGenerator(**KWARGS)
+    DummyFileGenerator.executor(OBJ)

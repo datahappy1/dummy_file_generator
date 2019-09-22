@@ -2,8 +2,6 @@
 import os
 from dummy_file_generator.configurables.settings import FILE_LINE_ENDING
 
-class CustomException(Exception):
-    pass
 
 def whitespace_generator(i) -> str:
     """
@@ -33,7 +31,7 @@ def read_file_return_content_and_content_list_length(data_set_name, data_files_l
     :return: tuple
     """
     data_files_dir_path = os.path.join(data_files_location)
-    data_set = open(os.sep.join((str(data_files_dir_path),data_set_name)))
+    data_set = open(os.sep.join((str(data_files_dir_path), data_set_name)))
     data_set = data_set.read().split(FILE_LINE_ENDING)
     return data_set, len(data_set) -1
 

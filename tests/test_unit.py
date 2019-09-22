@@ -2,11 +2,15 @@
 test units
 """
 import os
+from pathlib import Path
 from dummy_file_generator.lib.utils import replace_multiple, read_file_return_content_and_content_list_length
-from dummy_file_generator.__main__ import DummyFileGenerator
+from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 
-DATA_FILES_LOCATION = os.sep.join((os.getcwd(),'data_files'))
-DFG = DummyFileGenerator(data_files_location=DATA_FILES_LOCATION)
+TWO_LEVEL_UP_FOLDER_HIERACHY = str(Path(__file__).resolve().parents[1])
+DATA_FILES_LOCATION = os.sep.join((TWO_LEVEL_UP_FOLDER_HIERACHY,'dummy_file_generator','data_files'))
+
+kwargs = {"data_files_location": DATA_FILES_LOCATION, "logging_level": "INFO"}
+DFG = Dfg(**kwargs)
 
 def test_unit_lib_load_file_to_list():
     """
@@ -32,7 +36,7 @@ def test_unit_flat_writer_flat_row_header():
     :return: assert flat header output works as expected
     """
 
-    output = DummyFileGenerator.flat_row_header(['test1', 'test2', 'test3'], [6, 7, 8])
+    output = DFG.flat_row_header(['test1', 'test2', 'test3'], [6, 7, 8])
     assert output == 'test1 test2  test3   '
 
 
@@ -43,7 +47,7 @@ def test_unit_csv_writer_csv_row_header():
     """
 
     csv_row_separator = '|'
-    output = DummyFileGenerator.csv_row_header('test1, test2, test3', csv_row_separator)
+    output = DFG.csv_row_header('test1, test2, test3', csv_row_separator)
     assert output == 'test1|test2|test3|'
 
 
@@ -53,7 +57,7 @@ def test_unit_flat_writer_flat_row_output():
     :return: assert flat row output works as expected
     """
 
-    l_output = DummyFileGenerator.flat_row_output(DFG, ['test', 'test', 'test'], [6, 7, 8])
+    l_output = DFG.flat_row_output(['test', 'test', 'test'], [6, 7, 8])
     l_output = replace_multiple(l_output, '123', '')
 
     r_output = replace_multiple('test1 test2  test3   ', '123', '')
@@ -69,7 +73,7 @@ def test_unit_csv_writer_csv_row_output():
 
     csv_row_separator = '|'
 
-    l_output = DummyFileGenerator.csv_row_output(DFG, 'test, test, test', csv_row_separator)
+    l_output = DFG.csv_row_output('test, test, test', csv_row_separator)
     l_output = replace_multiple(l_output, '123', '')
 
     r_output = replace_multiple('test1|test2|test3', '123', '')

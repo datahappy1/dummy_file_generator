@@ -3,10 +3,12 @@ test performance
 """
 import os
 import pytest
+from pathlib import Path
 from datetime import datetime
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 
-DATA_FILES_LOCATION = os.sep.join((os.getcwd(),'data_files'))
+TWO_LEVEL_UP_FOLDER_HIERACHY = str(Path(__file__).resolve().parents[1])
+DATA_FILES_LOCATION = os.sep.join((TWO_LEVEL_UP_FOLDER_HIERACHY,'dummy_file_generator','data_files'))
 
 @pytest.mark.parametrize(
     "test_project, test_file_extension, expected_duration", [
@@ -26,9 +28,10 @@ def test_performance(test_project, test_file_extension, expected_duration):
     execution_start_time = datetime.now()
 
     kwargs = {"project_name": test_project, "absolute_path": generated_file_path,
+              "data_files_location" : DATA_FILES_LOCATION,
               "file_size": 1024, "row_count": 0, "logging_level": "INFO"}
 
-    obj = Dfg(data_files_location=DATA_FILES_LOCATION ,**kwargs)
+    obj = Dfg(**kwargs)
     Dfg.executor(obj)
 
     execution_end_time = datetime.now()
