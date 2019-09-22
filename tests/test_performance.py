@@ -1,14 +1,16 @@
 """
 test performance
 """
-import os
-import pytest
 from pathlib import Path
 from datetime import datetime
+
+import os
+import pytest
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 
-TWO_LEVEL_UP_FOLDER_HIERACHY = str(Path(__file__).resolve().parents[1])
-DATA_FILES_LOCATION = os.sep.join((TWO_LEVEL_UP_FOLDER_HIERACHY,'dummy_file_generator','data_files'))
+TWO_LEVEL_UP_FOLDER_HIERARCHY = str(Path(__file__).resolve().parents[1])
+DATA_FILES_LOCATION = os.sep.join((TWO_LEVEL_UP_FOLDER_HIERARCHY,
+                                   'dummy_file_generator', 'data_files'))
 
 @pytest.mark.parametrize(
     "test_project, test_file_extension, expected_duration", [

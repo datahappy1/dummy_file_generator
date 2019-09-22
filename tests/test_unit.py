@@ -3,21 +3,25 @@ test units
 """
 import os
 from pathlib import Path
-from dummy_file_generator.lib.utils import replace_multiple, read_file_return_content_and_content_list_length
+from dummy_file_generator.lib.utils import replace_multiple, \
+    read_file_return_content_and_content_list_length
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 
-TWO_LEVEL_UP_FOLDER_HIERACHY = str(Path(__file__).resolve().parents[1])
-DATA_FILES_LOCATION = os.sep.join((TWO_LEVEL_UP_FOLDER_HIERACHY,'dummy_file_generator','data_files'))
+TWO_LEVEL_UP_FOLDER_HIERARCHY = str(Path(__file__).resolve().parents[1])
+DATA_FILES_LOCATION = os.sep.join((TWO_LEVEL_UP_FOLDER_HIERARCHY,
+                                   'dummy_file_generator', 'data_files'))
 
-kwargs = {"data_files_location": DATA_FILES_LOCATION, "logging_level": "INFO"}
-DFG = Dfg(**kwargs)
+KWARGS = {"data_files_location": DATA_FILES_LOCATION, "logging_level": "INFO"}
+DFG = Dfg(**KWARGS)
 
 def test_unit_lib_load_file_to_list():
     """
     unit test load_file_to_list
     :return: assert load_file_to_list works as expected
     """
-    output = read_file_return_content_and_content_list_length('test.txt', data_files_location=DATA_FILES_LOCATION)[0]
+    output = read_file_return_content_and_content_list_length('test.txt',
+                                                              data_files_location=
+                                                              DATA_FILES_LOCATION)[0]
     assert output == ['test1', 'test2', 'test3']
 
 
