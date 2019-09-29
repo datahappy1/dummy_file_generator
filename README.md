@@ -42,14 +42,15 @@ To run tests:<br />
 `pytest`<br />
 
 # How to install and run the program as a importable library
-`pip3 install dummy_file_generator`
+`pip3 install dummy_file_generator`<br />
 -example usage:
-`from dummy_file_generator import dummy_file_generator as DFG
-def _generate_dummy_file(): 
-    **KWARGS={}
-    obj = DFG(**KWARDGS)
-    DFG.executor`
-
+```
+from dummy_file_generator import dummy_file_generator as DFG
+def _generate_dummy_file():
+    KWARGS={}
+    obj = DFG(**KWARGS)
+    DFG.executor
+```
 
 ### To run:<br />
 You need to set the required arguments :
@@ -61,7 +62,7 @@ filesize `-fs` (in kB) <br />
 rowcount `-rc` <br />
 
 *Note if you do NOT specify the filesize and do NOT specify the rowcount, the default row_count value ( set to 100 ) from
-settings.py will be used
+settings.py will be used ( or the value you provide in the `default_rowcount` optional argument)
 
 Run these commands to execute:<br />
 - with the -fs argument to set the desired filesize of 256 kB :<br />
@@ -129,7 +130,5 @@ The project element in your config.json would need to be setup like:
     }
 
 ### - How to add a new source dataset for your project:
-Whenever you need to add a new source text file in the data_files folder, just follow the logic of handling these files in `data_files_handler.py`. 
-Let's say you need to generate dummy file containing also Social Security Number SSN. 
-Add into `Class DataSets` a row like this: `SSN = load_file_to_list('SSN.txt')`
-Now you can use SSNs in your project setup in `config.json` file. 
+Whenever you need to add a new source .txt file in the data_files folder, just add it to the `data_files` folder. 
+Now you can use this new data file in your project setup in `config.json` file. 
