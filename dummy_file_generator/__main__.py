@@ -131,15 +131,12 @@ class DummyFileGenerator:
         """
         project_name = self.project_name  # pylint: disable=no-member
 
-        try:
-            if self.config_json:
-                data = json.load(self.config_json)  # pylint: disable=no-member
+        if not self.config_json_path:
+            self.config_json_path = os.sep.join([os.path.join(os.path.dirname(__file__)),
+                                                 'configurables', 'config.json'])
 
-        except AttributeError:
-            config_path = os.sep.join([os.path.join(os.path.dirname(__file__)),
-                                       'configurables', 'config.json'])
-            with open(config_path) as file:
-                data = json.load(file)
+        with open(self.config_json_path) as file:
+            data = json.load(file)
 
         for project in data['project']:
             if project['project_name'] == project_name:
@@ -243,7 +240,7 @@ def args():
     parser.add_argument('-rc', '--rowcount', type=int, required=False, default=0)
     parser.add_argument('-ll', '--logging_level', type=str, required=False, default="INFO")
 
-    parser.add_argument('-cjn', '--config_json', type=str, required=False, default=None)
+    parser.add_argument('-cjp', '--config_json_path', type=str, required=False, default=None)
     parser.add_argument('-dfl', '--data_files_location', type=str, required=False,
                         default=os.sep.join((os.getcwd(), 'data_files')))
     parser.add_argument('-drc', '--default_rowcount', type=int, required=False, default=100)
@@ -258,7 +255,7 @@ def args():
     file_size = parsed.filesize
     row_count = parsed.rowcount
     logging_level = parsed.logging_level
-    config_json = parsed.config_json
+    config_json_path = parsed.config_json_path
     data_files_location = parsed.data_files_location
     default_rowcount = parsed.default_rowcount
     file_encoding = parsed.file_encoding
@@ -269,11 +266,11 @@ def args():
               "file_size": file_size, "row_count": row_count,
               "logging_level": logging_level,
               "data_files_location": data_files_location,
-              "library_override": {"config_json_location": config_json,
-                                   "default_rowcount": default_rowcount,
-                                   "file_encoding": file_encoding,
-                                   "file_line_ending": file_line_ending,
-                                   "csv_value_separator": csv_value_separator}
+              "config_json_path": config_json_path,
+              "default_rowcount": default_rowcount,
+              "file_encoding": file_encoding,
+              "file_line_ending": file_line_ending,
+              "csv_value_separator": csv_value_separator
               }
 
     return kwargs

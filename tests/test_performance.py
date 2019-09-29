@@ -1,16 +1,14 @@
 """
 test performance
 """
-from pathlib import Path
 from datetime import datetime
 
 import os
 import pytest
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 
-TWO_LEVEL_UP_FOLDER_HIERARCHY = str(Path(__file__).resolve().parents[1])
-DATA_FILES_LOCATION = os.sep.join((TWO_LEVEL_UP_FOLDER_HIERARCHY,
-                                   'dummy_file_generator', 'data_files'))
+DATA_FILES_LOCATION = 'files'
+CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'files', 'config.json'])
 
 @pytest.mark.parametrize(
     "test_project, test_file_extension, expected_duration", [
@@ -31,7 +29,8 @@ def test_performance(test_project, test_file_extension, expected_duration):
 
     kwargs = {"project_name": test_project, "absolute_path": generated_file_path,
               "data_files_location" : DATA_FILES_LOCATION,
-              "file_size": 1024, "row_count": 0, "logging_level": "INFO"}
+              "file_size": 1024, "row_count": 0, "logging_level": "ERROR",
+              "config_json_path": CONFIG_JSON_PATH}
 
     obj = Dfg(**kwargs)
     Dfg.executor(obj)

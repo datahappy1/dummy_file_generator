@@ -7,9 +7,7 @@ from dummy_file_generator.lib.utils import replace_multiple, \
     read_file_return_content_and_content_list_length
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 
-TWO_LEVEL_UP_FOLDER_HIERARCHY = str(Path(__file__).resolve().parents[1])
-DATA_FILES_LOCATION = os.sep.join((TWO_LEVEL_UP_FOLDER_HIERARCHY,
-                                   'dummy_file_generator', 'data_files'))
+DATA_FILES_LOCATION = 'files'
 
 KWARGS = {"data_files_location": DATA_FILES_LOCATION, "logging_level": "INFO"}
 DFG = Dfg(**KWARGS)

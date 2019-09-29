@@ -8,7 +8,7 @@ setuptools.setup(
     version="1.0.0",
     author="datahappy1",
     author_email="",
-    description="A simplistic dummy flat text/csv file generator",
+    description="dummy flat text/csv file generator",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/datahappy1/dummy_file_generator",

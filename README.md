@@ -13,18 +13,26 @@ It consumes arguments defining:
 - filesize (optional argument) defining the desired size (in kBs) of the output file 
 - rowcount (optional argument) defining the desired row count of the output file
 
-[How to install and run the program](#how-to-install-and-run-the-program)
+-
+-
+-
+-
+
+
+[How to install and run the program as CLI](#how-to-install-and-run-the-program-as-CLI)
+
+[How to install and run the program as a importable library](#how-to-install-and-run-the-program-as-a-importable-library)
 
 [How to setup a new dummy file generator project](#how-to-setup-a-new-dummy-file-generator-project)
 
-[Important notes](#important-notes)
 
-
-# How to install and run the program
+# How to install and run the program as CLI
 ### To install:
 `git clone https://github.com/datahappy1/dummy_file_generator c:\dummy_file_generator\`<br />
 
 `cd c:\dummy_file_generator\dummy_file_generator`
+
+`python.exe __main__.py -pn my_project -ap c:\dummy1file.txt -rc 256`
 
 #### Pytest testing:<br />
 Pytest unit and performance tests are also a part of this tool.
@@ -32,6 +40,16 @@ You can install Pytest with `pip install pytest`<br />
 To run tests:<br />
 `cd c:\dummy_file_generator\dummy_file_generator`<br />
 `pytest`<br />
+
+# How to install and run the program as a importable library
+`pip3 install dummy_file_generator`
+-example usage:
+`from dummy_file_generator import dummy_file_generator as DFG
+def _generate_dummy_file(): 
+    **KWARGS={}
+    obj = DFG(**KWARDGS)
+    DFG.executor`
+
 
 ### To run:<br />
 You need to set the required arguments :
@@ -115,9 +133,3 @@ Whenever you need to add a new source text file in the data_files folder, just f
 Let's say you need to generate dummy file containing also Social Security Number SSN. 
 Add into `Class DataSets` a row like this: `SSN = load_file_to_list('SSN.txt')`
 Now you can use SSNs in your project setup in `config.json` file. 
-
-# Important Notes
-- To preserve the existing pytest unit and performance tests, do not remove:
-    - `test_csv` and `test_flatfile` projects configurations from `config.json`
-    - `test.txt` file from `data_files` subfolder
-- Feel free to contribute to this project
