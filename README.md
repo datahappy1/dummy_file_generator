@@ -12,11 +12,13 @@ It consumes arguments defining:
 - absolutepath defining the full output file path to the file you wish to generate
 - filesize (optional argument) defining the desired size (in kBs) of the output file 
 - rowcount (optional argument) defining the desired row count of the output file
-
--
--
--
--
+- logging_level (optional argument)
+- data_files_location (optional argument)
+- config_json_path (optional argument)
+- default_rowcount (optional argument)
+- file_encoding (optional argument)
+- file_line_ending (optional argument)
+- csv_value_separator (optional argument)
 
 
 [How to install and run the program as CLI](#how-to-install-and-run-the-program-as-CLI)
@@ -42,14 +44,24 @@ To run tests:<br />
 `pytest`<br />
 
 # How to install and run the program as a importable library
-`pip3 install dummy_file_generator`<br />
+`pip install -i https://test.pypi.org/simple/ dummy-file-generator`<br />
 -example usage:
 ```
-from dummy_file_generator import dummy_file_generator as DFG
-def _generate_dummy_file():
-    KWARGS={}
-    obj = DFG(**KWARGS)
-    DFG.executor
+from dummy_file_generator.__main__ import DummyFileGenerator as DFG
+
+def generate_dummy_file():
+    kwargs = {"project_name": "dummy1", "absolute_path": "C:\\x\dfxx.csv",
+              "file_size": 1024, "row_count": 0,
+              "logging_level": "DEBUG",
+              "data_files_location": "c:\\dummy_file_generator\dummy_file_generator\data_files",
+              "config_json_path": "c:\\dummy_file_generator\dummy_file_generator\configurables\config.json",
+              }
+
+    obj = DFG(**kwargs)
+    DFG.executor(obj)
+
+generate_dummy_file()
+
 ```
 
 ### To run:<br />
