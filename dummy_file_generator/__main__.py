@@ -25,6 +25,7 @@ class DummyFileGenerator:
         self.data_file_list = []
         self.header = None
         self.file_type = None
+        self.config_json_path = None
         for key, value in kwargs.items():
             setattr(self, key, value)
 
