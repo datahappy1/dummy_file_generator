@@ -69,16 +69,17 @@ Run these commands to execute:<br />
 
 # How to install and run the program as a importable library
 ### To install:
-`pip install dummy_file_generator`<br />
+`pip install dummy-file-generator`<br />
 
 ### To run:<br />
-You need to set these arguments as an Python dictionary:
-    kwargs = {"project_name": "dummy1", "absolute_path": "C:\\scrap_files\dummy1.csv",
+You need to set these arguments as an Python dictionary for example:
+    `kwargs = {"project_name": "dummy1", "absolute_path": "C:\\scrap_files\dummy1.csv",
               "file_size": 1024,
               "logging_level": "DEBUG",
               "data_files_location": "c:\\dummy_file_generator\dummy_file_generator\data_files",
               "config_json_path": "c:\\dummy_file_generator\dummy_file_generator\configurables\config.json",
               }
+`
 
 *Note if you do NOT specify the filesize and do NOT specify the rowcount, the default row_count value ( set to 100 ) from
 settings.py will be used ( or the value you provide in the `default_rowcount` optional argument)
@@ -158,7 +159,11 @@ The project element in your config.json would need to be setup like:
     }
 
 # How to add a new source dataset for your project
-Whenever you need to add a new source .txt file in the data_files folder, just add it to the `data_files` folder. 
+Whenever you need to add a new source .txt file in the data_files folder, just add it to your `data_files` folder. 
+If running as a standalone CLI tool, the data_files folder is located here:
+
+When running as an importable library, the data_files folder is where you set it in
+the argument data_files_location.
 Now you can use this new data file in your project setup in `config.json` file. 
 
 # Pytest testing
