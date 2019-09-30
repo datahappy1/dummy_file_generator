@@ -47,11 +47,11 @@ To run tests:<br />
 `pip install -i https://test.pypi.org/simple/ dummy-file-generator`<br />
 -example usage:
 ```
-from dummy_file_generator.__main__ import DummyFileGenerator as DFG
+from dummy_file_generator import DummyFileGenerator as DFG
 
 def generate_dummy_file():
     kwargs = {"project_name": "dummy1", "absolute_path": "C:\\x\dfxx.csv",
-              "file_size": 1024, "row_count": 0,
+              "file_size": 1024,
               "logging_level": "DEBUG",
               "data_files_location": "c:\\dummy_file_generator\dummy_file_generator\data_files",
               "config_json_path": "c:\\dummy_file_generator\dummy_file_generator\configurables\config.json",

@@ -8,7 +8,7 @@ import pytest
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 
 DATA_FILES_LOCATION = 'files'
-CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'files', 'config.json'])
+CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'files', 'test_config.json'])
 
 @pytest.mark.parametrize(
     "test_project, test_file_extension, expected_duration", [

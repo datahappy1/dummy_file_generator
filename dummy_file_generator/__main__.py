@@ -19,7 +19,6 @@ class DummyFileGenerator:
     """
     main project class
     """
-
     def __init__(self, **kwargs):
         self.column_name_list = []
         self.column_len_list = []
@@ -73,7 +72,7 @@ class DummyFileGenerator:
         for i, j in zip(columns, column_lengths):
             if len(i) > j:
                 self.logger.error('Header value %s is longer then expected column length '
-                                  'set in config.json file!', i)
+                                  'set in test_config.json file!', i)
             else:
                 header_row.append(str(i) + whitespace_generator(j - len(i)))
         header_row = "".join(header_row)
@@ -117,7 +116,7 @@ class DummyFileGenerator:
             value = _val[randint(0, _len)]
             if whitespace - len(value) < 0:
                 self.logger.error('Column value %s is longer then expected '
-                                  'column length set in config.json file!', value)
+                                  'column length set in test_config.json file!', value)
             value = value + whitespace_generator(whitespace - len(value))
             row.append(value)
         row = ''.join(row)
@@ -133,7 +132,7 @@ class DummyFileGenerator:
 
         if not self.config_json_path:
             self.config_json_path = os.sep.join([os.path.join(os.path.dirname(__file__)),
-                                                 'configurables', 'config.json'])
+                                                 'configurables', 'test_config.json'])
 
         with open(self.config_json_path) as file:
             data = json.load(file)
@@ -167,9 +166,16 @@ class DummyFileGenerator:
         column_name_list = self.column_name_list
         column_len_list = self.column_len_list
         data_file_list = self.data_file_list
-        output_file_size = self.file_size * 1024  # pylint: disable=no-member
-        row_count = self.row_count  # pylint: disable=no-member
         output_file_name = self.absolute_path  # pylint: disable=no-member
+
+        try:
+            output_file_size = self.file_size * 1024  # pylint: disable=no-member
+        except AttributeError:
+            output_file_size = 0
+        try:
+            row_count = self.row_count  # pylint: disable=no-member
+        except AttributeError:
+            row_count = 0
         if row_count == 0 and output_file_size == 0:
             # use default row_count from settings.py in case no row counts
             # and no file size args provided:
