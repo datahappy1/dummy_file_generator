@@ -1,8 +1,6 @@
 """
 test units
 """
-import os
-from pathlib import Path
 from dummy_file_generator.lib.utils import replace_multiple, \
     read_file_return_content_and_content_list_length
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg

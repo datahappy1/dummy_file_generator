@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="dummy-file-generator",
+    name="dummy_file_generator",
     version="1.0.3",
     author="datahappy1",
     author_email="",

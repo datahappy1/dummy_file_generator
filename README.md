@@ -69,7 +69,7 @@ Run these commands to execute:<br />
 
 # How to install and run the program as a importable library
 ### To install:
-`pip install -i https://test.pypi.org/simple/ dummy-file-generator`<br />
+`pip install dummy_file_generator`<br />
 
 ### To run:<br />
 You need to set these arguments as an Python dictionary:
