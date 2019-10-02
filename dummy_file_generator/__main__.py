@@ -73,7 +73,7 @@ class DummyFileGenerator:
         for i, j in zip(columns, column_lengths):
             if len(i) > j:
                 self.logger.error('Header value %s is longer then expected column length '
-                                  'set in test_config.json file!', i)
+                                  'set in config.json file!', i)
             else:
                 header_row.append(str(i) + whitespace_generator(j - len(i)))
         header_row = "".join(header_row)
@@ -117,7 +117,7 @@ class DummyFileGenerator:
             value = _val[randint(0, _len)]
             if whitespace - len(value) < 0:
                 self.logger.error('Column value %s is longer then expected '
-                                  'column length set in test_config.json file!', value)
+                                  'column length set in config.json file!', value)
             value = value + whitespace_generator(whitespace - len(value))
             row.append(value)
         row = ''.join(row)
