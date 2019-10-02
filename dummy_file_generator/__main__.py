@@ -133,7 +133,7 @@ class DummyFileGenerator:
 
         if not self.config_json_path:
             self.config_json_path = os.sep.join([os.path.join(os.path.dirname(__file__)),
-                                                 'configurables', 'test_config.json'])
+                                                 'configurables', 'config.json'])
 
         with open(self.config_json_path) as file:
             data = json.load(file)
