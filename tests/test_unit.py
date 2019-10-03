@@ -10,6 +10,7 @@ DATA_FILES_LOCATION = 'files'
 KWARGS = {"data_files_location": DATA_FILES_LOCATION, "logging_level": "INFO"}
 DFG = Dfg(**KWARGS)
 
+
 def test_unit_lib_load_file_to_list():
     """
     unit test load_file_to_list

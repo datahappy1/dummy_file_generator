@@ -19,6 +19,7 @@ class DummyFileGenerator:
     """
     main project class
     """
+
     def __init__(self, **kwargs):
         self.column_name_list = []
         self.column_len_list = []
@@ -29,19 +30,18 @@ class DummyFileGenerator:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-        data_files = [f for f in os.listdir(self.data_files_location) if # pylint: disable=no-member
-                      os.path.isfile(os.path.join(self.data_files_location, f)) # pylint: disable=no-member
+        data_files = [f for f in os.listdir(self.data_files_location) if  # pylint: disable=no-member
+                      os.path.isfile(os.path.join(self.data_files_location, f))  # pylint: disable=no-member
                       and str(f).endswith('.txt')]
 
         for data_file in data_files:
             setattr(self, data_file.replace('.txt', ''),
                     read_file_return_content_and_content_list_length(data_file,
                                                                      data_files_location=
-                                                                     self.data_files_location)) # pylint: disable=no-member
+                                                                     self.data_files_location))  # pylint: disable=no-member
         # set logging levels for main function console output
-        logging.basicConfig(level=self.logging_level) # pylint: disable=no-member
+        logging.basicConfig(level=self.logging_level)  # pylint: disable=no-member
         self.logger = logging.getLogger(__name__)
-
 
     @staticmethod
     def csv_row_header(columns, csv_value_separator):
@@ -59,7 +59,6 @@ class DummyFileGenerator:
             header_row.append(column)
         header_row = csv_value_separator.join(header_row) + csv_value_separator
         return header_row
-
 
     def flat_row_header(self, columns, column_lengths):
         """
@@ -79,7 +78,6 @@ class DummyFileGenerator:
         header_row = "".join(header_row)
         return header_row
 
-
     def csv_row_output(self, columns, csv_value_separator):
         """
         function for generating csv output data row
@@ -97,7 +95,6 @@ class DummyFileGenerator:
             row.append(value)
         row = csv_value_separator.join(row)
         return row
-
 
     def flat_row_output(self, columns, column_lengths):
         """
@@ -122,7 +119,6 @@ class DummyFileGenerator:
             row.append(value)
         row = ''.join(row)
         return row
-
 
     def read_config(self):
         """
@@ -153,7 +149,6 @@ class DummyFileGenerator:
             self.logger.error(_message)
             raise ValueError(_message)
 
-
     def write_output(self):
         """
         write output function
@@ -162,7 +157,7 @@ class DummyFileGenerator:
         if not os.path.exists(os.path.dirname(self.absolute_path)):  # pylint: disable=no-member
             os.makedirs(os.path.dirname(self.absolute_path))  # pylint: disable=no-member
             self.logger.info('Target folder not exists, created %s',
-                             os.path.dirname(self.absolute_path)) # pylint: disable=no-member
+                             os.path.dirname(self.absolute_path))  # pylint: disable=no-member
 
         column_name_list = self.column_name_list
         column_len_list = self.column_len_list
@@ -181,6 +176,19 @@ class DummyFileGenerator:
             # use default row_count from settings.py in case no row counts
             # and no file size args provided:
             row_count = DEFAULT_ROW_COUNT
+
+        try:
+            CSV_VALUE_SEPARATOR = self.csv_value_separator
+        except AttributeError:
+            pass
+        try:
+            FILE_ENCODING = self.file_encoding
+        except AttributeError:
+            pass
+        try:
+            FILE_LINE_ENDING = self.file_line_ending
+        except AttributeError:
+            pass
 
         with io.open(output_file_name, 'w', encoding=FILE_ENCODING) as output_file:
             execution_start_time = datetime.now()
@@ -224,7 +232,6 @@ class DummyFileGenerator:
                              execution_end_time)
             self.logger.info('%s kB file with %s rows written in %s', output_file_size / 1024,
                              iterator, duration)
-
 
     def executor(self):
         """
