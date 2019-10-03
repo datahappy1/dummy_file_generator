@@ -12,7 +12,7 @@ from datetime import datetime
 from dummy_file_generator.lib.utils import add_quotes_to_list_items, \
     whitespace_generator, read_file_return_content_and_content_list_length
 from dummy_file_generator.configurables.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
-    FILE_LINE_ENDING, CSV_VALUE_SEPARATOR
+    FILE_LINE_ENDING, CSV_VALUE_SEPARATOR, LOGGING_LEVEL
 
 
 class DummyFileGenerator:
@@ -27,6 +27,7 @@ class DummyFileGenerator:
         self.header = None
         self.file_type = None
         self.config_json_path = None
+        self.logging_level = LOGGING_LEVEL
         for key, value in kwargs.items():
             setattr(self, key, value)
 
@@ -162,14 +163,14 @@ class DummyFileGenerator:
         column_name_list = self.column_name_list
         column_len_list = self.column_len_list
         data_file_list = self.data_file_list
-        output_file_name = self.absolute_path  # pylint: disable=no-member
+        output_file_name = self.absolute_path # pylint: disable=no-member
 
         try:
-            output_file_size = self.file_size * 1024  # pylint: disable=no-member
+            output_file_size = self.file_size * 1024
         except AttributeError:
             output_file_size = 0
         try:
-            row_count = self.row_count  # pylint: disable=no-member
+            row_count = self.row_count
         except AttributeError:
             row_count = 0
         if row_count == 0 and output_file_size == 0:
@@ -178,35 +179,35 @@ class DummyFileGenerator:
             row_count = DEFAULT_ROW_COUNT
 
         try:
-            CSV_VALUE_SEPARATOR = self.csv_value_separator
+            csv_value_separator = self.csv_value_separator
         except AttributeError:
-            pass
+            csv_value_separator = CSV_VALUE_SEPARATOR
         try:
-            FILE_ENCODING = self.file_encoding
+            file_encoding = self.file_encoding
         except AttributeError:
-            pass
+            file_encoding = FILE_ENCODING
         try:
-            FILE_LINE_ENDING = self.file_line_ending
+            file_line_ending = self.file_line_ending
         except AttributeError:
-            pass
+            file_line_ending = FILE_LINE_ENDING
 
-        with io.open(output_file_name, 'w', encoding=FILE_ENCODING) as output_file:
+        with io.open(output_file_name, 'w', encoding=file_encoding) as output_file:
             execution_start_time = datetime.now()
             self.logger.info('File %s processing started at %s', output_file_name,
                              execution_start_time)
 
             if bool(self.header):
                 if self.file_type == "csv":
-                    output_file.write(self.csv_row_header(column_name_list, CSV_VALUE_SEPARATOR)
-                                      + FILE_LINE_ENDING)
+                    output_file.write(self.csv_row_header(column_name_list, csv_value_separator)
+                                      + file_line_ending)
                 elif self.file_type == "flat":
                     output_file.write(self.flat_row_header(column_name_list, column_len_list)
-                                      + FILE_LINE_ENDING)
+                                      + file_line_ending)
 
             iterator = 1
             while output_file.tell() < output_file_size or iterator < row_count:
                 if self.file_type == "csv":
-                    row = self.csv_row_output(data_file_list, CSV_VALUE_SEPARATOR)
+                    row = self.csv_row_output(data_file_list, csv_value_separator)
                 elif self.file_type == "flat":
                     row = self.flat_row_output(data_file_list, column_len_list)
                 else:
@@ -214,7 +215,7 @@ class DummyFileGenerator:
                                       self.file_type)
                     sys.exit(1)
 
-                output_file.write(row + FILE_LINE_ENDING)
+                output_file.write(row + file_line_ending)
                 iterator += 1
 
                 if divmod(iterator, 10000)[1] == 1:
@@ -252,15 +253,15 @@ def args():
     parser.add_argument('-ap', '--absolutepath', type=str, required=True)
     parser.add_argument('-fs', '--filesize', type=int, required=False, default=0)
     parser.add_argument('-rc', '--rowcount', type=int, required=False, default=0)
-    parser.add_argument('-ll', '--logging_level', type=str, required=False, default="INFO")
+    parser.add_argument('-ll', '--logging_level', type=str, required=False, default=LOGGING_LEVEL)
 
     parser.add_argument('-cjp', '--config_json_path', type=str, required=False, default=None)
     parser.add_argument('-dfl', '--data_files_location', type=str, required=False,
                         default=os.sep.join((os.getcwd(), 'data_files')))
-    parser.add_argument('-drc', '--default_rowcount', type=int, required=False, default=100)
-    parser.add_argument('-fen', '--file_encoding', type=str, required=False, default="utf8")
-    parser.add_argument('-fle', '--file_line_ending', type=str, required=False, default="\n")
-    parser.add_argument('-cvs', '--csv_value_separator', type=str, required=False, default="|")
+    parser.add_argument('-drc', '--default_rowcount', type=int, required=False, default=DEFAULT_ROW_COUNT)
+    parser.add_argument('-fen', '--file_encoding', type=str, required=False, default=FILE_ENCODING)
+    parser.add_argument('-fle', '--file_line_ending', type=str, required=False, default=FILE_LINE_ENDING)
+    parser.add_argument('-cvs', '--csv_value_separator', type=str, required=False, default=CSV_VALUE_SEPARATOR)
 
     parsed = parser.parse_args()
 
