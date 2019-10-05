@@ -10,9 +10,9 @@ a dummy csv or flat text files generator written in Python 3.7
 This tool is able to generate dummy csv or flat txt files based on the configuration settings you setup for your project(s).
 
 
-[How to install and run the program as CLI](#how-to-install-and-run-the-program-as-CLI)
+[How to install and run the tool as CLI](#how-to-install-and-run-the-tool-as-CLI)
 
-[How to install and run the program as a imported package](#how-to-install-and-run-the-program-as-a-imported-package)
+[How to install and run the tool as an imported package](#how-to-install-and-run-the-tool-as-an-imported-package)
 
 [How to setup a new dummy file generator project](#how-to-setup-a-new-dummy-file-generator-project)
 
@@ -20,7 +20,7 @@ This tool is able to generate dummy csv or flat txt files based on the configura
 
 [Pytest testing](#Pytest-testing)
 
-# How to install and run the program as CLI
+# How to install and run the tool as CLI
 ### To install:
 `git clone https://github.com/datahappy1/dummy_file_generator c:\dummy_file_generator\`<br />
 `pip install -r requirements.txt`
@@ -68,13 +68,13 @@ To run tests:<br />
 `pytest`<br />
 
 
-# How to install and run the program as a imported package
+# How to install and run the tool as an imported package
 ### To install:
 `pip install dummy-file-generator`<br />
 
 ### To run:<br />
 The dummy file generator imported package needs these mandatory arguments defining: 
-- projectname `--projectname` or `-pn` (mandatory argument, *based on the projectname, the dummy file specific settings from /configurables/config.json file are loaded ),* 
+- projectname `--projectname` or `-pn` (mandatory argument, *based on the projectname, the dummy file specific settings from config.json file are loaded ),* 
 - absolutepath `--absolutepath` or `-ap` (mandatory argument) defining the full output file path to the file you wish to generate
 
 The dummy file generator imported package can consume these optional arguments defining: 
