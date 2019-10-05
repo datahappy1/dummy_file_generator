@@ -251,17 +251,25 @@ def args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-pn', '--projectname', type=str, required=True)
     parser.add_argument('-ap', '--absolutepath', type=str, required=True)
-    parser.add_argument('-fs', '--filesize', type=int, required=False, default=0)
-    parser.add_argument('-rc', '--rowcount', type=int, required=False, default=0)
-    parser.add_argument('-ll', '--logging_level', type=str, required=False, default=LOGGING_LEVEL)
+    parser.add_argument('-fs', '--filesize', type=int, required=False,
+                        default=0)
+    parser.add_argument('-rc', '--rowcount', type=int, required=False,
+                        default=0)
+    parser.add_argument('-ll', '--logging_level', type=str, required=False,
+                        default=LOGGING_LEVEL)
 
-    parser.add_argument('-cjp', '--config_json_path', type=str, required=False, default=None)
+    parser.add_argument('-cjp', '--config_json_path', type=str, required=False,
+                        default=None)
     parser.add_argument('-dfl', '--data_files_location', type=str, required=False,
                         default=os.sep.join((os.getcwd(), 'data_files')))
-    parser.add_argument('-drc', '--default_rowcount', type=int, required=False, default=DEFAULT_ROW_COUNT)
-    parser.add_argument('-fen', '--file_encoding', type=str, required=False, default=FILE_ENCODING)
-    parser.add_argument('-fle', '--file_line_ending', type=str, required=False, default=FILE_LINE_ENDING)
-    parser.add_argument('-cvs', '--csv_value_separator', type=str, required=False, default=CSV_VALUE_SEPARATOR)
+    parser.add_argument('-drc', '--default_rowcount', type=int, required=False,
+                        default=DEFAULT_ROW_COUNT)
+    parser.add_argument('-fen', '--file_encoding', type=str, required=False,
+                        default=FILE_ENCODING)
+    parser.add_argument('-fle', '--file_line_ending', type=str, required=False,
+                        default=FILE_LINE_ENDING)
+    parser.add_argument('-cvs', '--csv_value_separator', type=str, required=False,
+                        default=CSV_VALUE_SEPARATOR)
 
     parsed = parser.parse_args()
 

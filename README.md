@@ -1,5 +1,5 @@
 # dummy_file_generator
-## version 1.0.5
+## version 1.0.6
 a dummy csv or flat text files generator written in Python 3.7
 
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/rating.svg)
@@ -8,27 +8,11 @@ a dummy csv or flat text files generator written in Python 3.7
 
 
 This tool is able to generate dummy csv or flat txt files based on the configuration settings you setup for your project(s).
-It consumes arguments defining: 
-- projectname (mandatory argument, *based on the projectname, the specific settings from config.json file are loaded ),* 
-- absolutepath (mandatory argument) defining the full output file path to the file you wish to generate
-- filesize (optional argument) defining the desired size (in kBs) of the output file 
-- rowcount (optional argument) defining the desired row count of the output file
-- logging_level (optional argument) defining the Python logging level 
-
-- default_rowcount (optional argument) defining the rowcount fallback value when neither row_count,neither file_size set
-- file_encoding (optional argument) defining the generated files encoding
-- file_line_ending (optional argument) defining the file line ending
-- csv_value_separator (optional argument) defining the .csv file value separator
-
-these arguments are needed when running as an importable library:
-- data_files_location (optional argument) defining the path to the source .txt data files 
-- config_json_path (optional argument) defining the custom path to your config.json file
-
 
 
 [How to install and run the program as CLI](#how-to-install-and-run-the-program-as-CLI)
 
-[How to install and run the program as a importable library](#how-to-install-and-run-the-program-as-a-importable-library)
+[How to install and run the program as a imported package](#how-to-install-and-run-the-program-as-a-imported-package)
 
 [How to setup a new dummy file generator project](#how-to-setup-a-new-dummy-file-generator-project)
 
@@ -36,28 +20,38 @@ these arguments are needed when running as an importable library:
 
 [Pytest testing](#Pytest-testing)
 
-
 # How to install and run the program as CLI
 ### To install:
 `git clone https://github.com/datahappy1/dummy_file_generator c:\dummy_file_generator\`<br />
+`pip install -r requirements.txt`
 
-`cd c:\dummy_file_generator\dummy_file_generator`
-
-`python.exe __main__.py -pn my_project -ap c:\dummy1file.txt -rc 256`
+*You are strongly encouraged to use the Python virtual environment
 
 ### To run:<br />
-You need to set the required arguments :
-projectname `-pn` <br />
-absolutepath `-ap` <br />
+The CLI tool needs these mandatory arguments defining: 
+- projectname `--projectname` or `-pn` (mandatory argument, *based on the projectname, the dummy file specific settings from /configurables/config.json file are loaded ),* 
+- absolutepath `--absolutepath` or `-ap` (mandatory argument) defining the full output file path to the file you wish to generate
 
-The optional arguments are :
-filesize `-fs` (in kB) <br />
-rowcount `-rc` <br />
+The CLI tool can consume these optional arguments defining: 
+- filesize `--filesize` or `-fs` (optional argument) defining the desired size (in kBs) of the output file 
+- rowcount `--rowcount` or `-rc` (optional argument) defining the desired row count of the output file
 
 *Note if you do NOT specify the filesize and do NOT specify the rowcount, the default row_count value ( set to 100 ) from
 settings.py will be used ( or the value you provide in the `default_rowcount` optional argument)
 
-Run these commands to execute:<br />
+- logging_level `--logging_level` or `-ll` (optional argument) defining the Python logging level 
+- default_rowcount `--default_rowcount` or `-drc` (optional argument) defining the rowcount fallback value when neither row_count,neither file_size set
+- file_encoding `--file_encoding` or `-fen` (optional argument) defining the generated files encoding
+- file_line_ending `--file_line_ending` or `-fle` (optional argument) defining the file line ending
+- csv_value_separator `--csv_value_separator` or `-cvs` (optional argument) defining the .csv file value separator
+
+these arguments are typically needed when running the tool as an importable library, but you can
+use them to change the location of the source data files and the config json with the project setup even with
+this tool running as CLI:
+- data_files_location `--data_files_location` or `-dfl` (optional argument) defining the path to the source .txt data files 
+- config_json_path `--config_json_path` or `-cjp` (optional argument) defining the custom path to your config.json file
+
+Example how to run :<br />
 - with the -fs argument to set the desired filesize of 256 kB :<br />
 `cd c:\dummy_file_generator\dummy_file_generator`<br />
 `python c:\dummy_file_generator\dummy_file_generator\__main__.py -pn dummy1 -ap c:\myfiles\dummy1file.csv -fs 256`<br />
@@ -65,42 +59,65 @@ Run these commands to execute:<br />
 `cd c:\dummy_file_generator\dummy_file_generator`<br />
 `python c:\dummy_file_generator\dummy_file_generator\__main__.py -pn dummy1 -ap c:\myfiles\dummy1file.csv -rc 1000`<br />
 
-*You are strongly encouraged to use Python virtual environment
 
-# How to install and run the program as a importable library
+# Pytest testing
+Pytest unit and performance tests are also a part of this tool.
+You can install Pytest with `pip install pytest`<br /> 
+To run tests:<br />
+`cd c:\dummy_file_generator\dummy_file_generator`<br />
+`pytest`<br />
+
+
+# How to install and run the program as a imported package
 ### To install:
 `pip install dummy-file-generator`<br />
 
 ### To run:<br />
-You need to set these arguments as an Python dictionary for example:
-    `kwargs = {"project_name": "dummy1", "absolute_path": "C:\\scrap_files\dummy1.csv",
-              "file_size": 1024,
-              "logging_level": "DEBUG",
-              "data_files_location": "c:\\dummy_file_generator\dummy_file_generator\data_files",
-              "config_json_path": "c:\\dummy_file_generator\dummy_file_generator\configurables\config.json",
-              }
-`
+The dummy file generator imported package needs these mandatory arguments defining: 
+- projectname `--projectname` or `-pn` (mandatory argument, *based on the projectname, the dummy file specific settings from /configurables/config.json file are loaded ),* 
+- absolutepath `--absolutepath` or `-ap` (mandatory argument) defining the full output file path to the file you wish to generate
+
+The dummy file generator imported package can consume these optional arguments defining: 
+- filesize `--filesize` or `-fs` (optional argument) defining the desired size (in kBs) of the output file 
+- rowcount `--rowcount` or `-rc` (optional argument) defining the desired row count of the output file
 
 *Note if you do NOT specify the filesize and do NOT specify the rowcount, the default row_count value ( set to 100 ) from
 settings.py will be used ( or the value you provide in the `default_rowcount` optional argument)
 
-Run from within a function in your project for example:<br />
+- data_files_location `--data_files_location` or `-dfl` (optional argument) defining the path to the source .txt data files 
+- config_json_path `--config_json_path` or `-cjp` (optional argument) defining the custom path to your config.json file
+- logging_level `--logging_level` or `-ll` (optional argument) defining the Python logging level 
+- default_rowcount `--default_rowcount` or `-drc` (optional argument) defining the rowcount fallback value when neither row_count,neither file_size set
+- file_encoding `--file_encoding` or `-fen` (optional argument) defining the generated files encoding
+- file_line_ending `--file_line_ending` or `-fle` (optional argument) defining the file line ending
+- csv_value_separator `--csv_value_separator` or `-cvs` (optional argument) defining the .csv file value separator
+
+
+Example how to run :<br /><br />
 ```
 from dummy_file_generator import DummyFileGenerator as DFG
 
-def generate_dummy_file():
-    kwargs = {"project_name": "dummy1", "absolute_path": "C:\\x\dfxx.csv",
-              "file_size": 1024,
-              "logging_level": "DEBUG",
-              "data_files_location": "c:\\dummy_file_generator\dummy_file_generator\data_files",
-              "config_json_path": "c:\\dummy_file_generator\dummy_file_generator\configurables\config.json",
+def generate_dummy_file(project_name, absolute_path, file_size,
+                        data_files_location, config_json_path):
+    kwargs = {"project_name": project_name, "absolute_path": absolute_path,
+              "file_size": file_size,
+              "logging_level": "INFO",
+              "data_files_location": data_files_location,
+              "config_json_path": config_json_path,
+              "file_encoding": "utf8",
+              "csv_value_separator": "%",
+              "file_line_ending": "\n"
               }
 
     obj = DFG(**kwargs)
     DFG.executor(obj)
 
-generate_dummy_file()
-
+generate_dummy_file(project_name="dummy1",
+                    absolute_path="c:\myfiles\dummy1.csv", 
+                    file_size=1024,
+                    data_files_location="c:\\dummy_file_generator\dummy_file_generator\data_files",
+                    config_json_path="c:\\dummy_file_generator\dummy_file_generator\configurables\config.json"
+                    )
 ```
 
 # How to setup a new dummy file generator project
@@ -161,14 +178,8 @@ The project element in your config.json would need to be setup like:
 # How to add a new source dataset for your project
 Whenever you need to add a new source .txt file in the data_files folder, just add it to your `data_files` folder. 
 If running as a standalone CLI tool, the data_files folder is located here:
+`dummy_file_generator/data_files`
 
-When running as an importable library, the data_files folder is where you set it in
+When running as an imported package, the data_files folder is whereever you set it in
 the argument data_files_location.
 Now you can use this new data file in your project setup in `config.json` file. 
-
-# Pytest testing
-Pytest unit and performance tests are also a part of this tool.
-You can install Pytest with `pip install pytest`<br /> 
-To run tests:<br />
-`cd c:\dummy_file_generator\dummy_file_generator`<br />
-`pytest`<br />
