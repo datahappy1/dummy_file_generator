@@ -39,13 +39,14 @@ The CLI tool can consume these optional arguments defining:
 *Note if you do NOT specify the filesize and do NOT specify the rowcount, the default row_count value ( set to 100 ) from
 settings.py will be used ( or the value you provide in the `default_rowcount` optional argument)
 
+*these 5 optional arguments can be used to override values in `configurables/settings.py`:
 - logging_level `--logging_level` or `-ll` (optional argument) defining the Python logging level 
 - default_rowcount `--default_rowcount` or `-drc` (optional argument) defining the rowcount fallback value when neither row_count,neither file_size set
 - file_encoding `--file_encoding` or `-fen` (optional argument) defining the generated files encoding
 - file_line_ending `--file_line_ending` or `-fle` (optional argument) defining the file line ending
 - csv_value_separator `--csv_value_separator` or `-cvs` (optional argument) defining the .csv file value separator
 
-these arguments are typically needed when running the tool as an importable library, but you can
+*these arguments are typically needed when running the tool as an importable library, but you can
 use them to change the location of the source data files and the config json with the project setup even with
 this tool running as CLI:
 - data_files_location `--data_files_location` or `-dfl` (optional argument) defining the path to the source .txt data files 
