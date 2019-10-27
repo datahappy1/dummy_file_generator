@@ -1,5 +1,5 @@
 # dummy_file_generator
-## version 1.0.6
+## version 1.0.7
 a dummy csv or flat text files generator written in Python 3.7
 
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/rating.svg)
