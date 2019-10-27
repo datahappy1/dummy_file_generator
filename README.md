@@ -21,6 +21,8 @@ This tool is able to generate dummy csv or flat txt files based on the configura
 [Pytest testing](#Pytest-testing)
 
 # How to install and run the tool as CLI
+One common usage scenario can be load / stress / performance testing of file-processing data tools, allowing you to generate the files needed from a command line.
+
 ### To install:
 `git clone https://github.com/datahappy1/dummy_file_generator c:\dummy_file_generator\`<br />
 `pip install -r requirements.txt`
@@ -70,6 +72,8 @@ To run tests:<br />
 
 
 # How to install and run the tool as an imported package
+One common usage scenario can be load / stress / performance testing of file-processing data tools, where you can now generate dummy text files during the test fixtures / setup.
+
 ### To install:
 `pip install dummy-file-generator`<br />
 
@@ -122,12 +126,15 @@ generate_dummy_file(project_name="dummy1",
 ```
 
 # How to setup a new dummy file generator project
+You need to generate dummy files based on the content of the text files in your "data_files" folder, and these source text files need to be setup for instance like this:
 
-Let's say you need to generate dummy files based on the content of the text files in your "data_files" folder, and these text files are looking like this:
+![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/first_names.PNG)
+
+This tool picks random item from each of the files configured for your project in config.json and uses these values to populate the data for "columns" for each written row. 
 
 ### - How to generate a .csv file
 Let's say you need to generate a dummy .csv file containing 3 columns for Names, Dates and IDs. 
-The project element in your config.json would need to be setup like:
+The "project" JSON object in your config.json would need to be setup like:
 
     {
       "project_name":"dummy1",
@@ -151,7 +158,7 @@ The project element in your config.json would need to be setup like:
 
 ### - How to generate a .txt flat file:
 Let's say you need to generate a dummy .txt flat file containing 3 columns for Names, Dates and IDs with specific column lengths defined. 
-The project element in your config.json would need to be setup like:
+The "project" JSON object in your config.json would need to be setup like:
 
     {
       "project_name":"dummy1",
