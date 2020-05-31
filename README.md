@@ -115,8 +115,9 @@ def generate_dummy_file(project_name, absolute_path, file_size,
               }
 
     obj = DFG(**kwargs)
-    DFG.executor(obj)
-
+    result = DFG.generate_file(obj)
+    print(result)
+    
 generate_dummy_file(project_name="dummy1",
                     absolute_path="c:\myfiles\dummy1.csv", 
                     file_size=1024,

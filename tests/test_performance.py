@@ -34,7 +34,7 @@ def test_performance(test_project, test_file_extension, expected_duration):
               "config_json_path": CONFIG_JSON_PATH}
 
     obj = Dfg(**kwargs)
-    Dfg.executor(obj)
+    Dfg.generate_file(obj)
 
     execution_end_time = datetime.now()
     duration = (execution_end_time - execution_start_time).seconds

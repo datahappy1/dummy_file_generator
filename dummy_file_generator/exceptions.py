@@ -1,0 +1,8 @@
+"""
+
+"""
+class DummyFileGeneratorException(Exception):
+    """
+
+    """
+    pass
