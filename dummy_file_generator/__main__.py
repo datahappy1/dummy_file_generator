@@ -27,13 +27,41 @@ class DummyFileGenerator:
         self.column_name_list = []
         self.column_len_list = []
         self.data_file_list = []
+        self.row_count = 0
+        self.file_size = 0
         self.header = None
         self.file_type = None
         self.config_json_path = None
+        self.csv_value_separator = None
+        self.file_encoding = None
+        self.file_line_ending = None
         self.logging_level = LOGGING_LEVEL
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+        if self.file_size > 0:
+            self.file_size = self.file_size * 1024
+
+        if self.row_count == 0 and self.file_size == 0:
+            # use default row_count from settings.py in case no row counts
+            # and no file size args provided:
+            self.row_count = DEFAULT_ROW_COUNT
+
+        if not self.csv_value_separator:
+            self.csv_value_separator = CSV_VALUE_SEPARATOR
+
+        if not self.file_encoding:
+            self.file_encoding = FILE_ENCODING
+
+        if not self.file_line_ending:
+            self.file_line_ending = FILE_LINE_ENDING
+
+    def setup_logging(self):
+        # set logging levels for main function console output
+        logging.basicConfig(level=self.logging_level)
+        self.logger = logging.getLogger(__name__)
+
+    def set_vars_from_data_files_content(self):
         data_files = [f for f in os.listdir(self.data_files_location) if
                       os.path.isfile(os.path.join(self.data_files_location, f))
                       and str(f).endswith('.txt')]
@@ -43,37 +71,6 @@ class DummyFileGenerator:
                     read_file_return_content_and_content_list_length(data_file,
                                                                      data_files_location=
                                                                      self.data_files_location))
-        # set logging levels for main function console output
-        logging.basicConfig(level=self.logging_level)  # pylint: disable=no-member
-        self.logger = logging.getLogger(__name__)
-
-        try:
-            output_file_size = self.file_size * 1024
-        except AttributeError:
-            output_file_size = 0
-        try:
-            row_count = self.row_count
-        except AttributeError:
-            row_count = 0
-        if row_count == 0 and output_file_size == 0:
-            # use default row_count from settings.py in case no row counts
-            # and no file size args provided:
-            row_count = DEFAULT_ROW_COUNT
-
-        try:
-            csv_value_separator = self.csv_value_separator
-        except AttributeError:
-            csv_value_separator = CSV_VALUE_SEPARATOR
-        try:
-            file_encoding = self.file_encoding
-        except AttributeError:
-            file_encoding = FILE_ENCODING
-        try:
-            file_line_ending = self.file_line_ending
-        except AttributeError:
-            file_line_ending = FILE_LINE_ENDING
-
-
 
     @staticmethod
     def csv_row_header(columns, csv_value_separator):
@@ -177,7 +174,6 @@ class DummyFileGenerator:
         else:
             raise ValueError('No such project as %s found in config.json', self.project_name)
 
-
     def write_output_file(self):
         """
         write output function
@@ -189,7 +185,6 @@ class DummyFileGenerator:
                 self.logger.info('Target folder not existing, created %s', os.path.dirname(self.absolute_path))
             except Exception:
                 raise
-
 
         with io.open(self.absolute_path, 'w', encoding=self.file_encoding) as output_file:
             execution_start_time = datetime.now()
@@ -205,7 +200,7 @@ class DummyFileGenerator:
                                       + self.file_line_ending)
 
             iterator = 1
-            while output_file.tell() < self.output_file_size or iterator < self.row_count:
+            while output_file.tell() < self.file_size or iterator < self.row_count:
                 if self.file_type == "csv":
                     row = self.csv_row_output(self.data_file_list, self.csv_value_separator)
                 elif self.file_type == "flat":
@@ -238,9 +233,12 @@ class DummyFileGenerator:
         main function
         :return:
         """
+        DummyFileGenerator.setup_logging(self)
+        DummyFileGenerator.set_vars_from_data_files_content(self)
         DummyFileGenerator.read_config_file(self)
         DummyFileGenerator.write_output_file(self)
         return 0
+
 
 def parse_args():
     """
@@ -284,8 +282,10 @@ def parse_args():
     file_line_ending = parsed.file_line_ending
     csv_value_separator = parsed.csv_value_separator
 
-    kwargs = {"project_name": project_name, "absolute_path": absolute_path,
-              "file_size": file_size, "row_count": row_count,
+    kwargs = {"project_name": project_name,
+              "absolute_path": absolute_path,
+              "file_size": file_size,
+              "row_count": row_count,
               "logging_level": logging_level,
               "data_files_location": data_files_location,
               "config_json_path": config_json_path,

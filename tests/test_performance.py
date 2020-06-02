@@ -13,8 +13,8 @@ CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'files', 'test_config.json'])
 
 @pytest.mark.parametrize(
     "test_project, test_file_extension, expected_duration", [
-        ("test_csv", ".csv", 1),
-        ("test_flatfile", ".txt", 1)
+        ("test_csv", ".csv", 13),
+        ("test_flatfile", ".txt", 13)
     ])
 def test_performance(test_project, test_file_extension, expected_duration):
     """

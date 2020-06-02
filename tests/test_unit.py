@@ -9,7 +9,7 @@ DATA_FILES_LOCATION = 'files'
 
 KWARGS = {"data_files_location": DATA_FILES_LOCATION, "logging_level": "INFO"}
 DFG = Dfg(**KWARGS)
-
+DFG.set_vars_from_data_files_content()
 
 def test_unit_lib_load_file_to_list():
     """
@@ -49,7 +49,7 @@ def test_unit_csv_writer_csv_row_header():
 
     csv_row_separator = '|'
     output = DFG.csv_row_header('test1, test2, test3', csv_row_separator)
-    assert output == 'test1|test2|test3|'
+    assert output == 'test1|test2|test3'
 
 
 def test_unit_flat_writer_flat_row_output():
