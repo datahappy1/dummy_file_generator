@@ -100,11 +100,12 @@ settings.py will be used ( or the value you provide in the `default_rowcount` op
 
 Example how to run :<br /><br />
 ```
-from dummy_file_generator import DummyFileGenerator as DFG
+from dummy_file_generator import DummyFileGenerator as DFG, DummyFileGeneratorException
 
 def generate_dummy_file(project_name, absolute_path, file_size,
                         data_files_location, config_json_path):
-    kwargs = {"project_name": project_name, "absolute_path": absolute_path,
+    kwargs = {"project_name": project_name, 
+              "absolute_path": absolute_path,
               "file_size": file_size,
               "logging_level": "INFO",
               "data_files_location": data_files_location,
@@ -115,8 +116,11 @@ def generate_dummy_file(project_name, absolute_path, file_size,
               }
 
     obj = DFG(**kwargs)
-    result = DFG.generate_file(obj)
-    print(result)
+    try:
+        DFG.generate_file(obj)
+    except DummyFileGeneratorException as DFG_ERR:
+        raise(DFG_ERR)
+        
     
 generate_dummy_file(project_name="dummy1",
                     absolute_path="c:\myfiles\dummy1.csv", 

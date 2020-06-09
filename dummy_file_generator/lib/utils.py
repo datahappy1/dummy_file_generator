@@ -34,17 +34,3 @@ def read_file_return_content_and_content_list_length(data_set_name, data_files_l
     data_set = open(os.sep.join((str(data_files_dir_path), data_set_name)))
     data_set = data_set.read().split(FILE_LINE_ENDING)
     return data_set, len(data_set) - 1
-
-
-def replace_multiple(main_string, to_be_replaced, new_string) -> str:
-    """
-    helper function to iterate over the strings to be replaced
-    :param main_string:
-    :param to_be_replaced:
-    :param new_string:
-    :return: string with replacements
-    """
-    for elem in to_be_replaced:
-        if elem in main_string:
-            main_string = main_string.replace(elem, new_string)
-    return main_string

@@ -3,7 +3,6 @@ import argparse
 import json
 import io
 import os
-import sys
 import logging
 
 from random import randint
@@ -13,6 +12,12 @@ from dummy_file_generator.lib.utils import add_quotes_to_list_items, \
     whitespace_generator, read_file_return_content_and_content_list_length
 from dummy_file_generator.configurables.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, CSV_VALUE_SEPARATOR, LOGGING_LEVEL
+
+
+class DummyFileGeneratorException(Exception):
+    """
+    dummy file generator custom exception type
+    """
 
 
 class DummyFileGenerator:
@@ -36,6 +41,7 @@ class DummyFileGenerator:
         self.file_encoding = None
         self.file_line_ending = None
         self.logging_level = LOGGING_LEVEL
+        self.logger = None
         for key, value in kwargs.items():
             setattr(self, key, value)
 
@@ -56,6 +62,10 @@ class DummyFileGenerator:
         if not self.file_line_ending:
             self.file_line_ending = FILE_LINE_ENDING
 
+        if not self.config_json_path:
+            self.config_json_path = os.sep.join([os.path.join(os.path.dirname(__file__)),
+                                                 'configurables', 'config.json'])
+
     def setup_logging(self):
         # set logging levels for main function console output
         logging.basicConfig(level=self.logging_level)
@@ -71,6 +81,32 @@ class DummyFileGenerator:
                     read_file_return_content_and_content_list_length(data_file,
                                                                      data_files_location=
                                                                      self.data_files_location))
+
+    def read_config_file(self):
+        """
+        read config json file function
+        :return:
+        """
+        with open(self.config_json_path) as file:
+            data = json.load(file)
+
+        for project in data['project']:
+            if project['project_name'] == self.project_name:
+                self.header = project['header']
+                self.file_type = project['file_type']
+                for column in project['columns']:
+                    self.column_name_list.append(column['column_name'])
+                    self.data_file_list.append(str(column['datafile']).replace('.txt', ''))
+                    if self.file_type == "flat":
+                        self.column_len_list.append(column['column_len'])
+                break
+        else:
+            raise DummyFileGeneratorException('Project %s not found in config.json', self.project_name)
+
+    def validate_config_file(self):
+        if self.file_type not in ('csv', 'flat'):
+            raise DummyFileGeneratorException('Unknown file_type %s, supported options are csv and flat',
+                                              self.file_type)
 
     @staticmethod
     def csv_row_header(columns, csv_value_separator):
@@ -149,31 +185,6 @@ class DummyFileGenerator:
         row = ''.join(row)
         return row
 
-    def read_config_file(self):
-        """
-        read config json file function
-        :return:
-        """
-        if not self.config_json_path:
-            self.config_json_path = os.sep.join([os.path.join(os.path.dirname(__file__)),
-                                                 'configurables', 'config.json'])
-
-        with open(self.config_json_path) as file:
-            data = json.load(file)
-
-        for project in data['project']:
-            if project['project_name'] == self.project_name:
-                self.header = project['header']
-                self.file_type = project['file_type']
-                for column in project['columns']:
-                    self.column_name_list.append(column['column_name'])
-                    self.data_file_list.append(str(column['datafile']).replace('.txt', ''))
-                    if self.file_type == "flat":
-                        self.column_len_list.append(column['column_len'])
-                break
-        else:
-            raise ValueError('No such project as %s found in config.json', self.project_name)
-
     def write_output_file(self):
         """
         write output function
@@ -183,8 +194,8 @@ class DummyFileGenerator:
             try:
                 os.makedirs(os.path.dirname(self.absolute_path))
                 self.logger.info('Target folder not existing, created %s', os.path.dirname(self.absolute_path))
-            except Exception:
-                raise
+            except OSError as OS_ERR:
+                raise DummyFileGeneratorException('Cannot create target folder %s', OS_ERR)
 
         with io.open(self.absolute_path, 'w', encoding=self.file_encoding) as output_file:
             execution_start_time = datetime.now()
@@ -201,13 +212,11 @@ class DummyFileGenerator:
 
             iterator = 1
             while output_file.tell() < self.file_size or iterator < self.row_count:
+                row = None
                 if self.file_type == "csv":
                     row = self.csv_row_output(self.data_file_list, self.csv_value_separator)
                 elif self.file_type == "flat":
                     row = self.flat_row_output(self.data_file_list, self.column_len_list)
-                else:
-                    raise NotImplementedError('Unknown file_type %s, supported options are csv and flat',
-                                              self.file_type)
 
                 output_file.write(row + self.file_line_ending)
                 iterator += 1
@@ -236,8 +245,8 @@ class DummyFileGenerator:
         DummyFileGenerator.setup_logging(self)
         DummyFileGenerator.set_vars_from_data_files_content(self)
         DummyFileGenerator.read_config_file(self)
+        DummyFileGenerator.validate_config_file(self)
         DummyFileGenerator.write_output_file(self)
-        return 0
 
 
 def parse_args():
@@ -282,19 +291,19 @@ def parse_args():
     file_line_ending = parsed.file_line_ending
     csv_value_separator = parsed.csv_value_separator
 
-    kwargs = {"project_name": project_name,
-              "absolute_path": absolute_path,
-              "file_size": file_size,
-              "row_count": row_count,
-              "logging_level": logging_level,
-              "data_files_location": data_files_location,
-              "config_json_path": config_json_path,
-              "default_rowcount": default_rowcount,
-              "file_encoding": file_encoding,
-              "file_line_ending": file_line_ending,
-              "csv_value_separator": csv_value_separator
-              }
-
+    kwargs = {
+        "project_name": project_name,
+        "logging_level": logging_level,
+        "data_files_location": data_files_location,
+        "config_json_path": config_json_path,
+        "default_rowcount": default_rowcount,
+        "csv_value_separator": csv_value_separator,
+        "absolute_path": absolute_path,
+        "file_size": file_size,
+        "row_count": row_count,
+        "file_encoding": file_encoding,
+        "file_line_ending": file_line_ending,
+    }
     return kwargs
 
 
