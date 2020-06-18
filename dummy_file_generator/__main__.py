@@ -322,6 +322,6 @@ if __name__ == "__main__":
     PROJECT_SCOPE_KWARGS = KWARGS[0]
     FILE_SCOPE_KWARGS = KWARGS[1]
 
-    OBJ = DummyFileGenerator()
+    #OBJ = DummyFileGenerator()
     FOBJ = File(**PROJECT_SCOPE_KWARGS)
     FOBJ.generate_file(**FILE_SCOPE_KWARGS)
