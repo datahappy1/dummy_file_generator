@@ -28,12 +28,9 @@ class DummyFileGenerator:
     def __init__(self, **kwargs):
         self.project_name = None
         self.data_files_location = None
-        self.absolute_path = None
         self.column_name_list = []
         self.column_len_list = []
         self.data_file_list = []
-        self.row_count = 0
-        self.file_size = 0
         self.header = None
         self.file_type = None
         self.config_json_path = None
@@ -44,14 +41,6 @@ class DummyFileGenerator:
         self.logger = None
         for key, value in kwargs.items():
             setattr(self, key, value)
-
-        if self.file_size > 0:
-            self.file_size = self.file_size * 1024
-
-        if self.row_count == 0 and self.file_size == 0:
-            # use default row_count from settings.py in case no row counts
-            # and no file size args provided:
-            self.row_count = DEFAULT_ROW_COUNT
 
         if not self.csv_value_separator:
             self.csv_value_separator = CSV_VALUE_SEPARATOR
@@ -237,11 +226,30 @@ class DummyFileGenerator:
             self.logger.info('%s kB file with %s rows written in %s', output_file_size / 1024,
                              iterator, duration)
 
-    def generate_file(self):
+class File(DummyFileGenerator):
+    def __init__(self, **project_scope_kwargs):
+        super().__init__(**project_scope_kwargs)
+        self.absolute_path = None
+        self.row_count = 0
+        self.file_size = 0
+
+        if self.file_size > 0:
+            self.file_size = self.file_size * 1024
+
+        if self.row_count == 0 and self.file_size == 0:
+            # use default row_count from settings.py in case no row counts
+            # and no file size args provided:
+            self.row_count = DEFAULT_ROW_COUNT
+
+
+    def generate_file(self, **file_scope_kwargs):
         """
         main function
         :return:
         """
+        for key, value in file_scope_kwargs.items():
+            setattr(self, key, value)
+
         DummyFileGenerator.setup_logging(self)
         DummyFileGenerator.set_vars_from_data_files_content(self)
         DummyFileGenerator.read_config_file(self)
@@ -291,23 +299,29 @@ def parse_args():
     file_line_ending = parsed.file_line_ending
     csv_value_separator = parsed.csv_value_separator
 
-    kwargs = {
+    project_scope_kwargs = {
         "project_name": project_name,
         "logging_level": logging_level,
         "data_files_location": data_files_location,
         "config_json_path": config_json_path,
         "default_rowcount": default_rowcount,
         "csv_value_separator": csv_value_separator,
-        "absolute_path": absolute_path,
-        "file_size": file_size,
-        "row_count": row_count,
         "file_encoding": file_encoding,
         "file_line_ending": file_line_ending,
     }
-    return kwargs
+    file_scope_kwargs = {
+        "absolute_path": absolute_path,
+        "file_size": file_size,
+        "row_count": row_count,
+    }
+    return project_scope_kwargs, file_scope_kwargs
 
 
 if __name__ == "__main__":
     KWARGS = parse_args()
-    OBJ = DummyFileGenerator(**KWARGS)
-    DummyFileGenerator.generate_file(OBJ)
+    PROJECT_SCOPE_KWARGS = KWARGS[0]
+    FILE_SCOPE_KWARGS = KWARGS[1]
+
+    OBJ = DummyFileGenerator()
+    FOBJ = File(**PROJECT_SCOPE_KWARGS)
+    FOBJ.generate_file(**FILE_SCOPE_KWARGS)
