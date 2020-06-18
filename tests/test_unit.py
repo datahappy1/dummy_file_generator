@@ -1,7 +1,7 @@
 """
 test units
 """
-from dummy_file_generator.lib.utils import read_file_return_content_and_content_list_length
+from dummy_file_generator.utils import read_file_return_content_and_content_list_length
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 
 DATA_FILES_LOCATION = 'files'

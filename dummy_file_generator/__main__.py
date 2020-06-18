@@ -8,9 +8,9 @@ import logging
 from random import randint
 from datetime import datetime
 
-from dummy_file_generator.lib.utils import add_quotes_to_list_items, \
+from dummy_file_generator.utils import add_quotes_to_list_items, \
     whitespace_generator, read_file_return_content_and_content_list_length
-from dummy_file_generator.configurables.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
+from dummy_file_generator.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, CSV_VALUE_SEPARATOR, LOGGING_LEVEL
 
 
@@ -53,7 +53,7 @@ class DummyFileGenerator:
 
         if not self.config_json_path:
             self.config_json_path = os.sep.join([os.path.join(os.path.dirname(__file__)),
-                                                 'configurables', 'config.json'])
+                                                 'configs', 'config.json'])
 
     def setup_logging(self):
         # set logging levels for main function console output

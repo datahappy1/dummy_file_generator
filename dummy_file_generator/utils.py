@@ -1,6 +1,6 @@
 """ general utilities library """
 import os
-from dummy_file_generator.configurables.settings import FILE_LINE_ENDING
+from dummy_file_generator.settings import FILE_LINE_ENDING
 
 
 def whitespace_generator(i) -> str:
