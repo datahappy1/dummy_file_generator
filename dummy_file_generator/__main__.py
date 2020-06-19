@@ -51,6 +51,9 @@ class DummyFileGenerator:
         if not self.file_line_ending:
             self.file_line_ending = FILE_LINE_ENDING
 
+        if not self.logging_level:
+            self.logging_level = LOGGING_LEVEL
+
         if not self.config_json_path:
             self.config_json_path = os.sep.join([os.path.join(os.path.dirname(__file__)),
                                                  'configs', 'config.json'])
@@ -208,10 +211,11 @@ class DummyFileGenerator:
                     row = self.flat_row_output(self.data_file_list, self.column_len_list)
 
                 output_file.write(row + self.file_line_ending)
-                iterator += 1
 
                 if divmod(iterator, 10000)[1] == 1:
-                    self.logger.info('%s rows written', iterator - 1)
+                    self.logger.info('%s rows written', iterator)
+
+                iterator += 1
 
             # to get the file_size even when only row_count arg used
             output_file_size = output_file.tell()
@@ -322,6 +326,5 @@ if __name__ == "__main__":
     PROJECT_SCOPE_KWARGS = KWARGS[0]
     FILE_SCOPE_KWARGS = KWARGS[1]
 
-    #OBJ = DummyFileGenerator()
     FOBJ = File(**PROJECT_SCOPE_KWARGS)
     FOBJ.generate_file(**FILE_SCOPE_KWARGS)

@@ -1,0 +1,45 @@
+{
+  "project": [
+    {
+      "project_name": "dummy1",
+      "file_type": "csv",
+      "header": true,
+      "columns": [
+        {
+          "column_name": "firstname",
+          "datafile": "first_names.txt"
+        },
+        {
+          "column_name": "lastname",
+          "datafile": "last_names.txt"
+        },
+        {
+          "column_name": "dateofregistration",
+          "datafile": "dates.txt"
+        }
+      ]
+    },
+    {
+      "project_name": "dummy2",
+      "file_type": "flat",
+      "header": true,
+      "columns": [
+        {
+          "column_name": "Identifier",
+          "column_len": 13,
+          "datafile": "ids.txt"
+        },
+        {
+          "column_name": "lastname",
+          "column_len": 14,
+          "datafile": "last_names.txt"
+        },
+        {
+          "column_name": "dateofbirth",
+          "column_len": 12,
+          "datafile": "dates.txt"
+        }
+      ]
+    }
+  ]
+}
