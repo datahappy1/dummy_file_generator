@@ -39,6 +39,11 @@ class DummyFileGenerator:
         self.file_line_ending = None
         self.logging_level = LOGGING_LEVEL
         self.logger = None
+
+        self.absolute_path = None
+        self.row_count = 0
+        self.file_size = 0
+
         for key, value in kwargs.items():
             setattr(self, key, value)
 
@@ -57,6 +62,14 @@ class DummyFileGenerator:
         if not self.config_json_path:
             self.config_json_path = os.sep.join([os.path.join(os.path.dirname(__file__)),
                                                  'configs', 'config.json'])
+
+        if self.file_size > 0:
+            self.file_size = self.file_size * 1024
+
+        if self.row_count == 0 and self.file_size == 0:
+            # use default row_count from settings.py in case no row counts
+            # and no file size args provided:
+            self.row_count = DEFAULT_ROW_COUNT
 
     def setup_logging(self):
         # set logging levels for main function console output
@@ -177,11 +190,14 @@ class DummyFileGenerator:
         row = ''.join(row)
         return row
 
-    def write_output_file(self):
+    def write_output_file(self, kwargs):
         """
         write output function
         :return:
         """
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
         if not os.path.exists(os.path.dirname(self.absolute_path)):
             try:
                 os.makedirs(os.path.dirname(self.absolute_path))
@@ -212,10 +228,10 @@ class DummyFileGenerator:
 
                 output_file.write(row + self.file_line_ending)
 
-                if divmod(iterator, 10000)[1] == 1:
-                    self.logger.info('%s rows written', iterator)
-
                 iterator += 1
+
+                if divmod(iterator, 10000)[1] == 1:
+                    self.logger.info('%s rows written', iterator - 1)
 
             # to get the file_size even when only row_count arg used
             output_file_size = output_file.tell()
@@ -230,35 +246,16 @@ class DummyFileGenerator:
             self.logger.info('%s kB file with %s rows written in %s', output_file_size / 1024,
                              iterator, duration)
 
-
-class File(DummyFileGenerator):
-    def __init__(self, **project_scope_kwargs):
-        super().__init__(**project_scope_kwargs)
-        self.absolute_path = None
-        self.row_count = 0
-        self.file_size = 0
-
-        if self.file_size > 0:
-            self.file_size = self.file_size * 1024
-
-        if self.row_count == 0 and self.file_size == 0:
-            # use default row_count from settings.py in case no row counts
-            # and no file size args provided:
-            self.row_count = DEFAULT_ROW_COUNT
-
     def generate_file(self, **file_scope_kwargs):
         """
         main function
         :return:
         """
-        for key, value in file_scope_kwargs.items():
-            setattr(self, key, value)
-
         DummyFileGenerator.setup_logging(self)
         DummyFileGenerator.set_vars_from_data_files_content(self)
         DummyFileGenerator.read_config_file(self)
         DummyFileGenerator.validate_config_file(self)
-        DummyFileGenerator.write_output_file(self)
+        DummyFileGenerator.write_output_file(self, file_scope_kwargs)
 
 
 def parse_args():
@@ -326,5 +323,5 @@ if __name__ == "__main__":
     PROJECT_SCOPE_KWARGS = KWARGS[0]
     FILE_SCOPE_KWARGS = KWARGS[1]
 
-    FOBJ = File(**PROJECT_SCOPE_KWARGS)
-    FOBJ.generate_file(**FILE_SCOPE_KWARGS)
+    DFG = DummyFileGenerator(**PROJECT_SCOPE_KWARGS)
+    DFG.generate_file(**FILE_SCOPE_KWARGS)
