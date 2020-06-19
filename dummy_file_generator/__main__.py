@@ -14,6 +14,7 @@ from dummy_file_generator.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, CSV_VALUE_SEPARATOR, LOGGING_LEVEL
 
 
+
 class DummyFileGeneratorException(Exception):
     """
     dummy file generator custom exception type
@@ -82,7 +83,7 @@ class DummyFileGenerator:
                       and str(f).endswith('.txt')]
 
         for data_file in data_files:
-            setattr(self, data_file.replace('.txt', ''),
+            setattr(self, 'data_file_'+data_file.replace('.txt', ''),
                     read_file_return_content_and_content_list_length(data_file,
                                                                      data_files_location=
                                                                      self.data_files_location))
@@ -160,7 +161,7 @@ class DummyFileGenerator:
 
         for column in columns:
             column = column.strip("'")
-            _val, _len = DummyFileGenerator.__getattribute__(self, column)
+            _val, _len = DummyFileGenerator.__getattribute__(self, 'data_file_'+column)
             value = _val[randint(0, _len)]
             row.append(value)
         row = csv_value_separator.join(row)
