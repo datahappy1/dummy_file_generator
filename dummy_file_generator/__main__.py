@@ -1,8 +1,8 @@
 """ dummy file generator main runner """
-import argparse
-import json
 import io
 import os
+import json
+import argparse
 import logging
 
 from random import randint
@@ -226,6 +226,7 @@ class DummyFileGenerator:
             self.logger.info('%s kB file with %s rows written in %s', output_file_size / 1024,
                              iterator, duration)
 
+
 class File(DummyFileGenerator):
     def __init__(self, **project_scope_kwargs):
         super().__init__(**project_scope_kwargs)
@@ -240,7 +241,6 @@ class File(DummyFileGenerator):
             # use default row_count from settings.py in case no row counts
             # and no file size args provided:
             self.row_count = DEFAULT_ROW_COUNT
-
 
     def generate_file(self, **file_scope_kwargs):
         """
