@@ -1,20 +1,18 @@
 """
 test performance
 """
-from datetime import datetime
-
 import os
 import pytest
-from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
+from datetime import datetime
+from tests.conftest import tests_setup_dfg_instance
 
-DATA_FILES_LOCATION = 'files'
-CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'files', 'test_config.json'])
+DFG = tests_setup_dfg_instance()
 
 
 @pytest.mark.parametrize(
     "test_project, test_file_extension, expected_duration", [
-        ("test_csv", ".csv", 13),
-        ("test_flatfile", ".txt", 13)
+        ("test_csv", ".csv", 1),
+        ("test_flatfile", ".txt", 1)
     ])
 def test_performance(test_project, test_file_extension, expected_duration):
     """
@@ -23,18 +21,19 @@ def test_performance(test_project, test_file_extension, expected_duration):
     :return: assertion result
     """
     filename = "test_run_result_performance" + test_file_extension
-
     generated_file_path = os.sep.join(['generated_files', 'tests', filename])
+    file_scope_kwargs = {
+        "absolute_path": generated_file_path,
+        "file_size": 1024,
+        "row_count": None,
+        "file_encoding": None,
+        "file_line_ending": None,
+        "csv_value_separator": None,
+    }
 
     execution_start_time = datetime.now()
 
-    kwargs = {"project_name": test_project, "absolute_path": generated_file_path,
-              "data_files_location": DATA_FILES_LOCATION,
-              "file_size": 1024, "row_count": 0, "logging_level": "ERROR",
-              "config_json_path": CONFIG_JSON_PATH}
-
-    obj = Dfg(**kwargs)
-    Dfg.generate_file(obj)
+    DFG.write_output_file(**file_scope_kwargs)
 
     execution_end_time = datetime.now()
     duration = (execution_end_time - execution_start_time).seconds

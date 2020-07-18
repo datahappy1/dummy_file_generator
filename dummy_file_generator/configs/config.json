@@ -4,6 +4,7 @@
       "project_name": "dummy1",
       "file_type": "csv",
       "header": true,
+      "csv_value_separator": ",",
       "columns": [
         {
           "column_name": "firstname",
