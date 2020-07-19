@@ -1,5 +1,6 @@
 """
-init
+__init__.py
 """
-NAME = "dummy_file_generator"
 from dummy_file_generator.__main__ import DummyFileGenerator
+NAME = "dummy_file_generator"
+VERSION = "1.1.0"

@@ -25,10 +25,18 @@ class DummyFileGenerator:
     main project class
     """
 
+    @staticmethod
+    def _get_default_config_json_file_path():
+        """
+        returns default config.json file path
+        :return:
+        """
+        return os.sep.join([os.path.join(os.path.dirname(__file__)), 'configs', 'config.json'])
+
     def __init__(self, logging_level=None, **kwargs):
         data_files_location = kwargs.get('data_files_location')
         config_json_path = kwargs.get('config_json_path') or \
-                           os.sep.join([os.path.join(os.path.dirname(__file__)), 'configs', 'config.json'])
+                           DummyFileGenerator._get_default_config_json_file_path()
         project_name = kwargs.get('project_name')
         self.file_type = kwargs.get('file_type')
         self.column_name_list = []
@@ -77,12 +85,12 @@ class DummyFileGenerator:
                         self.column_len_list.append(column['column_len'])
                 break
         else:
-            raise DummyFileGeneratorException('Project %s not found in config.json', project_name)
+            raise DummyFileGeneratorException(f'Project {project_name} not found in config.json')
 
     def _validate_config_file(self):
         if self.file_type not in ('csv', 'flat'):
-            raise DummyFileGeneratorException('Unknown file_type %s, supported options are csv and flat',
-                                              self.file_type)
+            raise DummyFileGeneratorException(f'Unknown file_type {self.file_type}, '
+                                              'supported options are csv or flat')
 
     @staticmethod
     def csv_row_header(columns, csv_value_separator):
@@ -151,7 +159,7 @@ class DummyFileGenerator:
         for index, column in enumerate(columns):
             column = column.strip("'")
             whitespace = int(column_lengths[index])
-            _val, _len = DummyFileGenerator.__getattribute__(self, column)
+            _val, _len = DummyFileGenerator.__getattribute__(self, 'data_file_' + column)
             value = _val[randint(0, _len)]
             if whitespace < len(value):
                 self.logger.error('Column value %s is longer then expected '
@@ -165,9 +173,10 @@ class DummyFileGenerator:
         if not os.path.exists(os.path.dirname(absolute_path)):
             try:
                 os.makedirs(os.path.dirname(absolute_path))
-                self.logger.info('Target folder not existing, created %s', os.path.dirname(absolute_path))
-            except OSError as OS_ERR:
-                raise DummyFileGeneratorException('Cannot create target folder %s', OS_ERR)
+                self.logger.info('Target folder not existing, created %s',
+                                 os.path.dirname(absolute_path))
+            except OSError as os_err:
+                raise DummyFileGeneratorException(f'Cannot create target folder {os_err}')
 
     def write_output_file(self, **file_scope_kwargs):
         """
@@ -195,10 +204,13 @@ class DummyFileGenerator:
 
             if bool(self.header):
                 if self.file_type == "csv":
-                    output_file.write(self.csv_row_header(self.column_name_list, csv_value_separator)
+                    output_file.write(self.csv_row_header(self.column_name_list,
+                                                          csv_value_separator)
                                       + file_line_ending)
+
                 elif self.file_type == "flat":
-                    output_file.write(self.flat_row_header(self.column_name_list, self.column_len_list)
+                    output_file.write(self.flat_row_header(self.column_name_list,
+                                                           self.column_len_list)
                                       + file_line_ending)
 
             _rows_written = 0
