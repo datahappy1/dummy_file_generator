@@ -26,19 +26,27 @@ class DummyFileGenerator:
     """
 
     @staticmethod
-    def _get_default_config_json_file_path():
+    def _get_defaults_from_project_location(sub_folder, filename=''):
         """
-        returns default config.json file path
+        returns file path or folder name based on the provided args
+        from the dummy_file_generator/dummy_file_generator location
+        :param sub_folder:
+        :param filename:
         :return:
         """
-        return os.sep.join([os.path.join(os.path.dirname(__file__)), 'configs', 'config.json'])
+        current_dir = os.path.dirname(__file__)
+        current_dir_path = os.path.join(current_dir)
+        return os.sep.join([current_dir_path, sub_folder, filename])
 
     def __init__(self, logging_level=None, **kwargs):
-        data_files_location = kwargs.get('data_files_location')
+        data_files_location = kwargs.get('data_files_location') or \
+                              DummyFileGenerator._get_defaults_from_project_location('data_files')
         config_json_path = kwargs.get('config_json_path') or \
-                           DummyFileGenerator._get_default_config_json_file_path()
+                           DummyFileGenerator._get_defaults_from_project_location('configs',
+                                                                                  'config.json')
         project_name = kwargs.get('project_name')
-        self.file_type = kwargs.get('file_type')
+        self.default_rowcount = kwargs.get('default_rowcount')
+        self.file_type = None
         self.column_name_list = []
         self.column_len_list = []
         self.data_file_list = []
@@ -46,16 +54,41 @@ class DummyFileGenerator:
         self.logger = None
 
         self._setup_logging(logging_level=logging_level)
+        self._validate_class_init_provided_args(data_files_location, config_json_path, project_name)
         self._set_vars_from_data_files_content(data_files_location=data_files_location)
         self._read_config_file(config_json_path=config_json_path, project_name=project_name)
         self._validate_config_file()
 
     def _setup_logging(self, logging_level=None):
-        # set logging levels for main function console output
+        """
+        set logging levels for main function console output
+        :param logging_level:
+        :return:
+        """
         logging.basicConfig(level=logging_level or LOGGING_LEVEL)
         self.logger = logging.getLogger(__name__)
 
+    @staticmethod
+    def _validate_class_init_provided_args(data_files_location, config_json_path, project_name):
+        """
+        method validating all class initiation arguments are provided
+        :param data_files_location:
+        :param config_json_path:
+        :param project_name:
+        :return:
+        """
+        for arg_name, arg_value in locals().items():
+            if not arg_name or not arg_value:
+                raise DummyFileGeneratorException(f'Missing mandatory argument {arg_name}')
+
     def _set_vars_from_data_files_content(self, data_files_location):
+        """
+        method setting variables from data_files, variable names have
+        "data_file_" prefix to avoid issue in case the data_file name
+        would collide with a already existing class variable
+        :param data_files_location:
+        :return:
+        """
         data_files = [f for f in os.listdir(data_files_location) if
                       os.path.isfile(os.path.join(data_files_location, f))
                       and str(f).endswith('.txt')]
@@ -68,7 +101,7 @@ class DummyFileGenerator:
 
     def _read_config_file(self, config_json_path, project_name):
         """
-        read config json file function
+        read config json file method
         :return:
         """
         with open(config_json_path) as file:
@@ -88,6 +121,10 @@ class DummyFileGenerator:
             raise DummyFileGeneratorException(f'Project {project_name} not found in config.json')
 
     def _validate_config_file(self):
+        """
+        simple config file validation method
+        :return:
+        """
         if self.file_type not in ('csv', 'flat'):
             raise DummyFileGeneratorException(f'Unknown file_type {self.file_type}, '
                                               'supported options are csv or flat')
@@ -129,7 +166,7 @@ class DummyFileGenerator:
 
     def csv_row_output(self, columns, csv_value_separator):
         """
-        function for generating csv output data row
+        method for generating csv output data row
         :param columns:
         :param csv_value_separator:
         :return: output csv data row
@@ -147,7 +184,7 @@ class DummyFileGenerator:
 
     def flat_row_output(self, columns, column_lengths):
         """
-        function for generating flat output data row
+        method for generating flat output data row
         :param columns:
         :param column_lengths:
         :return: output flat data row
@@ -170,6 +207,11 @@ class DummyFileGenerator:
         return row
 
     def _create_target_folder(self, absolute_path):
+        """
+
+        :param absolute_path:
+        :return:
+        """
         if not os.path.exists(os.path.dirname(absolute_path)):
             try:
                 os.makedirs(os.path.dirname(absolute_path))
@@ -180,7 +222,7 @@ class DummyFileGenerator:
 
     def write_output_file(self, **file_scope_kwargs):
         """
-        write output function
+        write output method
         :return:
         """
         absolute_path = file_scope_kwargs['absolute_path']
@@ -190,10 +232,13 @@ class DummyFileGenerator:
         file_line_ending = file_scope_kwargs.get('file_line_ending') or FILE_LINE_ENDING
         csv_value_separator = file_scope_kwargs.get('csv_value_separator') or CSV_VALUE_SEPARATOR
 
+        if not absolute_path:
+            raise DummyFileGeneratorException(f'Missing mandatory argument absolute_path')
+
         if row_count == 0 and file_size == 0:
             # use default row_count from settings.py in case no row counts
             # and no file size args provided:
-            row_count = DEFAULT_ROW_COUNT
+            row_count = self.default_rowcount or DEFAULT_ROW_COUNT
 
         self._create_target_folder(absolute_path)
 

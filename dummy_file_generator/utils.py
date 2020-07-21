@@ -1,6 +1,5 @@
 """ general utilities library """
 import os
-from dummy_file_generator.settings import FILE_LINE_ENDING
 
 
 def whitespace_generator(i) -> str:
@@ -35,6 +34,6 @@ def get_data_file_content_list_with_item_count(data_set_name, data_files_locatio
 
     data_files_dir_path = os.path.join(data_files_location)
     data_set = open(os.sep.join((str(data_files_dir_path), data_set_name)))
-    data_set = data_set.read().split(FILE_LINE_ENDING)
+    data_set = data_set.read().split('\n')
     data_set_len = _get_data_set_item_count(data_set)
     return data_set, data_set_len
