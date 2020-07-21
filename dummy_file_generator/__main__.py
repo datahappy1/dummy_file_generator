@@ -78,7 +78,7 @@ class DummyFileGenerator:
         :return:
         """
         for arg_name, arg_value in locals().items():
-            if not arg_name or not arg_value:
+            if not arg_value:
                 raise DummyFileGeneratorException(f'Missing mandatory argument {arg_name}')
 
     def _set_vars_from_data_files_content(self, data_files_location):
