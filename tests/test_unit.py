@@ -74,9 +74,8 @@ class TestUnitClass:
         unit test csv header
         :return: assert csv header output works as expected
         """
-        csv_row_separator = '|'
-        expected_output = 'test1|test2|test3'
-        actual_output = DFG_OBJ.csv_row_header('test1, test2, test3', csv_row_separator)
+        expected_output = 'test1,test2,test3'
+        actual_output = DFG_OBJ.csv_row_header('test1, test2, test3')
 
         assert expected_output == actual_output
 

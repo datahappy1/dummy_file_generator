@@ -43,7 +43,6 @@ def test_performance_csv(test_project, test_file_extension, expected_duration):
         "row_count": None,
         "file_encoding": None,
         "file_line_ending": None,
-        "csv_value_separator": None,
     }
 
     dfg_obj.write_output_file(**file_scope_kwargs)

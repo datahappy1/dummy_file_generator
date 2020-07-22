@@ -4,6 +4,7 @@
       "project_name": "test_csv",
       "file_type": "csv",
       "header": true,
+      "csv_value_separator": ",",
       "columns": [
         {
           "column_name": "testcol1",
