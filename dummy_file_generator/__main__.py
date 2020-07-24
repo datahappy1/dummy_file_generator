@@ -232,24 +232,27 @@ class DummyFileGenerator:
         """
         absolute_path = file_scope_kwargs['absolute_path']
         row_count = file_scope_kwargs.get('row_count') or 0
-        file_size = file_scope_kwargs.get('file_size') * 1024 or 0
+        file_size = file_scope_kwargs.get('file_size') or 0
         file_encoding = file_scope_kwargs.get('file_encoding') or FILE_ENCODING
         file_line_ending = file_scope_kwargs.get('file_line_ending') or FILE_LINE_ENDING
 
         if not absolute_path:
             raise DummyFileGeneratorException(f'Missing mandatory argument absolute_path')
 
+        if file_size > 0:
+            file_size = file_size * 1024
+
         if row_count == 0 and file_size == 0:
-            # use default row_count from settings.py in case no row counts
+            # use default row_count in case no row counts
             # and no file size args provided:
             row_count = self.default_rowcount
 
         self._create_target_folder(absolute_path)
 
         with io.open(absolute_path, 'w', encoding=file_encoding) as output_file:
-            _execution_start_time = datetime.now()
+            execution_start_time = datetime.now()
             LOGGER.info('File %s processing started at %s', absolute_path,
-                        _execution_start_time)
+                        execution_start_time)
 
             if bool(self.header):
                 if self.file_type == "csv":
@@ -278,13 +281,13 @@ class DummyFileGenerator:
                 if divmod(rows_written, 10000)[1] == 1 and rows_written > 1:
                     LOGGER.info('%s rows written', rows_written)
 
-            _execution_end_time = datetime.now()
+            execution_end_time = datetime.now()
             output_file_size = output_file.tell()
-            duration = (_execution_end_time - _execution_start_time).seconds
+            duration = (execution_end_time - execution_start_time).seconds
             duration = str(duration / 60) + ' min.' if duration > 1000 else str(duration) + ' sec.'
 
             LOGGER.info('File %s processing finished at %s', absolute_path,
-                        _execution_end_time)
+                        execution_end_time)
             LOGGER.info('%s kB file with %s rows written in %s', output_file_size / 1024,
                         rows_written, duration)
 
