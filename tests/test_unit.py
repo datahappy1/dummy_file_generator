@@ -65,7 +65,7 @@ class TestUnitClass:
         :return: assert flat header output works as expected
         """
         expected_output = 'test1 test2  test3   '
-        actual_output = DFG_OBJ.flat_row_header(['test1', 'test2', 'test3'], [6, 7, 8])
+        actual_output = DFG_OBJ.flat_header_row(['test1', 'test2', 'test3'], [6, 7, 8])
 
         assert expected_output == actual_output
 
@@ -75,7 +75,7 @@ class TestUnitClass:
         :return: assert csv header output works as expected
         """
         expected_output = 'test1,test2,test3'
-        actual_output = DFG_OBJ.csv_row_header('test1, test2, test3')
+        actual_output = DFG_OBJ.csv_header_row('test1, test2, test3')
 
         assert expected_output == actual_output
 
@@ -84,7 +84,7 @@ class TestUnitClass:
         unit test flat row output
         :return: assert flat row output works as expected
         """
-        expected_output = DFG_OBJ.flat_row_output(['test', 'test', 'test'], [6, 7, 8])
+        expected_output = DFG_OBJ.flat_row(['test', 'test', 'test'], [6, 7, 8])
         expected_output = _replace_multiple_str_occurrences_in_str(expected_output, '123', '')
         actual_output = _replace_multiple_str_occurrences_in_str('test1 test2  test3   ', '123', '')
 
@@ -96,7 +96,7 @@ class TestUnitClass:
         :return: assert csv row output works as expected
         """
         csv_row_separator = '|'
-        expected_output = DFG_OBJ.csv_row_output('test, test, test', csv_row_separator)
+        expected_output = DFG_OBJ.csv_row('test, test, test', csv_row_separator)
         expected_output = _replace_multiple_str_occurrences_in_str(expected_output, '123', '')
         actual_output = _replace_multiple_str_occurrences_in_str('test1|test2|test3', '123', '')
 

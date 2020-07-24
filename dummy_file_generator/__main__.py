@@ -16,6 +16,7 @@ from dummy_file_generator.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
 logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
 
+
 class DummyFileGeneratorException(Exception):
     """
     dummy file generator custom exception type
@@ -133,7 +134,7 @@ class DummyFileGenerator:
             raise DummyFileGeneratorException(f'Unknown file_type {self.file_type}, '
                                               'supported options are csv or flat')
 
-    def csv_row_header(self, columns):
+    def csv_header_row(self, columns):
         """
         csv row header
         :param columns:
@@ -149,7 +150,7 @@ class DummyFileGenerator:
         return header_row
 
     @staticmethod
-    def flat_row_header(columns, column_lengths):
+    def flat_header_row(columns, column_lengths):
         """
         flat row header
         :param columns:
@@ -167,7 +168,7 @@ class DummyFileGenerator:
         header_row = "".join(header_row)
         return header_row
 
-    def csv_row_output(self, columns, csv_value_separator):
+    def csv_row(self, columns, csv_value_separator):
         """
         method for generating csv output data row
         :param columns:
@@ -185,7 +186,7 @@ class DummyFileGenerator:
         row = csv_value_separator.join(row)
         return row
 
-    def flat_row_output(self, columns, column_lengths):
+    def flat_row(self, columns, column_lengths):
         """
         method for generating flat output data row
         :param columns:
@@ -246,47 +247,46 @@ class DummyFileGenerator:
         self._create_target_folder(absolute_path)
 
         with io.open(absolute_path, 'w', encoding=file_encoding) as output_file:
-            execution_start_time = datetime.now()
+            _execution_start_time = datetime.now()
             LOGGER.info('File %s processing started at %s', absolute_path,
-                        execution_start_time)
+                        _execution_start_time)
 
             if bool(self.header):
                 if self.file_type == "csv":
-                    output_file.write(self.csv_row_header(self.column_name_list)
+                    output_file.write(self.csv_header_row(self.column_name_list)
                                       + file_line_ending)
 
                 elif self.file_type == "flat":
-                    output_file.write(self.flat_row_header(self.column_name_list,
+                    output_file.write(self.flat_header_row(self.column_name_list,
                                                            self.column_len_list)
                                       + file_line_ending)
 
-            _rows_written = 0
-            while output_file.tell() < file_size or _rows_written < row_count:
-                row = None
+            rows_written = 0
+            while output_file.tell() < file_size or rows_written < row_count:
                 if self.file_type == "csv":
-                    row = self.csv_row_output(self.data_file_list, self.csv_value_separator)
+                    output_file.write(self.csv_row(self.data_file_list,
+                                                   self.csv_value_separator)
+                                      + file_line_ending)
 
                 elif self.file_type == "flat":
-                    row = self.flat_row_output(self.data_file_list, self.column_len_list)
+                    output_file.write(self.flat_row(self.data_file_list,
+                                                    self.column_len_list)
+                                      + file_line_ending)
 
-                output_file.write(row + file_line_ending)
+                rows_written += 1
 
-                _rows_written += 1
+                if divmod(rows_written, 10000)[1] == 1 and rows_written > 1:
+                    LOGGER.info('%s rows written', rows_written)
 
-                if divmod(_rows_written, 10000)[1] == 1 and _rows_written > 1:
-                    LOGGER.info('%s rows written', _rows_written)
-
-            # to get the file_size even when only row_count arg used
-            _output_file_size = output_file.tell()
-
-            execution_end_time = datetime.now()
-            duration = (execution_end_time - execution_start_time).seconds
+            _execution_end_time = datetime.now()
+            output_file_size = output_file.tell()
+            duration = (_execution_end_time - _execution_start_time).seconds
             duration = str(duration / 60) + ' min.' if duration > 1000 else str(duration) + ' sec.'
 
             LOGGER.info('File %s processing finished at %s', absolute_path,
-                        execution_end_time)
-            LOGGER.info('%s kB file with %s rows written in %s', _output_file_size / 1024,
-                        _rows_written, duration)
+                        _execution_end_time)
+            LOGGER.info('%s kB file with %s rows written in %s', output_file_size / 1024,
+                        rows_written, duration)
 
 
 def parse_args():
