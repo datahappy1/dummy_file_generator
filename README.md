@@ -18,7 +18,8 @@ This tool is able to generate dummy csv or flat txt files based on the configura
 
 - [How to add a new source dataset for your project](#How-to-add-a-new-source-dataset-for-your-project)
 
-- [Pytest testing](#Pytest-testing)
+- For developers:
+  [Pytest testing](#Pytest-testing)
 
 # How to install and run the tool as CLI
 One common usage scenario can be load / stress / performance testing of file-processing data tools, allowing you to generate the files needed from a command line.
@@ -193,7 +194,7 @@ using the argument `data_files_location`.
 Now you can use this new data file in your project setup in `config.json` file. 
 
 # Pytest testing
-Pytest unit and performance tests are also a part of this tool.
+Pytest unit and performance tests are also a part of this repository.
 You can install Pytest using `pip install pytest`
 
 ### To run tests:
