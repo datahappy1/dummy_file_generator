@@ -48,6 +48,10 @@ class DummyFileGenerator:
                            DummyFileGenerator._get_defaults_from_project_location('configs',
                                                                                   'config.json')
         project_name = kwargs.get('project_name')
+
+        if not project_name:
+            raise DummyFileGeneratorException(f'Missing mandatory argument project_name')
+
         self.default_rowcount = kwargs.get('default_rowcount') or DEFAULT_ROW_COUNT
         self.file_type = None
         self.column_name_list = []
@@ -57,7 +61,6 @@ class DummyFileGenerator:
         self.csv_value_separator = None
 
         self._setup_logging(logging_level=logging_level)
-        self._validate_class_init_provided_args(data_files_location, config_json_path, project_name)
         self._set_vars_from_data_files_content(data_files_location=data_files_location)
         self._read_config_file(config_json_path=config_json_path, project_name=project_name)
         self._validate_config_file()
@@ -70,19 +73,6 @@ class DummyFileGenerator:
         :return:
         """
         LOGGER.setLevel(logging_level or LOGGING_LEVEL)
-
-    @staticmethod
-    def _validate_class_init_provided_args(data_files_location, config_json_path, project_name):
-        """
-        method validating all class initiation arguments are provided
-        :param data_files_location:
-        :param config_json_path:
-        :param project_name:
-        :return:
-        """
-        for arg_name, arg_value in locals().items():
-            if not arg_value:
-                raise DummyFileGeneratorException(f'Missing mandatory argument {arg_name}')
 
     def _set_vars_from_data_files_content(self, data_files_location):
         """
@@ -132,7 +122,23 @@ class DummyFileGenerator:
         """
         if self.file_type not in ('csv', 'flat'):
             raise DummyFileGeneratorException(f'Unknown file_type {self.file_type}, '
-                                              'supported options are csv or flat')
+                                              f'supported options are csv or flat')
+
+        if not self.column_name_list:
+            raise DummyFileGeneratorException(f'No columns set in config')
+
+        if not self.data_file_list:
+            raise DummyFileGeneratorException(f'No datafile value set in config')
+
+        if not self.header:
+            raise DummyFileGeneratorException(f'No header value set in config, '
+                                              f'supported options are true or false')
+
+        if not self.csv_value_separator and self.file_type == 'csv':
+            raise DummyFileGeneratorException(f'No csv_value_separator value set in config')
+
+        if not self.column_len_list and self.file_type == 'flat':
+            raise DummyFileGeneratorException(f'No column_len value set in config')
 
     def csv_header_row(self, columns):
         """
@@ -213,7 +219,7 @@ class DummyFileGenerator:
     @staticmethod
     def _create_target_folder(absolute_path):
         """
-
+        method creating the target folder if it does not exist
         :param absolute_path:
         :return:
         """
@@ -230,14 +236,14 @@ class DummyFileGenerator:
         write output method
         :return:
         """
-        absolute_path = file_scope_kwargs['absolute_path']
+        generated_file_path = file_scope_kwargs.get('generated_file_path')
         row_count = file_scope_kwargs.get('row_count') or 0
         file_size = file_scope_kwargs.get('file_size') or 0
         file_encoding = file_scope_kwargs.get('file_encoding') or FILE_ENCODING
         file_line_ending = file_scope_kwargs.get('file_line_ending') or FILE_LINE_ENDING
 
-        if not absolute_path:
-            raise DummyFileGeneratorException(f'Missing mandatory argument absolute_path')
+        if not generated_file_path:
+            raise DummyFileGeneratorException(f'Missing mandatory argument generated_file_path')
 
         if file_size > 0:
             file_size = file_size * 1024
@@ -247,11 +253,11 @@ class DummyFileGenerator:
             # and no file size args provided:
             row_count = self.default_rowcount
 
-        self._create_target_folder(absolute_path)
+        self._create_target_folder(generated_file_path)
 
-        with io.open(absolute_path, 'w', encoding=file_encoding) as output_file:
+        with io.open(generated_file_path, 'w', encoding=file_encoding) as output_file:
             execution_start_time = datetime.now()
-            LOGGER.info('File %s processing started at %s', absolute_path,
+            LOGGER.info('File %s processing started at %s', generated_file_path,
                         execution_start_time)
 
             if bool(self.header):
@@ -286,7 +292,7 @@ class DummyFileGenerator:
             duration = (execution_end_time - execution_start_time).seconds
             duration = str(duration / 60) + ' min.' if duration > 1000 else str(duration) + ' sec.'
 
-            LOGGER.info('File %s processing finished at %s', absolute_path,
+            LOGGER.info('File %s processing finished at %s', generated_file_path,
                         execution_end_time)
             LOGGER.info('%s kB file with %s rows written in %s', output_file_size / 1024,
                         rows_written, duration)
@@ -300,7 +306,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-pn', '--projectname', type=str, required=True)
-    parser.add_argument('-ap', '--absolutepath', type=str, required=True)
+    parser.add_argument('-gp', '--generated_file_path', type=str, required=True)
     parser.add_argument('-fs', '--filesize', type=int, required=False)
     parser.add_argument('-rc', '--rowcount', type=int, required=False)
     parser.add_argument('-ll', '--logging_level', type=str, required=False)
@@ -314,7 +320,7 @@ def parse_args():
     parsed = parser.parse_args()
 
     project_name = parsed.projectname
-    absolute_path = parsed.absolutepath
+    generated_file_path = parsed.generated_file_path
     file_size = parsed.filesize
     row_count = parsed.rowcount
     logging_level = parsed.logging_level
@@ -331,7 +337,7 @@ def parse_args():
         "default_rowcount": default_rowcount,
     }
     file_scope_kwargs = {
-        "absolute_path": absolute_path,
+        "generated_file_path": generated_file_path,
         "file_size": file_size,
         "row_count": row_count,
         "file_encoding": file_encoding,

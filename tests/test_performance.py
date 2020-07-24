@@ -38,7 +38,7 @@ def test_performance_csv(test_project, test_file_extension, expected_duration):
     dfg_obj = Dfg(LOGGING_LEVEL, **project_scope_kwargs)
 
     file_scope_kwargs = {
-        "absolute_path": generated_file_path,
+        "generated_file_path": generated_file_path,
         "file_size": 1024,
         "row_count": None,
         "file_encoding": None,
