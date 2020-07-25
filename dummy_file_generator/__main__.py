@@ -82,8 +82,6 @@ class DummyFileGenerator:
         :param data_files_location:
         :return:
         """
-        data_files = None
-
         try:
             data_files = [f for f in os.listdir(data_files_location) if
                           os.path.isfile(os.path.join(data_files_location, f))
@@ -91,6 +89,9 @@ class DummyFileGenerator:
         except OSError as os_err:
             raise DummyFileGeneratorException(f'Cannot list data_files, '
                                               f'OSError: {os_err}')
+
+        if not data_files:
+            raise DummyFileGeneratorException(f'No data_files in {data_files_location}')
 
         for data_file in data_files:
             setattr(self, 'data_file_' + data_file.replace('.txt', ''),
@@ -200,7 +201,12 @@ class DummyFileGenerator:
 
         for column in columns:
             column = column.strip("'")
-            _val, _len = DummyFileGenerator.__getattribute__(self, 'data_file_' + column)
+            try:
+                _val, _len = DummyFileGenerator.__getattribute__(self, 'data_file_' + column)
+            except AttributeError as attr_err:
+                raise DummyFileGeneratorException(f'Cannot find corresponding data_file for '
+                                                  f'column {column}, Attribute Error: {attr_err}')
+
             value = _val[randint(0, _len)]
             row.append(value)
         row = csv_value_separator.join(row)

@@ -1,5 +1,5 @@
 # dummy_file_generator
-## version 1.1.13
+## version 1.1.14
 ### Dummy .csv or flat text files generator written in Python 3.7
 
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/rating.svg)
@@ -190,7 +190,8 @@ the "project" JSON object in your config.json would need to be setup like:
     }
 
 # How to add a new source dataset for your project
-Whenever you need to add a new source .txt file in the data_files folder, just add it to your `data_files` folder. 
+Whenever you need to add a new source .txt file in the data_files folder, just add it to your `data_files` folder.
+**The filename needs to correspond with the datafile value in your config.json file.**
 
 If running as a standalone CLI tool, the `data_files` folder is located here:
 `dummy_file_generator/data_files`
