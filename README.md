@@ -1,5 +1,5 @@
 # dummy_file_generator
-## version 1.1.5
+## version 1.1.6
 ### Dummy .csv or flat text files generator written in Python 3.7
 
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/rating.svg)
@@ -31,7 +31,7 @@ One common usage scenario can be load / stress / performance testing of file-pro
 
 ### To run:<br />
 The CLI tool needs these **MANDATORY** arguments defining: 
-- projectname `--projectname` or `-pn` *based on the projectname, the dummy file specific settings from /configurables/config.json file are loaded ),* 
+- projectname `--projectname` or `-pn` *based on the projectname, the dummy file project specific settings from `dummy_file_generator/configs/config.json` file are loaded ),* 
 - absolutepath `--generated_file_path` or `-gp` defining the full output file path to the file you are about to generate
 
 >Provided arguments have higher precedence than fallback values in `settings.py`
@@ -72,7 +72,7 @@ One common usage scenario can be load / stress / performance testing of file-pro
 
 ### To run:<br />
 The dummy file generator imported package needs these **MANDATORY** arguments defining: 
-- projectname `--projectname` or `-pn`, *based on the projectname, the dummy file specific settings from config.json file are loaded ),* 
+- projectname `--projectname` or `-pn`, *based on the projectname, the dummy file specific settings from `config.json` file are loaded ),* 
 - generated_file_path `--generated_file_path` or `gp` defining the full output file path to the file you are about to generate
 
 >Provided arguments have higher precedence than fallback values in `settings.py`
@@ -85,7 +85,7 @@ The dummy file generator imported package can further consume these **OPTIONAL**
 `settings.py` will be used ( you can override the `DEFAULT_ROW_COUNT` value in `settings.py` using the `default_rowcount` optional argument)
 
 - data_files_location `--data_files_location` or `-dfl` defining the path to the source .txt data files 
-- config_json_path `--config_json_path` or `-cjp` defining the custom path to your config.json file
+- config_json_path `--config_json_path` or `-cjp` defining the custom path to your `config.json` file
 - logging_level `--logging_level` or `-ll` defining the Python logging level 
 - default_rowcount `--default_rowcount` or `-drc` defining the rowcount fallback value when neither row_count,neither file_size set
 - file_encoding `--file_encoding` or `-fen` defining the generated files encoding
