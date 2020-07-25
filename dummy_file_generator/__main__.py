@@ -103,14 +103,15 @@ class DummyFileGenerator:
         read config json file method
         :return:
         """
-        json_data = None
-
-        with open(config_json_path) as file:
-            try:
+        try:
+            with open(config_json_path) as file:
                 json_data = json.load(file)
-            except json.JSONDecodeError as json_decode_err:
-                raise DummyFileGeneratorException(f'Cannot load {config_json_path}, '
-                                                  f'JSON decode error: {json_decode_err}')
+        except FileNotFoundError as file_not_found_err:
+            raise DummyFileGeneratorException(f'Cannot open {config_json_path}, '
+                                              f'File Not Found error: {file_not_found_err}')
+        except json.JSONDecodeError as json_decode_err:
+            raise DummyFileGeneratorException(f'Cannot load {config_json_path}, '
+                                              f'JSON decode error: {json_decode_err}')
 
         for project in json_data['project']:
             if project['project_name'] == project_name:
