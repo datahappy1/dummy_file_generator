@@ -1,5 +1,5 @@
 # dummy_file_generator
-## version 1.1.6
+## version 1.1.10
 ### Dummy .csv or flat text files generator written in Python 3.7
 
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/rating.svg)
@@ -31,7 +31,7 @@ One common usage scenario can be load / stress / performance testing of file-pro
 
 ### To run:<br />
 The CLI tool needs these **MANDATORY** arguments defining: 
-- projectname `--projectname` or `-pn` *based on the projectname, the dummy file project specific settings from `dummy_file_generator/configs/config.json` file are loaded ),* 
+- projectname `--projectname` or `-pn` based on the projectname, the dummy file project specific settings from `dummy_file_generator/configs/config.json` file are loaded ,
 - absolutepath `--generated_file_path` or `-gp` defining the full output file path to the file you are about to generate
 
 >Provided arguments have higher precedence than fallback values in `settings.py`
