@@ -226,7 +226,12 @@ class DummyFileGenerator:
         for index, column in enumerate(columns):
             column = column.strip("'")
             whitespace = int(column_lengths[index])
-            _val, _len = DummyFileGenerator.__getattribute__(self, 'data_file_' + column)
+            try:
+                _val, _len = DummyFileGenerator.__getattribute__(self, 'data_file_' + column)
+            except AttributeError as attr_err:
+                raise DummyFileGeneratorException(f'Cannot find corresponding data_file for '
+                                                  f'column {column}, Attribute Error: {attr_err}')
+
             value = _val[randint(0, _len)]
             if whitespace < len(value):
                 LOGGER.error('Column value %s is longer then expected '
