@@ -82,9 +82,15 @@ class DummyFileGenerator:
         :param data_files_location:
         :return:
         """
-        data_files = [f for f in os.listdir(data_files_location) if
-                      os.path.isfile(os.path.join(data_files_location, f))
-                      and str(f).endswith('.txt')]
+        data_files = None
+
+        try:
+            data_files = [f for f in os.listdir(data_files_location) if
+                          os.path.isfile(os.path.join(data_files_location, f))
+                          and str(f).endswith('.txt')]
+        except OSError as os_err:
+            raise DummyFileGeneratorException(f'Cannot list data_files, '
+                                              f'OSError: {os_err}')
 
         for data_file in data_files:
             setattr(self, 'data_file_' + data_file.replace('.txt', ''),
@@ -97,10 +103,16 @@ class DummyFileGenerator:
         read config json file method
         :return:
         """
-        with open(config_json_path) as file:
-            data = json.load(file)
+        json_data = None
 
-        for project in data['project']:
+        with open(config_json_path) as file:
+            try:
+                json_data = json.load(file)
+            except json.JSONDecodeError as json_decode_err:
+                raise DummyFileGeneratorException(f'Cannot load {config_json_path}, '
+                                                  f'JSON decode error: {json_decode_err}')
+
+        for project in json_data['project']:
             if project['project_name'] == project_name:
                 self.header = project['header']
                 self.file_type = project['file_type']
@@ -113,7 +125,8 @@ class DummyFileGenerator:
                         self.column_len_list.append(column['column_len'])
                 break
         else:
-            raise DummyFileGeneratorException(f'Project {project_name} not found in config.json')
+            raise DummyFileGeneratorException(f'Project {project_name} not found '
+                                              f'in {config_json_path}')
 
     def _validate_config_file(self):
         """
@@ -125,20 +138,20 @@ class DummyFileGenerator:
                                               f'supported options are csv or flat')
 
         if not self.column_name_list:
-            raise DummyFileGeneratorException(f'No columns set in config')
+            raise DummyFileGeneratorException('No columns set in config')
 
         if not self.data_file_list:
-            raise DummyFileGeneratorException(f'No datafile value set in config')
+            raise DummyFileGeneratorException('No datafile value set in config')
 
         if not self.header:
-            raise DummyFileGeneratorException(f'No header value set in config, '
-                                              f'supported options are true or false')
+            raise DummyFileGeneratorException('No header value set in config, '
+                                              'supported options are true or false')
 
         if not self.csv_value_separator and self.file_type == 'csv':
-            raise DummyFileGeneratorException(f'No csv_value_separator value set in config')
+            raise DummyFileGeneratorException('No csv_value_separator value set in config')
 
         if not self.column_len_list and self.file_type == 'flat':
-            raise DummyFileGeneratorException(f'No column_len value set in config')
+            raise DummyFileGeneratorException('No column_len value set in config')
 
     def csv_header_row(self, columns):
         """
@@ -229,7 +242,8 @@ class DummyFileGenerator:
                 LOGGER.info('Target folder not existing, created %s',
                             os.path.dirname(absolute_path))
             except OSError as os_err:
-                raise DummyFileGeneratorException(f'Cannot create target folder {os_err}')
+                raise DummyFileGeneratorException(f'Cannot create target folder, '
+                                                  f'OSError: {os_err}')
 
     def write_output_file(self, **file_scope_kwargs):
         """
@@ -243,7 +257,7 @@ class DummyFileGenerator:
         file_line_ending = file_scope_kwargs.get('file_line_ending') or FILE_LINE_ENDING
 
         if not generated_file_path:
-            raise DummyFileGeneratorException(f'Missing mandatory argument generated_file_path')
+            raise DummyFileGeneratorException('Missing mandatory argument generated_file_path')
 
         if file_size > 0:
             file_size = file_size * 1024
