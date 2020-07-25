@@ -7,9 +7,10 @@ from datetime import datetime
 
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 
-CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'files', 'test_config.json'])
+print(os.getcwd())
+CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'test_config.json'])
+DATA_FILES_LOCATION = os.sep.join([os.getcwd(),'tests', 'files'])
 LOGGING_LEVEL = 'INFO'
-DATA_FILES_LOCATION = 'files'
 
 
 @pytest.mark.parametrize(
