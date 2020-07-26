@@ -7,7 +7,6 @@ from datetime import datetime
 
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 
-print(os.getcwd())
 CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'test_config.json'])
 DATA_FILES_LOCATION = os.sep.join([os.getcwd(),'tests', 'files'])
 LOGGING_LEVEL = 'INFO'

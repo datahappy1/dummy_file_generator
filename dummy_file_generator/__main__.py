@@ -315,8 +315,9 @@ class DummyFileGenerator:
 
             execution_end_time = datetime.now()
             output_file_size = output_file.tell()
-            duration = (execution_end_time - execution_start_time).seconds
-            duration = str(duration / 60) + ' min.' if duration > 1000 else str(duration) + ' sec.'
+            _duration = (execution_end_time - execution_start_time).seconds
+            duration = str(_duration / 60) + ' min.' if _duration > 1000 \
+                else str(_duration) + ' sec.'
 
             LOGGER.info('File %s processing finished at %s', generated_file_path,
                         execution_end_time)

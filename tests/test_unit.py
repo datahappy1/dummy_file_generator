@@ -6,7 +6,6 @@ import os
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 from dummy_file_generator.utils import get_data_file_content_list_with_item_count
 
-print(os.getcwd())
 CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'test_config.json'])
 DATA_FILES_LOCATION = os.sep.join([os.getcwd(),'tests', 'files'])
 LOGGING_LEVEL = 'INFO'
