@@ -7,7 +7,7 @@ from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 from dummy_file_generator.utils import get_data_file_content_list_with_item_count
 
 CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'test_config.json'])
-DATA_FILES_LOCATION = os.sep.join([os.getcwd(),'tests', 'files'])
+DATA_FILES_LOCATION = os.sep.join([os.getcwd(), 'tests', 'files'])
 LOGGING_LEVEL = 'INFO'
 
 
@@ -74,7 +74,7 @@ class TestUnitClass:
         :return: assert csv header output works as expected
         """
         expected_output = 'test1,test2,test3'
-        actual_output = DFG_OBJ.csv_header_row('test1, test2, test3')
+        actual_output = DFG_OBJ.csv_header_row('test1,test2,test3')
 
         assert expected_output == actual_output
 
@@ -83,8 +83,11 @@ class TestUnitClass:
         unit test flat row output
         :return: assert flat row output works as expected
         """
-        expected_output = DFG_OBJ.flat_row(['test', 'test', 'test'], [6, 7, 8])
-        expected_output = _replace_multiple_str_occurrences_in_str(expected_output, '123', '')
+        raw_expected_output = DFG_OBJ.flat_row(['test', 'test', 'test'], [6, 7, 8])
+
+        assert isinstance(raw_expected_output, str)
+
+        expected_output = _replace_multiple_str_occurrences_in_str(raw_expected_output, '123', '')
         actual_output = _replace_multiple_str_occurrences_in_str('test1 test2  test3   ', '123', '')
 
         assert expected_output == actual_output
@@ -94,9 +97,16 @@ class TestUnitClass:
         unit test csv row output
         :return: assert csv row output works as expected
         """
-        csv_row_separator = '|'
-        expected_output = DFG_OBJ.csv_row('test, test, test', csv_row_separator)
-        expected_output = _replace_multiple_str_occurrences_in_str(expected_output, '123', '')
-        actual_output = _replace_multiple_str_occurrences_in_str('test1|test2|test3', '123', '')
+        raw_expected_output = DFG_OBJ.csv_row(['test', 'test', 'test'])
+
+        assert isinstance(raw_expected_output, list)
+        for item in raw_expected_output:
+            assert isinstance(item, str)
+            assert item.startswith('test')
+            assert item.endswith('1') or item.endswith('2') or item.endswith('3')
+
+        expected_output = _replace_multiple_str_occurrences_in_str(str(raw_expected_output), '123', '')
+
+        actual_output = _replace_multiple_str_occurrences_in_str("['test1', 'test2', 'test3']", '123', '')
 
         assert expected_output == actual_output

@@ -5,6 +5,8 @@
       "file_type": "csv",
       "header": true,
       "csv_value_separator": ",",
+      "csv_quoting": "NONE",
+      "csv_quote_char": null,
       "columns": [
         {
           "column_name": "testcol1",
