@@ -2,6 +2,7 @@
 import io
 import os
 import json
+import csv
 import argparse
 import logging
 
@@ -17,6 +18,54 @@ logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
 
 
+class Writer:
+    """
+
+    """
+    def __init__(self, file_handler, file_type):
+        self.file_handler = file_handler
+        self.file_type = file_type
+        self._setup_writer()
+
+    def _csv_writer(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def _flat_writer(self):
+        """
+
+        :return:
+        """
+        return self.file_handler
+
+    def _setup_writer(self):
+        """
+
+        :return:
+        """
+        if self.file_type == "csv":
+            self.writer = csv.writer(self.file_handler)
+        elif self.file_type == "flat":
+            self.writer = self._flat_writer()
+        else:
+            raise DummyFileGeneratorException(f"Writer type {self.file_type} not implemented")
+        return
+
+    def write(self, row):
+        """
+
+        :param row:
+        :return:
+        """
+        if self.file_type == "csv":
+            self.writer.writerow(row)
+        elif self.file_type == "flat":
+            self.writer.write(row)
+
+
 class DummyFileGeneratorException(Exception):
     """
     dummy file generator custom exception type
@@ -29,7 +78,7 @@ class DummyFileGenerator:
     """
 
     @staticmethod
-    def _get_defaults_from_project_location(sub_folder, filename=''):
+    def _get_defaults_from_project_location(sub_folder, filename=''):  # FIXME **sub_folders
         """
         returns file path or folder name based on the provided args
         from the dummy_file_generator/dummy_file_generator location
@@ -73,6 +122,22 @@ class DummyFileGenerator:
         :return:
         """
         LOGGER.setLevel(logging_level or LOGGING_LEVEL)
+
+    @staticmethod
+    def _create_target_folder(absolute_path):
+        """
+        method creating the target folder if it does not exist
+        :param absolute_path:
+        :return:
+        """
+        if not os.path.exists(os.path.dirname(absolute_path)):
+            try:
+                os.makedirs(os.path.dirname(absolute_path))
+                LOGGER.info('Target folder not existing, created %s',
+                            os.path.dirname(absolute_path))
+            except OSError as os_err:
+                raise DummyFileGeneratorException(f'Cannot create target folder, '
+                                                  f'OSError: {os_err}')
 
     def _set_vars_from_data_files_content(self, data_files_location):
         """
@@ -241,22 +306,6 @@ class DummyFileGenerator:
         row = ''.join(row)
         return row
 
-    @staticmethod
-    def _create_target_folder(absolute_path):
-        """
-        method creating the target folder if it does not exist
-        :param absolute_path:
-        :return:
-        """
-        if not os.path.exists(os.path.dirname(absolute_path)):
-            try:
-                os.makedirs(os.path.dirname(absolute_path))
-                LOGGER.info('Target folder not existing, created %s',
-                            os.path.dirname(absolute_path))
-            except OSError as os_err:
-                raise DummyFileGeneratorException(f'Cannot create target folder, '
-                                                  f'OSError: {os_err}')
-
     def write_output_file(self, **file_scope_kwargs):
         """
         write output method
@@ -286,27 +335,26 @@ class DummyFileGenerator:
             LOGGER.info('File %s processing started at %s', generated_file_path,
                         execution_start_time)
 
+            writer = Writer(file_handler=output_file,
+                            file_type=self.file_type)
+
             if bool(self.header):
                 if self.file_type == "csv":
-                    output_file.write(self.csv_header_row(self.column_name_list)
-                                      + file_line_ending)
+                    writer.write(self.csv_header_row(self.column_name_list) + file_line_ending)
 
                 elif self.file_type == "flat":
-                    output_file.write(self.flat_header_row(self.column_name_list,
-                                                           self.column_len_list)
-                                      + file_line_ending)
+                    writer.write(self.flat_header_row(self.column_name_list, self.column_len_list)
+                                 + file_line_ending)
 
             rows_written = 0
             while output_file.tell() < file_size or rows_written < row_count:
                 if self.file_type == "csv":
-                    output_file.write(self.csv_row(self.data_file_list,
-                                                   self.csv_value_separator)
-                                      + file_line_ending)
+                    writer.write(self.csv_row(self.data_file_list, self.csv_value_separator)
+                                 + file_line_ending)
 
                 elif self.file_type == "flat":
-                    output_file.write(self.flat_row(self.data_file_list,
-                                                    self.column_len_list)
-                                      + file_line_ending)
+                    writer.write(self.flat_row(self.data_file_list, self.column_len_list)
+                                 + file_line_ending)
 
                 rows_written += 1
 
