@@ -22,10 +22,10 @@ class Writer:
     """
 
     """
-    def __init__(self, file_handler, file_type):
+    def __init__(self, file_handler, file_type, **kwargs):
         self.file_handler = file_handler
         self.file_type = file_type
-        self._setup_writer()
+        self._setup_writer(**kwargs)
 
     def _csv_writer(self):
         """
@@ -41,13 +41,13 @@ class Writer:
         """
         return self.file_handler
 
-    def _setup_writer(self):
+    def _setup_writer(self, **kwargs):
         """
 
         :return:
         """
         if self.file_type == "csv":
-            self.writer = csv.writer(self.file_handler)
+            self.writer = csv.writer(self.file_handler, quoting=csv.QUOTE_ALL) #FIXME from kw argument map int to quote level
         elif self.file_type == "flat":
             self.writer = self._flat_writer()
         else:
@@ -330,7 +330,7 @@ class DummyFileGenerator:
 
         self._create_target_folder(generated_file_path)
 
-        with io.open(generated_file_path, 'w', encoding=file_encoding) as output_file:
+        with io.open(generated_file_path, 'w', encoding=file_encoding, newline=file_line_ending) as output_file:
             execution_start_time = datetime.now()
             LOGGER.info('File %s processing started at %s', generated_file_path,
                         execution_start_time)
@@ -340,21 +340,18 @@ class DummyFileGenerator:
 
             if bool(self.header):
                 if self.file_type == "csv":
-                    writer.write(self.csv_header_row(self.column_name_list) + file_line_ending)
+                    writer.write(self.csv_header_row(self.column_name_list))
 
                 elif self.file_type == "flat":
-                    writer.write(self.flat_header_row(self.column_name_list, self.column_len_list)
-                                 + file_line_ending)
+                    writer.write(self.flat_header_row(self.column_name_list, self.column_len_list) + file_line_ending) #FIXME
 
             rows_written = 0
             while output_file.tell() < file_size or rows_written < row_count:
                 if self.file_type == "csv":
-                    writer.write(self.csv_row(self.data_file_list, self.csv_value_separator)
-                                 + file_line_ending)
+                    writer.write(self.csv_row(self.data_file_list, self.csv_value_separator))
 
                 elif self.file_type == "flat":
-                    writer.write(self.flat_row(self.data_file_list, self.column_len_list)
-                                 + file_line_ending)
+                    writer.write(self.flat_row(self.data_file_list, self.column_len_list) + file_line_ending) #FIXME
 
                 rows_written += 1
 
