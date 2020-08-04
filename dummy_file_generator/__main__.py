@@ -2,68 +2,21 @@
 import io
 import os
 import json
-import csv
 import argparse
 import logging
 
 from random import randint
 from datetime import datetime
 
-from dummy_file_generator.utils import add_quotes_to_list_items, \
+from dummy_file_generator.utils import QUOTING_MAP, add_quotes_to_list_items, \
     whitespace_generator, get_data_file_content_list_with_item_count
 from dummy_file_generator.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, LOGGING_LEVEL
 
+from dummy_file_generator.writer import FlatWriter, CsvWriter, Consumer
+
 logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
-
-QUOTING_MAP = {"NONE": csv.QUOTE_NONE,
-               "MINIMAL": csv.QUOTE_MINIMAL,
-               "NONNUMERIC": csv.QUOTE_NONNUMERIC,
-               "ALL": csv.QUOTE_ALL}
-
-
-class Writer:
-    """
-    class Writer
-    """
-
-    def __init__(self, file_handler, file_type, **kwargs):
-        self.file_handler = file_handler
-        self.file_type = file_type
-        self.writer = None
-
-        if self.file_type == "csv":
-            self._setup_writer_csv(**kwargs)
-        elif self.file_type == "flat":
-            self._setup_writer_flat()
-        else:
-            raise DummyFileGeneratorException(f'Unknown file_type {self.file_type}')
-
-    def _setup_writer_csv(self, **kwargs):
-        self.writer = csv.writer(self.file_handler,
-                                 delimiter=kwargs.get('csv_value_separator'),
-                                 quoting=QUOTING_MAP.get(kwargs.get('csv_quoting')),
-                                 quotechar=kwargs.get('csv_quote_char'))
-
-    def _setup_writer_flat(self):
-        self.writer = self.file_handler
-
-    def write_row_csv(self, row):
-        """
-        write csv row method
-        :param row:
-        :return:
-        """
-        self.writer.writerow(row)
-
-    def write_row_flat(self, row):
-        """
-        write flat row method
-        :param row:
-        :return:
-        """
-        self.writer.write(row)
 
 
 class DummyFileGeneratorException(Exception):
@@ -192,7 +145,7 @@ class DummyFileGenerator:
                 self.csv_file_properties['csv_quoting'] = project.get('csv_quoting')
                 self.csv_file_properties['csv_quote_char'] = project.get('csv_quote_char')
 
-                for column in project['columns']:
+                for column in project['columns']:  # FIXME
                     self.column_name_list.append(column['column_name'])
                     self.data_file_list.append(str(column['datafile']).replace('.txt', ''))
                     if self.file_type == "flat":
@@ -224,7 +177,7 @@ class DummyFileGenerator:
         if self.file_type == 'csv' and not self.csv_file_properties.get('csv_value_separator'):
             raise DummyFileGeneratorException('No csv_value_separator value set in config')
 
-        if self.file_type == "csv" and self.csv_file_properties.get('csv_quote') \
+        if self.file_type == 'csv' and self.csv_file_properties.get('csv_quote') \
                 and self.csv_file_properties.get('csv_quote') not in QUOTING_MAP.keys():
             raise DummyFileGeneratorException('Invalid csv_quote value')
 
@@ -236,7 +189,7 @@ class DummyFileGenerator:
             raise DummyFileGeneratorException('No column_len value set in config')
 
     @staticmethod
-    def csv_header_row_generate(columns):
+    def generate_csv_header_row(columns):
         """
         csv row header
         :param columns:
@@ -245,7 +198,7 @@ class DummyFileGenerator:
         return columns
 
     @staticmethod
-    def flat_header_row_generate(columns, column_lengths):
+    def generate_flat_header_row(columns, column_lengths):
         """
         flat row header
         :param columns:
@@ -264,7 +217,7 @@ class DummyFileGenerator:
 
         return header_row
 
-    def csv_body_row_generate(self, columns):
+    def generate_csv_body_row(self, columns):
         """
         method for generating csv output data row
         :param columns:
@@ -285,7 +238,7 @@ class DummyFileGenerator:
 
         return row
 
-    def flat_body_row_generate(self, columns, column_lengths):
+    def generate_flat_body_row(self, columns, column_lengths):
         """
         method for generating flat output data row
         :param columns:
@@ -345,32 +298,42 @@ class DummyFileGenerator:
             LOGGER.info('File %s processing started at %s', generated_file_path,
                         execution_start_time)
 
-            writer = Writer(file_handler=output_file,
-                            file_type=self.file_type,
-                            **
-                            {"csv_value_separator": self.csv_file_properties['csv_value_separator'],
-                             "csv_quoting": self.csv_file_properties['csv_quoting'],
-                             "csv_quote_char": self.csv_file_properties['csv_quote_char']}
-                            )
+            csv_client, flat_client = None, None
+            if self.file_type == 'csv':
+                csv_client = Consumer(CsvWriter)
+                csv_client.setup_writer(file_handler=output_file,
+                                        file_type=self.file_type,
+                                        **
+                                        {"csv_value_separator": self.csv_file_properties['csv_value_separator'],
+                                         "csv_quoting": self.csv_file_properties['csv_quoting'],
+                                         "csv_quote_char": self.csv_file_properties['csv_quote_char']}
+                                        )
+
+            elif self.file_type == 'flat':
+                flat_client = Consumer(FlatWriter)
+                flat_client.setup_writer(file_handler=output_file,
+                                         file_type=self.file_type)
+
+            client = csv_client or flat_client
 
             if bool(self.header):
                 if self.file_type == "csv":
-                    writer.write_row_csv(self.csv_header_row_generate(self.column_name_list))
+                    client.write_row(self.generate_csv_header_row(self.column_name_list))
 
                 elif self.file_type == "flat":
-                    writer.write_row_flat(self.flat_header_row_generate(self.column_name_list,
-                                                                        self.column_len_list)
-                                          + file_line_ending)
+                    client.write_row(self.generate_flat_header_row(self.column_name_list,
+                                                                   self.column_len_list)
+                                     + file_line_ending)
 
             rows_written = 0
             while output_file.tell() < file_size or rows_written < row_count:
                 if self.file_type == "csv":
-                    writer.write_row_csv(self.csv_body_row_generate(self.data_file_list))
+                    client.write_row(self.generate_csv_body_row(self.data_file_list))
 
                 elif self.file_type == "flat":
-                    writer.write_row_flat(self.flat_body_row_generate(self.data_file_list,
-                                                                      self.column_len_list)
-                                          + file_line_ending)
+                    client.write_row(self.generate_flat_body_row(self.data_file_list,
+                                                                 self.column_len_list)
+                                     + file_line_ending)
 
                 rows_written += 1
 
