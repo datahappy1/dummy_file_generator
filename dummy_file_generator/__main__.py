@@ -27,6 +27,7 @@ class Writer:
     """
     class Writer
     """
+
     def __init__(self, file_handler, file_type, **kwargs):
         self.file_handler = file_handler
         self.file_type = file_type
@@ -48,12 +49,21 @@ class Writer:
     def _setup_writer_flat(self):
         self.writer = self.file_handler
 
-    def write_row(self, row):
-        if self.file_type == "csv":
-            self.writer.writerow(row)
+    def write_row_csv(self, row):
+        """
+        write csv row method
+        :param row:
+        :return:
+        """
+        self.writer.writerow(row)
 
-        elif self.file_type == "flat":
-            self.writer.write(row)
+    def write_row_flat(self, row):
+        """
+        write flat row method
+        :param row:
+        :return:
+        """
+        self.writer.write(row)
 
 
 class DummyFileGeneratorException(Exception):
@@ -107,7 +117,7 @@ class DummyFileGenerator:
         self._setup_logging(logging_level=logging_level)
         self._set_vars_from_data_files_content(data_files_location=data_files_location)
         self._read_config_file(config_json_path=config_json_path, project_name=project_name)
-        self._validate_config_file()
+        self._validate_config_file_data()
 
     @staticmethod
     def _setup_logging(logging_level=None):
@@ -192,7 +202,7 @@ class DummyFileGenerator:
             raise DummyFileGeneratorException(f'Project {project_name} not found '
                                               f'in {config_json_path}')
 
-    def _validate_config_file(self):
+    def _validate_config_file_data(self):
         """
         simple config file validation method
         :return:
@@ -251,6 +261,7 @@ class DummyFileGenerator:
             else:
                 header_row.append(str(i) + whitespace_generator(j - len(i)))
         header_row = "".join(header_row)
+
         return header_row
 
     def csv_row(self, columns):
@@ -344,20 +355,22 @@ class DummyFileGenerator:
 
             if bool(self.header):
                 if self.file_type == "csv":
-                    writer.write_row(self.csv_header_row(self.column_name_list))
+                    writer.write_row_csv(self.csv_header_row(self.column_name_list))
 
                 elif self.file_type == "flat":
-                    writer.write_row(self.flat_header_row(self.column_name_list, self.column_len_list)
-                                     + file_line_ending)
+                    writer.write_row_flat(self.flat_header_row(self.column_name_list,
+                                                               self.column_len_list)
+                                          + file_line_ending)
 
             rows_written = 0
             while output_file.tell() < file_size or rows_written < row_count:
                 if self.file_type == "csv":
-                    writer.write_row(self.csv_row(self.data_file_list))
+                    writer.write_row_csv(self.csv_row(self.data_file_list))
 
                 elif self.file_type == "flat":
-                    writer.write_row(self.flat_row(self.data_file_list, self.column_len_list)
-                                     + file_line_ending)
+                    writer.write_row_flat(self.flat_row(self.data_file_list,
+                                                        self.column_len_list)
+                                          + file_line_ending)
 
                 rows_written += 1
 
