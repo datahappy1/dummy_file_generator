@@ -6,7 +6,6 @@ import csv
 import argparse
 import logging
 
-from abc import abstractmethod
 from random import randint
 from datetime import datetime
 
@@ -28,54 +27,31 @@ class Writer:
     """
     class Writer
     """
-
     def __init__(self, file_handler, file_type, **kwargs):
         self.file_handler = file_handler
         self.file_type = file_type
-        self._setup_writer(**kwargs)
+        self.writer = None
 
-    def __str__(self):
-        return self.file_handler
-
-    @abstractmethod
-    def _csv_writer(self):
-        """
-        csv writer abstract method
-        :return:
-        """
-
-    def _flat_writer(self):
-        """
-        flat writer method
-        :return:
-        """
-        return self.file_handler
-
-    def _setup_writer(self, **kwargs):
-        """
-        setup writer method
-        :return:
-        """
         if self.file_type == "csv":
-            self.writer = csv.writer(self.file_handler,
-                                     delimiter=kwargs.get('csv_value_separator'),
-                                     quoting=QUOTING_MAP.get(kwargs.get('csv_quoting')),
-                                     quotechar=kwargs.get('csv_quote_char')
-                                     )
-
+            self._setup_writer_csv(**kwargs)
         elif self.file_type == "flat":
-            self.writer = self._flat_writer()
+            self._setup_writer_flat()
         else:
-            raise DummyFileGeneratorException(f"Writer type {self.file_type} not implemented")
+            raise DummyFileGeneratorException(f'Unknown file_type {self.file_type}')
 
-    def write(self, row):
-        """
-        write method
-        :param row:
-        :return:
-        """
+    def _setup_writer_csv(self, **kwargs):
+        self.writer = csv.writer(self.file_handler,
+                                 delimiter=kwargs.get('csv_value_separator'),
+                                 quoting=QUOTING_MAP.get(kwargs.get('csv_quoting')),
+                                 quotechar=kwargs.get('csv_quote_char'))
+
+    def _setup_writer_flat(self):
+        self.writer = self.file_handler
+
+    def write_row(self, row):
         if self.file_type == "csv":
             self.writer.writerow(row)
+
         elif self.file_type == "flat":
             self.writer.write(row)
 
@@ -325,6 +301,7 @@ class DummyFileGenerator:
             value = value + whitespace_generator(whitespace - len(value))
             row.append(value)
         row = ''.join(row)
+
         return row
 
     def write_output_file(self, **file_scope_kwargs):
@@ -367,20 +344,20 @@ class DummyFileGenerator:
 
             if bool(self.header):
                 if self.file_type == "csv":
-                    writer.write(self.csv_header_row(self.column_name_list))
+                    writer.write_row(self.csv_header_row(self.column_name_list))
 
                 elif self.file_type == "flat":
-                    writer.write(self.flat_header_row(self.column_name_list, self.column_len_list)
-                                 + file_line_ending)
+                    writer.write_row(self.flat_header_row(self.column_name_list, self.column_len_list)
+                                     + file_line_ending)
 
             rows_written = 0
             while output_file.tell() < file_size or rows_written < row_count:
                 if self.file_type == "csv":
-                    writer.write(self.csv_row(self.data_file_list))
+                    writer.write_row(self.csv_row(self.data_file_list))
 
                 elif self.file_type == "flat":
-                    writer.write(self.flat_row(self.data_file_list, self.column_len_list)
-                                 + file_line_ending)
+                    writer.write_row(self.flat_row(self.data_file_list, self.column_len_list)
+                                     + file_line_ending)
 
                 rows_written += 1
 
