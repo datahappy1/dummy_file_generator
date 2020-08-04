@@ -64,7 +64,7 @@ class TestUnitClass:
         :return: assert flat header output works as expected
         """
         expected_output = 'test1 test2  test3   '
-        actual_output = DFG_OBJ.flat_header_row(['test1', 'test2', 'test3'], [6, 7, 8])
+        actual_output = DFG_OBJ.flat_header_row_generate(['test1', 'test2', 'test3'], [6, 7, 8])
 
         assert expected_output == actual_output
 
@@ -74,7 +74,7 @@ class TestUnitClass:
         :return: assert csv header output works as expected
         """
         expected_output = 'test1,test2,test3'
-        actual_output = DFG_OBJ.csv_header_row('test1,test2,test3')
+        actual_output = DFG_OBJ.csv_header_row_generate('test1,test2,test3')
 
         assert expected_output == actual_output
 
@@ -83,7 +83,7 @@ class TestUnitClass:
         unit test flat row output
         :return: assert flat row output works as expected
         """
-        raw_expected_output = DFG_OBJ.flat_row(['test', 'test', 'test'], [6, 7, 8])
+        raw_expected_output = DFG_OBJ.flat_body_row_generate(['test', 'test', 'test'], [6, 7, 8])
 
         assert isinstance(raw_expected_output, str)
 
@@ -97,7 +97,7 @@ class TestUnitClass:
         unit test csv row output
         :return: assert csv row output works as expected
         """
-        raw_expected_output = DFG_OBJ.csv_row(['test', 'test', 'test'])
+        raw_expected_output = DFG_OBJ.csv_body_row_generate(['test', 'test', 'test'])
 
         assert isinstance(raw_expected_output, list)
         for item in raw_expected_output:

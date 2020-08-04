@@ -236,7 +236,7 @@ class DummyFileGenerator:
             raise DummyFileGeneratorException('No column_len value set in config')
 
     @staticmethod
-    def csv_header_row(columns):
+    def csv_header_row_generate(columns):
         """
         csv row header
         :param columns:
@@ -245,7 +245,7 @@ class DummyFileGenerator:
         return columns
 
     @staticmethod
-    def flat_header_row(columns, column_lengths):
+    def flat_header_row_generate(columns, column_lengths):
         """
         flat row header
         :param columns:
@@ -264,7 +264,7 @@ class DummyFileGenerator:
 
         return header_row
 
-    def csv_row(self, columns):
+    def csv_body_row_generate(self, columns):
         """
         method for generating csv output data row
         :param columns:
@@ -285,7 +285,7 @@ class DummyFileGenerator:
 
         return row
 
-    def flat_row(self, columns, column_lengths):
+    def flat_body_row_generate(self, columns, column_lengths):
         """
         method for generating flat output data row
         :param columns:
@@ -355,21 +355,21 @@ class DummyFileGenerator:
 
             if bool(self.header):
                 if self.file_type == "csv":
-                    writer.write_row_csv(self.csv_header_row(self.column_name_list))
+                    writer.write_row_csv(self.csv_header_row_generate(self.column_name_list))
 
                 elif self.file_type == "flat":
-                    writer.write_row_flat(self.flat_header_row(self.column_name_list,
-                                                               self.column_len_list)
+                    writer.write_row_flat(self.flat_header_row_generate(self.column_name_list,
+                                                                        self.column_len_list)
                                           + file_line_ending)
 
             rows_written = 0
             while output_file.tell() < file_size or rows_written < row_count:
                 if self.file_type == "csv":
-                    writer.write_row_csv(self.csv_row(self.data_file_list))
+                    writer.write_row_csv(self.csv_body_row_generate(self.data_file_list))
 
                 elif self.file_type == "flat":
-                    writer.write_row_flat(self.flat_row(self.data_file_list,
-                                                        self.column_len_list)
+                    writer.write_row_flat(self.flat_body_row_generate(self.data_file_list,
+                                                                      self.column_len_list)
                                           + file_line_ending)
 
                 rows_written += 1
