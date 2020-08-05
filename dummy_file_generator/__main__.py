@@ -236,7 +236,7 @@ class DummyFileGenerator:
 
         if self.csv_file_properties.get('csv_quoting') != "NONE" and \
                 not self.csv_file_properties.get('csv_quote_char'):
-            raise DummyFileGeneratorException('If csv_quoting is set, csv_quote_char must be set')
+            raise DummyFileGeneratorException('If csv_quoting is not "NONE", csv_quote_char must be set')
 
         if self.file_type == 'flat' and not self.column_len_list:
             raise DummyFileGeneratorException('No column_len value set in config')
