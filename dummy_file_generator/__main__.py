@@ -231,13 +231,12 @@ class DummyFileGenerator:
             raise DummyFileGeneratorException('No csv_value_separator value set in config')
 
         if self.file_type == 'csv' and \
-                (self.csv_file_properties.get('csv_quote') not in QUOTING_MAP.keys() or
-                not self.csv_file_properties.get('csv_quote')):
-            raise DummyFileGeneratorException('Invalid or missing csv_quote value')
+                self.csv_file_properties.get('csv_quoting') not in QUOTING_MAP.keys():
+            raise DummyFileGeneratorException('Invalid or missing csv_quoting value')
 
-        if self.csv_file_properties.get('csv_quote') and \
+        if self.csv_file_properties.get('csv_quoting') != "NONE" and \
                 not self.csv_file_properties.get('csv_quote_char'):
-            raise DummyFileGeneratorException('If csv_quote is set, csv_quote_char must be set')
+            raise DummyFileGeneratorException('If csv_quoting is set, csv_quote_char must be set')
 
         if self.file_type == 'flat' and not self.column_len_list:
             raise DummyFileGeneratorException('No column_len value set in config')
