@@ -234,7 +234,7 @@ class DummyFileGenerator:
                 self.csv_file_properties.get('csv_quoting') not in QUOTING_MAP.keys():
             raise DummyFileGeneratorException('Invalid or missing csv_quoting value')
 
-        if self.csv_file_properties.get('csv_quoting') != "NONE" and \
+        if self.file_type == 'csv' and self.csv_file_properties.get('csv_quoting') != "NONE" and \
                 not self.csv_file_properties.get('csv_quote_char'):
             raise DummyFileGeneratorException('If csv_quoting is not "NONE", csv_quote_char must be set')
 
