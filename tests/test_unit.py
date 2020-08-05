@@ -63,8 +63,9 @@ class TestUnitClass:
         unit test flat header
         :return: assert flat header output works as expected
         """
-        expected_output = 'test1 test2  test3   '
-        actual_output = DFG_OBJ.flat_header_row_generate(['test1', 'test2', 'test3'], [6, 7, 8])
+        file_line_ending = '\n'
+        expected_output = 'test1 test2  test3   \n'
+        actual_output = DFG_OBJ._generate_flat_header_row(['test1', 'test2', 'test3'], [6, 7, 8], file_line_ending)
 
         assert expected_output == actual_output
 
@@ -74,7 +75,7 @@ class TestUnitClass:
         :return: assert csv header output works as expected
         """
         expected_output = 'test1,test2,test3'
-        actual_output = DFG_OBJ.csv_header_row_generate('test1,test2,test3')
+        actual_output = DFG_OBJ._generate_csv_header_row('test1,test2,test3')
 
         assert expected_output == actual_output
 
@@ -83,12 +84,13 @@ class TestUnitClass:
         unit test flat row output
         :return: assert flat row output works as expected
         """
-        raw_expected_output = DFG_OBJ.flat_body_row_generate(['test', 'test', 'test'], [6, 7, 8])
+        file_line_ending = '\n'
+        expected_output = _replace_multiple_str_occurrences_in_str('test1 test2  test3   \n', '123', '')
+        raw_actual_output = DFG_OBJ._generate_flat_body_row(['test', 'test', 'test'], [6, 7, 8], file_line_ending)
 
-        assert isinstance(raw_expected_output, str)
+        assert isinstance(raw_actual_output, str)
 
-        expected_output = _replace_multiple_str_occurrences_in_str(raw_expected_output, '123', '')
-        actual_output = _replace_multiple_str_occurrences_in_str('test1 test2  test3   ', '123', '')
+        actual_output = _replace_multiple_str_occurrences_in_str(raw_actual_output, '123', '')
 
         assert expected_output == actual_output
 
@@ -97,16 +99,16 @@ class TestUnitClass:
         unit test csv row output
         :return: assert csv row output works as expected
         """
-        raw_expected_output = DFG_OBJ.csv_body_row_generate(['test', 'test', 'test'])
+        expected_output = _replace_multiple_str_occurrences_in_str("['test1', 'test2', 'test3']", '123', '')
+        raw_actual_output = DFG_OBJ._generate_csv_body_row(['test', 'test', 'test'])
 
-        assert isinstance(raw_expected_output, list)
-        for item in raw_expected_output:
+        assert isinstance(raw_actual_output, list)
+
+        for item in raw_actual_output:
             assert isinstance(item, str)
             assert item.startswith('test')
             assert item.endswith('1') or item.endswith('2') or item.endswith('3')
 
-        expected_output = _replace_multiple_str_occurrences_in_str(str(raw_expected_output), '123', '')
-
-        actual_output = _replace_multiple_str_occurrences_in_str("['test1', 'test2', 'test3']", '123', '')
+        actual_output = _replace_multiple_str_occurrences_in_str(str(raw_actual_output), '123', '')
 
         assert expected_output == actual_output
