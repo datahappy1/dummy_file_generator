@@ -23,45 +23,60 @@ QUOTING_MAP = {"NONE": csv.QUOTE_NONE,
                "ALL": csv.QUOTE_ALL}
 
 
-class Writer:
-    """
-    class Writer
-    """
+class CsvWriter:
+    def __init__(self, writer):
+        self.writer = writer
 
+    def __repr__(self):
+        return self.writer
+
+    def write_row(self, row):
+        self.writer.writerow(row)
+
+
+class FlatWriter:
+    def __init__(self, writer):
+        self.writer = writer
+
+    def __repr__(self):
+        return self.writer
+
+    def write_row(self, row):
+        self.writer.write(str(row))
+
+
+class Writer:
     def __init__(self, file_handler, file_type, **kwargs):
         self.file_handler = file_handler
         self.file_type = file_type
-        self.writer = None
 
-        if self.file_type == "csv":
-            self._setup_writer_csv(**kwargs)
-        elif self.file_type == "flat":
-            self._setup_writer_flat()
+        _file_type_map = {
+            "csv": self._setup_writer_csv(**kwargs),
+            "flat": self._setup_writer_flat()
+        }
+
+        # def _mapper(map, key):
+        #     print(map[key])
+        #     return map[key]
+        #
+        # _mapper(_file_type_map, self.file_type)
 
     def _setup_writer_csv(self, **kwargs):
-        self.writer = csv.writer(self.file_handler,
-                                 delimiter=kwargs.get('csv_value_separator'),
-                                 quoting=QUOTING_MAP.get(kwargs.get('csv_quoting')),
-                                 quotechar=kwargs.get('csv_quote_char'))
+        writer = csv.writer(self.file_handler,
+                            delimiter=kwargs.get('csv_value_separator'),
+                            quoting=QUOTING_MAP.get(kwargs.get('csv_quoting')),
+                            quotechar=kwargs.get('csv_quote_char'))
+        print('csv fired')
+        self.writer = CsvWriter(writer)
 
     def _setup_writer_flat(self):
-        self.writer = self.file_handler
+        writer = self.file_handler
+        # FlatWriter(writer)
+        print('flat fired')
+        self.writer = FlatWriter(writer)
 
-    def write_row_csv(self, row):
-        """
-        write csv row method
-        :param row:
-        :return:
-        """
-        self.writer.writerow(row)
-
-    def write_row_flat(self, row):
-        """
-        write flat row method
-        :param row:
-        :return:
-        """
-        self.writer.write(row)
+    def write_row(self, row):
+        self.writer.write_row(row)
 
 
 class DummyFileGeneratorException(Exception):
@@ -366,22 +381,22 @@ class DummyFileGenerator:
 
             if bool(self.header):
                 if self.file_type == "csv":
-                    writer.write_row_csv(self._generate_csv_header_row(self.column_name_list))
+                    writer.write_row(self._generate_csv_header_row(self.column_name_list))
 
                 elif self.file_type == "flat":
-                    writer.write_row_flat(self._generate_flat_header_row(self.column_name_list,
-                                                                         self.column_len_list,
-                                                                         file_line_ending))
+                    writer.write_row(self._generate_flat_header_row(self.column_name_list,
+                                                                    self.column_len_list,
+                                                                    file_line_ending))
 
             rows_written = 0
             while output_file.tell() < file_size or rows_written < row_count:
                 if self.file_type == "csv":
-                    writer.write_row_csv(self._generate_csv_body_row(self.data_file_list))
+                    writer.write_row(self._generate_csv_body_row(self.data_file_list))
 
                 elif self.file_type == "flat":
-                    writer.write_row_flat(self._generate_flat_body_row(self.data_file_list,
-                                                                       self.column_len_list,
-                                                                       file_line_ending))
+                    writer.write_row(self._generate_flat_body_row(self.data_file_list,
+                                                                  self.column_len_list,
+                                                                  file_line_ending))
 
                 rows_written += 1
 
