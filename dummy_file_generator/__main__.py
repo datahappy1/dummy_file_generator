@@ -24,59 +24,50 @@ QUOTING_MAP = {"NONE": csv.QUOTE_NONE,
 
 
 class CsvWriter:
-    def __init__(self, writer):
-        self.writer = writer
-
-    def __repr__(self):
-        return self.writer
+    def __init__(self, file_handler, **kwargs):
+        self.writer = csv.writer(file_handler,
+                                 delimiter=kwargs.get('csv_value_separator'),
+                                 quoting=QUOTING_MAP.get(kwargs.get('csv_quoting')),
+                                 quotechar=kwargs.get('csv_quote_char'))
 
     def write_row(self, row):
         self.writer.writerow(row)
 
 
 class FlatWriter:
-    def __init__(self, writer):
-        self.writer = writer
-
-    def __repr__(self):
-        return self.writer
+    def __init__(self, file_handler, **kwargs):
+        self.writer = file_handler
 
     def write_row(self, row):
-        self.writer.write(str(row))
+        self.writer.write(row)
 
 
 class Writer:
     def __init__(self, file_handler, file_type, **kwargs):
-        self.file_handler = file_handler
-        self.file_type = file_type
+        _mapped_writer = {
+            "csv": CsvWriter,
+            "flat": FlatWriter,
+        }[file_type]
 
-        _file_type_map = {
-            "csv": self._setup_writer_csv(**kwargs),
-            "flat": self._setup_writer_flat()
-        }
-
-        # def _mapper(map, key):
-        #     print(map[key])
-        #     return map[key]
-        #
-        # _mapper(_file_type_map, self.file_type)
-
-    def _setup_writer_csv(self, **kwargs):
-        writer = csv.writer(self.file_handler,
-                            delimiter=kwargs.get('csv_value_separator'),
-                            quoting=QUOTING_MAP.get(kwargs.get('csv_quoting')),
-                            quotechar=kwargs.get('csv_quote_char'))
-        print('csv fired')
-        self.writer = CsvWriter(writer)
-
-    def _setup_writer_flat(self):
-        writer = self.file_handler
-        # FlatWriter(writer)
-        print('flat fired')
-        self.writer = FlatWriter(writer)
+        self.writer = _mapped_writer(file_handler, **kwargs)
 
     def write_row(self, row):
         self.writer.write_row(row)
+
+
+class CsvRowGenerator:
+    def __init__(self):
+        pass
+
+
+class FlatRowGenerator:
+    def __init__(self):
+        pass
+
+
+class RowGenerator:
+    def __init__(self):
+        pass
 
 
 class DummyFileGeneratorException(Exception):
