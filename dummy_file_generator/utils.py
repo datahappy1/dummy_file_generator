@@ -29,11 +29,7 @@ def get_data_file_content_list_with_item_count(data_set_name, data_files_locatio
     :param data_files_location:
     :return: tuple
     """
-    def _get_data_set_item_count(data_set) -> int:
-        return len(data_set) - 1
-
     data_files_dir_path = os.path.join(data_files_location)
-    data_set = open(os.sep.join((str(data_files_dir_path), data_set_name)))
-    data_set = data_set.read().split('\n')
-    data_set_len = _get_data_set_item_count(data_set)
-    return data_set, data_set_len
+    data_set_file_stream = open(os.sep.join((str(data_files_dir_path), data_set_name)))
+    data_set = data_set_file_stream.read().split('\n')
+    return data_set, len(data_set)

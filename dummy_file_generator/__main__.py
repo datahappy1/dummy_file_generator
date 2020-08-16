@@ -35,7 +35,7 @@ class CsvWriter:
 
 
 class FlatWriter:
-    def __init__(self, file_handler, **kwargs):
+    def __init__(self, file_handler, **kwargs):  # TODO remove **kwargs
         self.writer = file_handler
 
     def write_row(self, row):
@@ -44,30 +44,94 @@ class FlatWriter:
 
 class Writer:
     def __init__(self, file_handler, file_type, **kwargs):
-        _mapped_writer = {
+        _mapped_writer_class = {
             "csv": CsvWriter,
             "flat": FlatWriter,
         }[file_type]
 
-        self.writer = _mapped_writer(file_handler, **kwargs)
+        self.writer = _mapped_writer_class(file_handler, **kwargs)
 
     def write_row(self, row):
         self.writer.write_row(row)
 
 
 class CsvRowGenerator:
-    def __init__(self):
-        pass
+    def __init__(self, data_files_contents, columns, **kwargs):
+        self.data_files_contents = data_files_contents
+        self.columns = columns
+
+    def generate_header_row(self):
+        return [x.get('column_name') for x in self.columns]
+
+    def generate_body_row(self):
+        row = []
+
+        for column in self.columns:
+            try:
+                _column_values_list, _column_values_list_item_count = self.data_files_contents[column['datafile']]
+            except AttributeError as attr_err:
+                raise DummyFileGeneratorException(f'Cannot find corresponding data_file for '
+                                                  f'column {column.get("column_name")}, '
+                                                  f'Attribute Error: {attr_err}')
+
+            value = _column_values_list[randint(0, _column_values_list_item_count - 1)]
+            row.append(value)
+
+        return row
 
 
 class FlatRowGenerator:
-    def __init__(self):
-        pass
+    def __init__(self, data_files_contents, columns, **kwargs):
+        self.data_files_contents = data_files_contents
+        self.columns = columns
+        self.column_lengths = kwargs.get('column_len_list')
+        self.file_line_ending = kwargs.get('file_line_ending')
+
+    def generate_header_row(self):
+        _header_row = []
+
+        for _column_values_list, _column_length in zip([x.get('column_name') for x in self.columns],
+                                                       self.column_lengths):
+            _header_row.append(str(_column_values_list) +
+                               whitespace_generator(_column_length - len(_column_values_list)))
+
+        header_row = "".join(_header_row)
+
+        return header_row + self.file_line_ending
+
+    def generate_body_row(self):
+        row = []
+
+        for column in self.columns:
+            try:
+                _column_values_list, _column_values_list_item_count = self.data_files_contents[column['datafile']]
+                _whitespace_count = column.get('column_len')
+            except AttributeError as attr_err:
+                raise DummyFileGeneratorException(f'Cannot find corresponding data_file for '
+                                                  f'column {column.get("column_name")}, '
+                                                  f'Attribute Error: {attr_err}')
+            value = _column_values_list[randint(0, _column_values_list_item_count - 1)]
+            row.append(str(value) + whitespace_generator(_whitespace_count - len(value)))
+
+        row = "".join(row)
+
+        return row + self.file_line_ending
 
 
 class RowGenerator:
-    def __init__(self):
-        pass
+    def __init__(self, file_type, data_files_contents, columns, **kwargs):
+        _mapped_generator_class = {
+            "csv": CsvRowGenerator,
+            "flat": FlatRowGenerator,
+        }[file_type]
+
+        self.generator = _mapped_generator_class(data_files_contents, columns, **kwargs)
+
+    def generate_header_row(self):
+        return self.generator.generate_header_row()
+
+    def generate_body_row(self):
+        return self.generator.generate_body_row()
 
 
 class DummyFileGeneratorException(Exception):
@@ -82,7 +146,16 @@ class DummyFileGenerator:
     """
 
     @staticmethod
-    def _get_path_from_project_subfolder_loc(sub_folder, filename=''):
+    def _setup_logging(logging_level=None):
+        """
+        set logging levels for main function console output
+        :param logging_level:
+        :return:
+        """
+        LOGGER.setLevel(logging_level or LOGGING_LEVEL)
+
+    @staticmethod
+    def _get_path_from_project_subfolder_location(sub_folder, filename=''):
         """
         returns file path or folder path based on the provided args
         from the dummy_file_generator/dummy_file_generator location
@@ -93,47 +166,6 @@ class DummyFileGenerator:
         current_dir = os.path.dirname(__file__)
         current_dir_path = os.path.join(current_dir)
         return os.sep.join([current_dir_path, sub_folder, filename])
-
-    def __init__(self, logging_level=None, **kwargs):
-        data_files_location = kwargs.get('data_files_location') or \
-                              DummyFileGenerator._get_path_from_project_subfolder_loc('data_files')
-        config_json_path = kwargs.get('config_json_path') or \
-                           DummyFileGenerator._get_path_from_project_subfolder_loc('configs',
-                                                                                   'config.json')
-        project_name = kwargs.get('project_name')
-
-        if not project_name:
-            raise DummyFileGeneratorException(f'Missing mandatory argument project_name')
-
-        self.default_rowcount = kwargs.get('default_rowcount') or DEFAULT_ROW_COUNT
-
-        self.file_type = None
-        self.header = None
-
-        self.csv_file_properties = {"csv_value_separator": None,
-                                    "csv_quoting": None,
-                                    "csv_quote_char": None}
-
-        self.column_name_list = []
-        self.column_len_list = []
-        self.data_file_list = []
-
-        self._setup_logging(logging_level=logging_level)
-        self._set_vars_from_data_files_content(data_files_location=data_files_location)
-        self._read_config_file(config_json_path=config_json_path, project_name=project_name)
-        self._validate_config_file_data()
-
-    def __repr__(self):
-        return self
-
-    @staticmethod
-    def _setup_logging(logging_level=None):
-        """
-        set logging levels for main function console output
-        :param logging_level:
-        :return:
-        """
-        LOGGER.setLevel(logging_level or LOGGING_LEVEL)
 
     @staticmethod
     def _create_target_folder_if_not_exists(absolute_path):
@@ -151,30 +183,36 @@ class DummyFileGenerator:
                 raise DummyFileGeneratorException(f'Cannot create target folder, '
                                                   f'OSError: {os_err}')
 
-    def _set_vars_from_data_files_content(self, data_files_location):
-        """
-        method setting variables from data_files, variable names have
-        "data_file_" prefix to avoid issue in case the data_file name
-        would collide with a already existing class variable
-        :param data_files_location:
-        :return:
-        """
-        try:
-            data_files = [f for f in os.listdir(data_files_location) if
-                          os.path.isfile(os.path.join(data_files_location, f))
-                          and str(f).endswith('.txt')]
-        except OSError as os_err:
-            raise DummyFileGeneratorException(f'Cannot list data_files, '
-                                              f'OSError: {os_err}')
+    def __init__(self, logging_level=None, **kwargs):
+        data_files_location = kwargs.get('data_files_location') or \
+                              DummyFileGenerator._get_path_from_project_subfolder_location('data_files')
+        config_json_path = kwargs.get('config_json_path') or \
+                           DummyFileGenerator._get_path_from_project_subfolder_location('configs',
+                                                                                        'config.json')
+        project_name = kwargs.get('project_name')
 
-        if not data_files:
-            raise DummyFileGeneratorException(f'No data_files in {data_files_location}')
+        if not project_name:
+            raise DummyFileGeneratorException(f'Missing mandatory argument project_name')
 
-        for data_file in data_files:
-            setattr(self, 'data_file_' + data_file.replace('.txt', ''),
-                    get_data_file_content_list_with_item_count(data_file,
-                                                               data_files_location=
-                                                               data_files_location))
+        self.default_rowcount = kwargs.get('default_rowcount') or DEFAULT_ROW_COUNT
+
+        self.file_type = None
+        self.header = None
+        self.columns = dict()
+        self.csv_file_properties = {"csv_value_separator": None,
+                                    "csv_quoting": None,
+                                    "csv_quote_char": None}
+
+        self._setup_logging(logging_level=logging_level)
+        self._read_config_file(config_json_path=config_json_path, project_name=project_name)
+        # self._validate_config_file_data()
+        _data_files_list = DummyFileGenerator._list_data_files(data_files_location=data_files_location)
+        self.data_files_contents = DummyFileGenerator._load_data_files_content(
+            data_files_location=data_files_location,
+            data_files_list=_data_files_list)
+
+    def __repr__(self):
+        return self  # FIXME check
 
     def _read_config_file(self, config_json_path, project_name):
         """
@@ -193,144 +231,83 @@ class DummyFileGenerator:
 
         for project in json_data['project']:
             if project['project_name'] == project_name:
-                self.header = project.get('header')
-                self.file_type = project.get('file_type')
+                self.header = project['header']
+                self.file_type = project['file_type']
                 self.csv_file_properties['csv_value_separator'] = project.get('csv_value_separator')
                 self.csv_file_properties['csv_quoting'] = project.get('csv_quoting')
                 self.csv_file_properties['csv_quote_char'] = project.get('csv_quote_char')
+                self.columns = project.get('columns')
 
-                for column in project.get('columns'):
-                    self.column_name_list.append(column.get('column_name'))
-                    self.data_file_list.append(str(column.get('datafile')).replace('.txt', ''))
-                    self.column_len_list.append(column.get('column_len'))
                 break
         else:
             raise DummyFileGeneratorException(f'Project {project_name} not found '
                                               f'in {config_json_path}')
 
-    def _validate_config_file_data(self):
-        """
-        simple config file validation method
-        :return:
-        """
-        if self.file_type not in ('csv', 'flat'):
-            raise DummyFileGeneratorException(f'Unknown file_type {self.file_type}, '
-                                              f'supported options are csv or flat')
-
-        if not self.column_name_list:
-            raise DummyFileGeneratorException('No columns set in config')
-
-        if any(x is None for x in self.column_name_list):
-            raise DummyFileGeneratorException('Not all columns set in config')
-
-        if not self.data_file_list:
-            raise DummyFileGeneratorException('No datafile value set in config')
-
-        if any(x is None for x in self.data_file_list):
-            raise DummyFileGeneratorException('Not all datafile values set in config')
-
-        if not self.header:
-            raise DummyFileGeneratorException('No header value set in config, '
-                                              'supported options are true or false')
-
-        if self.file_type == 'csv' and not self.csv_file_properties.get('csv_value_separator'):
-            raise DummyFileGeneratorException('No csv_value_separator value set in config')
-
-        if self.file_type == 'csv' and \
-                self.csv_file_properties.get('csv_quoting') not in QUOTING_MAP.keys():
-            raise DummyFileGeneratorException('Invalid or missing csv_quoting value')
-
-        if self.file_type == 'csv' and self.csv_file_properties.get('csv_quoting') != "NONE" and \
-                not self.csv_file_properties.get('csv_quote_char'):
-            raise DummyFileGeneratorException('If csv_quoting is not "NONE", csv_quote_char must be set')
-
-        if self.file_type == 'flat' and not self.column_len_list:
-            raise DummyFileGeneratorException('No column_len value set in config')
-
-        if self.file_type == 'flat' and any(x is None for x in self.column_len_list):
-            raise DummyFileGeneratorException('Not all column_len values set in config')
-
-    @staticmethod
-    def _generate_csv_header_row(columns):
-        """
-        csv row header
-        :param columns:
-        :return: csv row header
-        """
-        return columns
+    # def _validate_config_file_data(self):
+    #     """
+    #     simple config file validation method
+    #     :return:
+    #     """
+    #     if self.file_type not in ('csv', 'flat'):
+    #         raise DummyFileGeneratorException(f'Unknown file_type {self.file_type}, '
+    #                                           f'supported options are csv or flat')
+    #
+    #     if not self.column_name_list:
+    #         raise DummyFileGeneratorException('No columns set in config')
+    #
+    #     if any(x is None for x in self.column_name_list):
+    #         raise DummyFileGeneratorException('Not all columns set in config')
+    #
+    #     if not self.data_file_list:
+    #         raise DummyFileGeneratorException('No datafile value set in config')
+    #
+    #     if any(x is None for x in self.data_file_list):
+    #         raise DummyFileGeneratorException('Not all datafile values set in config')
+    #
+    #     if not self.header:
+    #         raise DummyFileGeneratorException('No header value set in config, '
+    #                                           'supported options are true or false')
+    #
+    #     if self.file_type == 'csv' and not self.csv_file_properties.get('csv_value_separator'):
+    #         raise DummyFileGeneratorException('No csv_value_separator value set in config')
+    #
+    #     if self.file_type == 'csv' and \
+    #             self.csv_file_properties.get('csv_quoting') not in QUOTING_MAP.keys():
+    #         raise DummyFileGeneratorException('Invalid or missing csv_quoting value')
+    #
+    #     if self.file_type == 'csv' and self.csv_file_properties.get('csv_quoting') != "NONE" and \
+    #             not self.csv_file_properties.get('csv_quote_char'):
+    #         raise DummyFileGeneratorException('If csv_quoting is not "NONE", csv_quote_char must be set')
+    #
+    #     if self.file_type == 'flat' and not self.column_len_list:
+    #         raise DummyFileGeneratorException('No column_len value set in config')
+    #
+    #     if self.file_type == 'flat' and any(x is None for x in self.column_len_list):
+    #         raise DummyFileGeneratorException('Not all column_len values set in config')
 
     @staticmethod
-    def _generate_flat_header_row(columns, column_lengths, file_line_ending):
-        """
-        flat row header
-        :param columns:
-        :param column_lengths:
-        :param file_line_ending:
-        :return: flat row header
-        """
-        header_row = []
+    def _list_data_files(data_files_location) -> list:
+        try:
+            data_files_list = [f for f in os.listdir(data_files_location) if
+                               os.path.isfile(os.path.join(data_files_location, f))
+                               and str(f).endswith('.txt')]
+        except OSError as os_err:
+            raise DummyFileGeneratorException(f'Cannot list data_files, '
+                                              f'OSError: {os_err}')
 
-        for i, j in zip(columns, column_lengths):
-            if len(i) > j:
-                LOGGER.error('Header value %s is longer then expected column length '
-                             'set in config.json file!', i)
-            else:
-                header_row.append(str(i) + whitespace_generator(j - len(i)))
-        header_row = "".join(header_row)
+        if not data_files_list:
+            raise DummyFileGeneratorException(f'No data_files in {data_files_location}')
 
-        return header_row + file_line_ending
+        return data_files_list
 
-    def _generate_csv_body_row(self, columns):
-        """
-        method for generating csv output data row
-        :param columns:
-        :return: output csv data row
-        """
-        row = []
-
-        for column in columns:
-            column = column.strip("'")
-            try:
-                _val, _len = DummyFileGenerator.__getattribute__(self, 'data_file_' + column)
-            except AttributeError as attr_err:
-                raise DummyFileGeneratorException(f'Cannot find corresponding data_file for '
-                                                  f'column {column}, Attribute Error: {attr_err}')
-
-            value = _val[randint(0, _len)]
-            row.append(value)
-
-        return row
-
-    def _generate_flat_body_row(self, columns, column_lengths, file_line_ending):
-        """
-        method for generating flat output data row
-        :param columns:
-        :param column_lengths:
-        :param file_line_ending:
-        :return: output flat data row
-        """
-        columns = add_quotes_to_list_items(columns)
-        column_lengths = add_quotes_to_list_items(column_lengths)
-        row = []
-
-        for index, column in enumerate(columns):
-            column = column.strip("'")
-            whitespace = int(column_lengths[index])
-            try:
-                _val, _len = DummyFileGenerator.__getattribute__(self, 'data_file_' + column)
-            except AttributeError as attr_err:
-                raise DummyFileGeneratorException(f'Cannot find corresponding data_file for '
-                                                  f'column {column}, Attribute Error: {attr_err}')
-
-            value = _val[randint(0, _len)]
-            if whitespace < len(value):
-                LOGGER.error('Column value %s is longer then expected '
-                             'column length set in config.json file!', value)
-            value = value + whitespace_generator(whitespace - len(value))
-            row.append(value)
-        row = ''.join(row)
-
-        return row + file_line_ending
+    @staticmethod
+    def _load_data_files_content(data_files_location, data_files_list):
+        data_files_content = dict()
+        for data_file in data_files_list:
+            data_files_content[data_file] = get_data_file_content_list_with_item_count(data_file,
+                                                                                       data_files_location=
+                                                                                       data_files_location)
+        return data_files_content
 
     def write_output_file(self, **file_scope_kwargs):
         """
@@ -364,31 +341,24 @@ class DummyFileGenerator:
 
             writer = Writer(file_handler=output_file,
                             file_type=self.file_type,
-                            **
-                            {"csv_value_separator": self.csv_file_properties['csv_value_separator'],
-                             "csv_quoting": self.csv_file_properties['csv_quoting'],
-                             "csv_quote_char": self.csv_file_properties['csv_quote_char']}
+                            **{"csv_value_separator": self.csv_file_properties['csv_value_separator'],
+                               "csv_quoting": self.csv_file_properties['csv_quoting'],
+                               "csv_quote_char": self.csv_file_properties['csv_quote_char']}
                             )
 
-            if bool(self.header):
-                if self.file_type == "csv":
-                    writer.write_row(self._generate_csv_header_row(self.column_name_list))
+            generator = RowGenerator(file_type=self.file_type,
+                                     data_files_contents=self.data_files_contents,
+                                     columns=self.columns,
+                                     **{"column_len_list": [x.get('column_len') for x in self.columns],
+                                        "file_line_ending": file_line_ending}
+                                     )
 
-                elif self.file_type == "flat":
-                    writer.write_row(self._generate_flat_header_row(self.column_name_list,
-                                                                    self.column_len_list,
-                                                                    file_line_ending))
+            if bool(self.header):
+                writer.write_row(generator.generate_header_row())
 
             rows_written = 0
             while output_file.tell() < file_size or rows_written < row_count:
-                if self.file_type == "csv":
-                    writer.write_row(self._generate_csv_body_row(self.data_file_list))
-
-                elif self.file_type == "flat":
-                    writer.write_row(self._generate_flat_body_row(self.data_file_list,
-                                                                  self.column_len_list,
-                                                                  file_line_ending))
-
+                writer.write_row(generator.generate_body_row())
                 rows_written += 1
 
                 if divmod(rows_written, 10000)[1] == 1 and rows_written > 1:
@@ -438,7 +408,7 @@ def parse_args():
     file_encoding = parsed.file_encoding
     file_line_ending = parsed.file_line_ending
 
-    project_scope_kwargs = {
+    project_scope_kwargs = {  # FIXME should be standard args
         "project_name": project_name,
         "data_files_location": data_files_location,
         "config_json_path": config_json_path,
