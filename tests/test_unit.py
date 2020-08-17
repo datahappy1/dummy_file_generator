@@ -19,7 +19,7 @@ project_scope_kwargs = {
 }
 
 DFG_OBJ = Dfg(LOGGING_LEVEL, **project_scope_kwargs)
-DFG_OBJ._load_data_files_content(DATA_FILES_LOCATION)
+DFG_OBJ.load_data_files_content(DATA_FILES_LOCATION)
 
 
 def _replace_multiple_str_occurrences_in_str(string, old_value, new_value) -> str:

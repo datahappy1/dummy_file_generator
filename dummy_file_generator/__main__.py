@@ -43,7 +43,7 @@ class FlatWriter:
 
 
 class Writer:
-    def __init__(self, file_handler, file_type, **kwargs):
+    def __init__(self, file_type, file_handler, **kwargs):
         _mapped_writer_class = {
             "csv": CsvWriter,
             "flat": FlatWriter,
@@ -59,9 +59,10 @@ class CsvRowGenerator:
     def __init__(self, data_files_contents, columns, **kwargs):
         self.data_files_contents = data_files_contents
         self.columns = columns
+        self.column_names = [x.get('column_name') for x in self.columns]
 
     def generate_header_row(self):
-        return [x.get('column_name') for x in self.columns]
+        return self.column_names
 
     def generate_body_row(self):
         row = []
@@ -84,13 +85,14 @@ class FlatRowGenerator:
     def __init__(self, data_files_contents, columns, **kwargs):
         self.data_files_contents = data_files_contents
         self.columns = columns
-        self.column_lengths = kwargs.get('column_len_list')
+        self.column_names = [x.get('column_name') for x in self.columns]
+        self.column_lengths = [x.get('column_len') for x in self.columns]
         self.file_line_ending = kwargs.get('file_line_ending')
 
     def generate_header_row(self):
         _header_row = []
 
-        for _column_values_list, _column_length in zip([x.get('column_name') for x in self.columns],
+        for _column_values_list, _column_length in zip(self.column_names,
                                                        self.column_lengths):
             _header_row.append(str(_column_values_list) +
                                whitespace_generator(_column_length - len(_column_values_list)))
@@ -127,12 +129,12 @@ class RowGenerator:
 
         self.generator = _mapped_generator_class(data_files_contents, columns, **kwargs)
 
+
     def generate_header_row(self):
         return self.generator.generate_header_row()
 
     def generate_body_row(self):
         return self.generator.generate_body_row()
-
 
 class DummyFileGeneratorException(Exception):
     """
@@ -204,17 +206,16 @@ class DummyFileGenerator:
                                     "csv_quote_char": None}
 
         self._setup_logging(logging_level=logging_level)
-        self._read_config_file(config_json_path=config_json_path, project_name=project_name)
-        # self._validate_config_file_data()
-        _data_files_list = DummyFileGenerator._list_data_files(data_files_location=data_files_location)
-        self.data_files_contents = DummyFileGenerator._load_data_files_content(
-            data_files_location=data_files_location,
-            data_files_list=_data_files_list)
+        self._set_vars_from_config_file(config_json_path=config_json_path, project_name=project_name)
+        self._validate_config_file_data()
+
+        self.data_files_contents = DummyFileGenerator.load_data_files_content(
+            data_files_location=data_files_location)
 
     def __repr__(self):
         return self  # FIXME check
 
-    def _read_config_file(self, config_json_path, project_name):
+    def _set_vars_from_config_file(self, config_json_path, project_name):
         """
         read config json file method
         :return:
@@ -231,59 +232,62 @@ class DummyFileGenerator:
 
         for project in json_data['project']:
             if project['project_name'] == project_name:
-                self.header = project['header']
-                self.file_type = project['file_type']
+                self.header = project.get('header')
+                self.file_type = project.get('file_type')
                 self.csv_file_properties['csv_value_separator'] = project.get('csv_value_separator')
                 self.csv_file_properties['csv_quoting'] = project.get('csv_quoting')
                 self.csv_file_properties['csv_quote_char'] = project.get('csv_quote_char')
                 self.columns = project.get('columns')
-
                 break
         else:
             raise DummyFileGeneratorException(f'Project {project_name} not found '
                                               f'in {config_json_path}')
 
-    # def _validate_config_file_data(self):
-    #     """
-    #     simple config file validation method
-    #     :return:
-    #     """
-    #     if self.file_type not in ('csv', 'flat'):
-    #         raise DummyFileGeneratorException(f'Unknown file_type {self.file_type}, '
-    #                                           f'supported options are csv or flat')
-    #
-    #     if not self.column_name_list:
-    #         raise DummyFileGeneratorException('No columns set in config')
-    #
-    #     if any(x is None for x in self.column_name_list):
-    #         raise DummyFileGeneratorException('Not all columns set in config')
-    #
-    #     if not self.data_file_list:
-    #         raise DummyFileGeneratorException('No datafile value set in config')
-    #
-    #     if any(x is None for x in self.data_file_list):
-    #         raise DummyFileGeneratorException('Not all datafile values set in config')
-    #
-    #     if not self.header:
-    #         raise DummyFileGeneratorException('No header value set in config, '
-    #                                           'supported options are true or false')
-    #
-    #     if self.file_type == 'csv' and not self.csv_file_properties.get('csv_value_separator'):
-    #         raise DummyFileGeneratorException('No csv_value_separator value set in config')
-    #
-    #     if self.file_type == 'csv' and \
-    #             self.csv_file_properties.get('csv_quoting') not in QUOTING_MAP.keys():
-    #         raise DummyFileGeneratorException('Invalid or missing csv_quoting value')
-    #
-    #     if self.file_type == 'csv' and self.csv_file_properties.get('csv_quoting') != "NONE" and \
-    #             not self.csv_file_properties.get('csv_quote_char'):
-    #         raise DummyFileGeneratorException('If csv_quoting is not "NONE", csv_quote_char must be set')
-    #
-    #     if self.file_type == 'flat' and not self.column_len_list:
-    #         raise DummyFileGeneratorException('No column_len value set in config')
-    #
-    #     if self.file_type == 'flat' and any(x is None for x in self.column_len_list):
-    #         raise DummyFileGeneratorException('Not all column_len values set in config')
+    def _validate_config_file_data(self):
+        """
+        simple config file validation method
+        :return:
+        """
+        _column_name_list = [x.get('column_name') for x in self.columns]
+        _data_file_list = [x.get('datafile') for x in self.columns]
+        _column_len_list = [x.get('column_len') for x in self.columns]
+
+        if self.file_type not in ('csv', 'flat'):
+            raise DummyFileGeneratorException(f'Unknown file_type {self.file_type}, '
+                                              f'supported options are csv or flat')
+
+        if not _column_name_list:
+            raise DummyFileGeneratorException('No columns set in config')
+
+        if any(x is None for x in _column_name_list):
+            raise DummyFileGeneratorException('Not all columns set in config')
+
+        if not _data_file_list:
+            raise DummyFileGeneratorException('No datafile value set in config')
+
+        if any(x is None for x in _data_file_list):
+            raise DummyFileGeneratorException('Not all datafile values set in config')
+
+        if not self.header:
+            raise DummyFileGeneratorException('No header value set in config, '
+                                              'supported options are true or false')
+
+        if self.file_type == 'csv' and not self.csv_file_properties.get('csv_value_separator'):
+            raise DummyFileGeneratorException('No csv_value_separator value set in config')
+
+        if self.file_type == 'csv' and \
+                self.csv_file_properties.get('csv_quoting') not in QUOTING_MAP.keys():
+            raise DummyFileGeneratorException('Invalid or missing csv_quoting value')
+
+        if self.file_type == 'csv' and self.csv_file_properties.get('csv_quoting') != "NONE" and \
+                not self.csv_file_properties.get('csv_quote_char'):
+            raise DummyFileGeneratorException('If csv_quoting is not "NONE", csv_quote_char must be set')
+
+        if self.file_type == 'flat' and not _column_len_list:
+            raise DummyFileGeneratorException('No column_len value set in config')
+
+        if self.file_type == 'flat' and any(x is None for x in _column_len_list):
+            raise DummyFileGeneratorException('Not all column_len values set in config')
 
     @staticmethod
     def _list_data_files(data_files_location) -> list:
@@ -301,7 +305,9 @@ class DummyFileGenerator:
         return data_files_list
 
     @staticmethod
-    def _load_data_files_content(data_files_location, data_files_list):
+    def load_data_files_content(data_files_location):
+        data_files_list = DummyFileGenerator._list_data_files(data_files_location=data_files_location)
+
         data_files_content = dict()
         for data_file in data_files_list:
             data_files_content[data_file] = get_data_file_content_list_with_item_count(data_file,
@@ -339,8 +345,8 @@ class DummyFileGenerator:
             LOGGER.info('File %s processing started at %s', generated_file_path,
                         execution_start_time)
 
-            writer = Writer(file_handler=output_file,
-                            file_type=self.file_type,
+            writer = Writer(file_type=self.file_type,
+                            file_handler=output_file,
                             **{"csv_value_separator": self.csv_file_properties['csv_value_separator'],
                                "csv_quoting": self.csv_file_properties['csv_quoting'],
                                "csv_quote_char": self.csv_file_properties['csv_quote_char']}
@@ -349,8 +355,7 @@ class DummyFileGenerator:
             generator = RowGenerator(file_type=self.file_type,
                                      data_files_contents=self.data_files_contents,
                                      columns=self.columns,
-                                     **{"column_len_list": [x.get('column_len') for x in self.columns],
-                                        "file_line_ending": file_line_ending}
+                                     **{"file_line_ending": file_line_ending}
                                      )
 
             if bool(self.header):
