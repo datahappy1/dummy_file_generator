@@ -28,18 +28,20 @@ class CsvWriter:
         self.writer = csv.writer(file_handler,
                                  delimiter=kwargs.get('csv_value_separator'),
                                  quoting=QUOTING_MAP.get(kwargs.get('csv_quoting')),
-                                 quotechar=kwargs.get('csv_quote_char'))
+                                 quotechar=kwargs.get('csv_quote_char'),
+                                 lineterminator=kwargs.get('file_line_ending'))
 
     def write_row(self, row):
         self.writer.writerow(row)
 
 
 class FlatWriter:
-    def __init__(self, file_handler, **kwargs):  # TODO remove **kwargs
+    def __init__(self, file_handler, **kwargs):
         self.writer = file_handler
+        self.file_line_ending = kwargs.get('file_line_ending')
 
     def write_row(self, row):
-        self.writer.write(row)
+        self.writer.write(row + self.file_line_ending)
 
 
 class Writer:
@@ -85,7 +87,6 @@ class FlatRowGenerator:
         self.data_files_contents = data_files_contents
         self.columns = columns
         self.column_lengths = kwargs.get('column_len_list')
-        self.file_line_ending = kwargs.get('file_line_ending')
 
     def generate_header_row(self):
         _header_row = []
@@ -97,7 +98,7 @@ class FlatRowGenerator:
 
         header_row = "".join(_header_row)
 
-        return header_row + self.file_line_ending
+        return header_row
 
     def generate_body_row(self):
         row = []
@@ -115,7 +116,7 @@ class FlatRowGenerator:
 
         row = "".join(row)
 
-        return row + self.file_line_ending
+        return row
 
 
 class RowGenerator:
@@ -333,7 +334,7 @@ class DummyFileGenerator:
 
         self._create_target_folder_if_not_exists(generated_file_path)
 
-        with io.open(generated_file_path, 'w', encoding=file_encoding, newline=file_line_ending) \
+        with io.open(generated_file_path, 'w', encoding=file_encoding) \
                 as output_file:
             execution_start_time = datetime.now()
             LOGGER.info('File %s processing started at %s', generated_file_path,
@@ -343,14 +344,14 @@ class DummyFileGenerator:
                             file_type=self.file_type,
                             **{"csv_value_separator": self.csv_file_properties['csv_value_separator'],
                                "csv_quoting": self.csv_file_properties['csv_quoting'],
-                               "csv_quote_char": self.csv_file_properties['csv_quote_char']}
+                               "csv_quote_char": self.csv_file_properties['csv_quote_char'],
+                               "file_line_ending": file_line_ending}
                             )
 
             generator = RowGenerator(file_type=self.file_type,
                                      data_files_contents=self.data_files_contents,
                                      columns=self.columns,
-                                     **{"column_len_list": [x.get('column_len') for x in self.columns],
-                                        "file_line_ending": file_line_ending}
+                                     **{"column_len_list": [x.get('column_len') for x in self.columns]}
                                      )
 
             if bool(self.header):
