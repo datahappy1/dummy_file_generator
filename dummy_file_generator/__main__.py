@@ -2,147 +2,20 @@
 import io
 import os
 import json
-import csv
 import argparse
 import logging
 
-from random import randint
 from datetime import datetime
 
-from dummy_file_generator.utils import add_quotes_to_list_items, \
-    whitespace_generator, get_data_file_content_list_with_item_count
+from dummy_file_generator.exceptions import DummyFileGeneratorException
+from dummy_file_generator.rowdatagenerator import RowDataGenerator
+from dummy_file_generator.utils import get_data_file_content_list_with_item_count
 from dummy_file_generator.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, LOGGING_LEVEL
+from dummy_file_generator.writer import QUOTING_MAP, Writer
 
 logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
-
-QUOTING_MAP = {"NONE": csv.QUOTE_NONE,
-               "MINIMAL": csv.QUOTE_MINIMAL,
-               "NONNUMERIC": csv.QUOTE_NONNUMERIC,
-               "ALL": csv.QUOTE_ALL}
-
-
-class CsvWriter:
-    def __init__(self, file_handler, **kwargs):
-        self.writer = csv.writer(file_handler,
-                                 delimiter=kwargs.get('csv_value_separator'),
-                                 quoting=QUOTING_MAP.get(kwargs.get('csv_quoting')),
-                                 quotechar=kwargs.get('csv_quote_char'),
-                                 lineterminator=kwargs.get('file_line_ending'))
-
-    def write_row(self, row):
-        self.writer.writerow(row)
-
-
-class FlatWriter:
-    def __init__(self, file_handler, **kwargs):
-        self.writer = file_handler
-        self.file_line_ending = kwargs.get('file_line_ending')
-
-    def write_row(self, row):
-        self.writer.write(row + self.file_line_ending)
-
-
-class Writer:
-    def __init__(self, file_type, file_handler, **kwargs):
-        _mapped_writer_class = {
-            "csv": CsvWriter,
-            "flat": FlatWriter,
-        }[file_type]
-
-        self.writer = _mapped_writer_class(file_handler, **kwargs)
-
-    def write_row(self, row):
-        self.writer.write_row(row)
-
-
-class CsvRowGenerator:
-    def __init__(self, data_files_contents, columns, **kwargs):
-        self.data_files_contents = data_files_contents
-        self.columns = columns
-        self.column_names = [x.get('column_name') for x in self.columns]
-
-    def generate_header_row(self):
-        return self.column_names
-
-    def generate_body_row(self):
-        row = []
-
-        for column in self.columns:
-            try:
-                _column_values_list, _column_values_list_item_count = self.data_files_contents[column['datafile']]
-            except AttributeError as attr_err:
-                raise DummyFileGeneratorException(f'Cannot find corresponding data_file for '
-                                                  f'column {column.get("column_name")}, '
-                                                  f'Attribute Error: {attr_err}')
-
-            value = _column_values_list[randint(0, _column_values_list_item_count - 1)]
-            row.append(value)
-
-        return row
-
-
-class FlatRowGenerator:
-    def __init__(self, data_files_contents, columns, **kwargs):
-        self.data_files_contents = data_files_contents
-        self.columns = columns
-        self.column_names = [x.get('column_name') for x in self.columns]
-        self.column_lengths = [x.get('column_len') for x in self.columns]
-        self.file_line_ending = kwargs.get('file_line_ending')
-
-
-    def generate_header_row(self):
-        _header_row = []
-
-        for _column_values_list, _column_length in zip(self.column_names,
-                                                       self.column_lengths):
-            _header_row.append(str(_column_values_list) +
-                               whitespace_generator(_column_length - len(_column_values_list)))
-
-        header_row = "".join(_header_row)
-
-        return header_row
-
-    def generate_body_row(self):
-        row = []
-
-        for column in self.columns:
-            try:
-                _column_values_list, _column_values_list_item_count = self.data_files_contents[column['datafile']]
-                _whitespace_count = column.get('column_len')
-            except AttributeError as attr_err:
-                raise DummyFileGeneratorException(f'Cannot find corresponding data_file for '
-                                                  f'column {column.get("column_name")}, '
-                                                  f'Attribute Error: {attr_err}')
-            value = _column_values_list[randint(0, _column_values_list_item_count - 1)]
-            row.append(str(value) + whitespace_generator(_whitespace_count - len(value)))
-
-        row = "".join(row)
-
-        return row
-
-
-class RowGenerator:
-    def __init__(self, file_type, data_files_contents, columns, **kwargs):
-        _mapped_generator_class = {
-            "csv": CsvRowGenerator,
-            "flat": FlatRowGenerator,
-        }[file_type]
-
-        self.generator = _mapped_generator_class(data_files_contents, columns, **kwargs)
-
-
-    def generate_header_row(self):
-        return self.generator.generate_header_row()
-
-    def generate_body_row(self):
-        return self.generator.generate_body_row()
-
-class DummyFileGeneratorException(Exception):
-    """
-    dummy file generator custom exception type
-    """
 
 
 class DummyFileGenerator:
@@ -356,11 +229,11 @@ class DummyFileGenerator:
                                "file_line_ending": file_line_ending}
                             )
 
-            generator = RowGenerator(file_type=self.file_type,
-                                     data_files_contents=self.data_files_contents,
-                                     columns=self.columns,
-                                     **{"file_line_ending": file_line_ending}
-                                     )
+            generator = RowDataGenerator(file_type=self.file_type,
+                                         data_files_contents=self.data_files_contents,
+                                         columns=self.columns,
+                                         **{"file_line_ending": file_line_ending}
+                                         )
 
             if bool(self.header):
                 writer.write_row(generator.generate_header_row())
