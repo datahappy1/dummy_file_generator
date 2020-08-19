@@ -6,13 +6,14 @@ import io
 import pytest
 
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
+from dummy_file_generator.utils import load_data_files_content
 from dummy_file_generator.writer import Writer
 from dummy_file_generator.rowdatagenerator import RowDataGenerator
 
 TEST_FILE_HANDLER_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'testfile'])
 CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'test_config.json'])
 DATA_FILES_LOCATION = os.sep.join([os.getcwd(), 'tests', 'files'])
-
+DATA_FILES_CONTENTS = load_data_files_content(DATA_FILES_LOCATION)
 LOGGING_LEVEL = 'INFO'
 
 PROJECT_SCOPE_KWARGS_CSV = {
@@ -34,8 +35,6 @@ PROJECT_SCOPE_KWARGS_FLAT = {
 
 DFG_OBJ_FLAT = Dfg(LOGGING_LEVEL, **PROJECT_SCOPE_KWARGS_FLAT)
 COLUMNS_FLAT = DFG_OBJ_FLAT.columns
-
-DATA_FILES_CONTENTS = DFG_OBJ_CSV.load_data_files_content(DATA_FILES_LOCATION)
 
 
 def _replace_multiple_str_occurrences_in_str(string, old_value, new_value) -> str:

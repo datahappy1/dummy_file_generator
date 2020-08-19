@@ -1,6 +1,5 @@
 """ dummy file generator main runner """
 import io
-import os
 import json
 import argparse
 import logging
@@ -8,8 +7,9 @@ import logging
 from datetime import datetime
 
 from dummy_file_generator.exceptions import DummyFileGeneratorException
+from dummy_file_generator.utils import get_path_from_project_sub_folder, \
+    load_data_files_content, create_target_folder_if_not_exists
 from dummy_file_generator.rowdatagenerator import RowDataGenerator
-from dummy_file_generator.utils import get_data_file_content_list_with_item_count
 from dummy_file_generator.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, LOGGING_LEVEL
 from dummy_file_generator.writer import QUOTING_MAP, Writer
@@ -32,41 +32,12 @@ class DummyFileGenerator:
         """
         LOGGER.setLevel(logging_level or LOGGING_LEVEL)
 
-    @staticmethod
-    def _get_path_from_project_subfolder(sub_folder, filename=''):
-        """
-        returns file path or folder path based on the provided args
-        from the dummy_file_generator/dummy_file_generator location
-        :param sub_folder:
-        :param filename:
-        :return:
-        """
-        current_dir = os.path.dirname(__file__)
-        current_dir_path = os.path.join(current_dir)
-        return os.sep.join([current_dir_path, sub_folder, filename])
-
-    @staticmethod
-    def _create_target_folder_if_not_exists(absolute_path):
-        """
-        method creating the target folder if it does not exist
-        :param absolute_path:
-        :return:
-        """
-        if not os.path.exists(os.path.dirname(absolute_path)):
-            try:
-                os.makedirs(os.path.dirname(absolute_path))
-                LOGGER.info('Target folder not existing, created %s',
-                            os.path.dirname(absolute_path))
-            except OSError as os_err:
-                raise DummyFileGeneratorException(f'Cannot create target folder, '
-                                                  f'OSError: {os_err}')
-
     def __init__(self, logging_level=None, **kwargs):
         data_files_location = kwargs.get('data_files_location') or \
-                              DummyFileGenerator._get_path_from_project_subfolder('data_files')
+                              get_path_from_project_sub_folder('data_files')
         config_json_path = kwargs.get('config_json_path') or \
-                           DummyFileGenerator._get_path_from_project_subfolder('configs',
-                                                                               'config.json')
+                           get_path_from_project_sub_folder('configs',
+                                                            'config.json')
         project_name = kwargs.get('project_name')
 
         if not project_name:
@@ -86,8 +57,11 @@ class DummyFileGenerator:
                                         project_name=project_name)
         self._validate_config_file_data()
 
-        self.data_files_contents = DummyFileGenerator.load_data_files_content(
+        self.data_files_contents = load_data_files_content(
             data_files_location=data_files_location)
+
+    def __repr__(self):
+        return str(id(self))
 
     def _set_vars_from_config_file(self, config_json_path, project_name):
         """
@@ -164,43 +138,6 @@ class DummyFileGenerator:
         if self.file_type == 'flat' and any(x is None for x in _column_len_list):
             raise DummyFileGeneratorException('Not all column_len values set in config')
 
-    @staticmethod
-    def _list_data_files(data_files_location) -> list:
-        """
-        list data files method
-        :param data_files_location:
-        :return:
-        """
-        try:
-            data_files_list = [f for f in os.listdir(data_files_location) if
-                               os.path.isfile(os.path.join(data_files_location, f))
-                               and str(f).endswith('.txt')]
-        except OSError as os_err:
-            raise DummyFileGeneratorException(f'Cannot list data_files, '
-                                              f'OSError: {os_err}')
-
-        if not data_files_list:
-            raise DummyFileGeneratorException(f'No data_files in {data_files_location}')
-
-        return data_files_list
-
-    @staticmethod
-    def load_data_files_content(data_files_location):
-        """
-        load data files content method
-        :param data_files_location:
-        :return:
-        """
-        data_files_list = DummyFileGenerator._list_data_files(data_files_location=
-                                                              data_files_location)
-
-        data_files_content = dict()
-        for data_file in data_files_list:
-            data_files_content[data_file] = \
-                get_data_file_content_list_with_item_count(data_file,
-                                                           data_files_location=data_files_location)
-        return data_files_content
-
     def write_output_file(self, **file_scope_kwargs):
         """
         write output method
@@ -223,7 +160,7 @@ class DummyFileGenerator:
             # and no file size args provided:
             row_count = self.default_rowcount
 
-        self._create_target_folder_if_not_exists(generated_file_path)
+        create_target_folder_if_not_exists(generated_file_path)
 
         with io.open(generated_file_path, 'w', encoding=file_encoding) \
                 as output_file:
@@ -297,7 +234,7 @@ def parse_args():
     file_encoding = parsed.file_encoding
     file_line_ending = parsed.file_line_ending
 
-    project_scope_kwargs = {  # FIXME should be standard args
+    project_scope_kwargs = {
         "project_name": project_name,
         "data_files_location": data_files_location,
         "config_json_path": config_json_path,

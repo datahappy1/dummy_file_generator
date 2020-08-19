@@ -50,6 +50,6 @@ def test_performance_csv(test_project, test_file_extension, expected_duration):
     execution_end_time = datetime.now()
     duration = (execution_end_time - execution_start_time).seconds
 
-    os.remove(generated_file_path)
-
     assert duration <= expected_duration
+
+    os.remove(generated_file_path)
