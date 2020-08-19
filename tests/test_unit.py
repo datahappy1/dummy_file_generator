@@ -91,9 +91,7 @@ class TestUnitRowGenerator:
     def test_init_generator(self, file_type, columns):
         generator = RowDataGenerator(file_type=file_type,
                                      data_files_contents=DATA_FILES_CONTENTS,
-                                     columns=columns,
-                                     **{"file_line_ending": "\n"}
-                                     )
+                                     columns=columns)
 
         assert isinstance(generator, RowDataGenerator)
 
@@ -103,12 +101,7 @@ class TestUnitRowGenerator:
     def test_generator_header_row(self, file_type, columns, expected):
         generator = RowDataGenerator(file_type=file_type,
                                      data_files_contents=DATA_FILES_CONTENTS,
-                                     columns=columns,
-                                     **{"csv_value_separator": ",",
-                                        "csv_quoting": "NONE",
-                                        "csv_quote_char": "",
-                                        "file_line_ending": "\n"}
-                                     )
+                                     columns=columns)
 
         assert generator.generate_header_row() == expected
 
@@ -118,9 +111,7 @@ class TestUnitRowGenerator:
     def test_generator_body_row(self, file_type, columns, expected):
         generator = RowDataGenerator(file_type=file_type,
                                      data_files_contents=DATA_FILES_CONTENTS,
-                                     columns=columns,
-                                     **{"file_line_ending": "\n"}
-                                     )
+                                     columns=columns)
 
         _actual = generator.generate_body_row()
         actual = _replace_multiple_str_occurrences_in_str(str(_actual), '123', '')

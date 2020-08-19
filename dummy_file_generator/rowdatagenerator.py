@@ -1,3 +1,4 @@
+"""row data generator factory module"""
 from random import randint
 
 from dummy_file_generator.exceptions import DummyFileGeneratorException
@@ -5,20 +6,32 @@ from dummy_file_generator.utils import whitespace_generator
 
 
 class CsvRowDataGenerator:
-    def __init__(self, data_files_contents, columns, **kwargs):
+    """
+    csv row data generator implementation
+    """
+    def __init__(self, data_files_contents, columns):
         self.data_files_contents = data_files_contents
         self.columns = columns
         self.column_names = [x.get('column_name') for x in self.columns]
 
     def generate_header_row(self):
+        """
+        generate header row method
+        :return:
+        """
         return self.column_names
 
     def generate_body_row(self):
+        """
+        generate body row method
+        :return:
+        """
         row = []
 
         for column in self.columns:
             try:
-                _column_values_list, _column_values_list_item_count = self.data_files_contents[column['datafile']]
+                _column_values_list, _column_values_list_item_count = \
+                    self.data_files_contents[column['datafile']]
             except AttributeError as attr_err:
                 raise DummyFileGeneratorException(f'Cannot find corresponding data_file for '
                                                   f'column {column.get("column_name")}, '
@@ -31,14 +44,20 @@ class CsvRowDataGenerator:
 
 
 class FlatRowDataGenerator:
-    def __init__(self, data_files_contents, columns, **kwargs):
+    """
+    flat row data generator implementation
+    """
+    def __init__(self, data_files_contents, columns):
         self.data_files_contents = data_files_contents
         self.columns = columns
         self.column_names = [x.get('column_name') for x in self.columns]
         self.column_lengths = [x.get('column_len') for x in self.columns]
-        self.file_line_ending = kwargs.get('file_line_ending')
 
     def generate_header_row(self):
+        """
+        generate header row method
+        :return:
+        """
         _header_row = []
 
         for _column_values_list, _column_length in zip(self.column_names,
@@ -51,11 +70,16 @@ class FlatRowDataGenerator:
         return header_row
 
     def generate_body_row(self):
+        """
+        generate body row method
+        :return:
+        """
         row = []
 
         for column in self.columns:
             try:
-                _column_values_list, _column_values_list_item_count = self.data_files_contents[column['datafile']]
+                _column_values_list, _column_values_list_item_count = \
+                    self.data_files_contents[column['datafile']]
                 _whitespace_count = column.get('column_len')
             except AttributeError as attr_err:
                 raise DummyFileGeneratorException(f'Cannot find corresponding data_file for '
@@ -70,16 +94,27 @@ class FlatRowDataGenerator:
 
 
 class RowDataGenerator:
-    def __init__(self, file_type, data_files_contents, columns, **kwargs):
+    """
+    row data generator factory
+    """
+    def __init__(self, file_type, data_files_contents, columns):
         _mapped_generator_class = {
             "csv": CsvRowDataGenerator,
             "flat": FlatRowDataGenerator,
         }[file_type]
 
-        self.generator = _mapped_generator_class(data_files_contents, columns, **kwargs)
+        self.generator = _mapped_generator_class(data_files_contents, columns)
 
     def generate_header_row(self):
+        """
+        generate header row factory method
+        :return:
+        """
         return self.generator.generate_header_row()
 
     def generate_body_row(self):
+        """
+        generate header row factory method
+        :return:
+        """
         return self.generator.generate_body_row()

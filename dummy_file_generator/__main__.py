@@ -33,7 +33,7 @@ class DummyFileGenerator:
         LOGGER.setLevel(logging_level or LOGGING_LEVEL)
 
     @staticmethod
-    def _get_path_from_project_subfolder_location(sub_folder, filename=''):
+    def _get_path_from_project_subfolder(sub_folder, filename=''):
         """
         returns file path or folder path based on the provided args
         from the dummy_file_generator/dummy_file_generator location
@@ -63,10 +63,10 @@ class DummyFileGenerator:
 
     def __init__(self, logging_level=None, **kwargs):
         data_files_location = kwargs.get('data_files_location') or \
-                              DummyFileGenerator._get_path_from_project_subfolder_location('data_files')
+                              DummyFileGenerator._get_path_from_project_subfolder('data_files')
         config_json_path = kwargs.get('config_json_path') or \
-                           DummyFileGenerator._get_path_from_project_subfolder_location('configs',
-                                                                                        'config.json')
+                           DummyFileGenerator._get_path_from_project_subfolder('configs',
+                                                                               'config.json')
         project_name = kwargs.get('project_name')
 
         if not project_name:
@@ -82,7 +82,8 @@ class DummyFileGenerator:
                                     "csv_quote_char": None}
 
         self._setup_logging(logging_level=logging_level)
-        self._set_vars_from_config_file(config_json_path=config_json_path, project_name=project_name)
+        self._set_vars_from_config_file(config_json_path=config_json_path,
+                                        project_name=project_name)
         self._validate_config_file_data()
 
         self.data_files_contents = DummyFileGenerator.load_data_files_content(
@@ -157,7 +158,8 @@ class DummyFileGenerator:
 
         if self.file_type == 'csv' and self.csv_file_properties.get('csv_quoting') != "NONE" and \
                 not self.csv_file_properties.get('csv_quote_char'):
-            raise DummyFileGeneratorException('If csv_quoting is not "NONE", csv_quote_char must be set')
+            raise DummyFileGeneratorException('If csv_quoting is not "NONE", '
+                                              'csv_quote_char must be set')
 
         if self.file_type == 'flat' and not _column_len_list:
             raise DummyFileGeneratorException('No column_len value set in config')
@@ -167,6 +169,11 @@ class DummyFileGenerator:
 
     @staticmethod
     def _list_data_files(data_files_location) -> list:
+        """
+        list data files method
+        :param data_files_location:
+        :return:
+        """
         try:
             data_files_list = [f for f in os.listdir(data_files_location) if
                                os.path.isfile(os.path.join(data_files_location, f))
@@ -182,7 +189,13 @@ class DummyFileGenerator:
 
     @staticmethod
     def load_data_files_content(data_files_location):
-        data_files_list = DummyFileGenerator._list_data_files(data_files_location=data_files_location)
+        """
+        load data files content method
+        :param data_files_location:
+        :return:
+        """
+        data_files_list = DummyFileGenerator._list_data_files(data_files_location=
+                                                              data_files_location)
 
         data_files_content = dict()
         for data_file in data_files_list:
@@ -231,9 +244,7 @@ class DummyFileGenerator:
 
             generator = RowDataGenerator(file_type=self.file_type,
                                          data_files_contents=self.data_files_contents,
-                                         columns=self.columns,
-                                         **{"file_line_ending": file_line_ending}
-                                         )
+                                         columns=self.columns)
 
             if bool(self.header):
                 writer.write_row(generator.generate_header_row())
@@ -247,14 +258,13 @@ class DummyFileGenerator:
                     LOGGER.info('%s rows written', rows_written)
 
             execution_end_time = datetime.now()
-            output_file_size = output_file.tell()
             _duration = (execution_end_time - execution_start_time).seconds
             duration = str(_duration / 60) + ' min.' if _duration > 1000 \
                 else str(_duration) + ' sec.'
 
             LOGGER.info('File %s processing finished at %s', generated_file_path,
                         execution_end_time)
-            LOGGER.info('%s kB file with %s rows written in %s', output_file_size / 1024,
+            LOGGER.info('%s kB file with %s rows written in %s', output_file.tell() / 1024,
                         rows_written, duration)
 
 
