@@ -19,7 +19,7 @@ class CsvWriter:
                                  lineterminator=kwargs.get('file_line_ending'))
 
     def __repr__(self):
-        return self
+        return str(self.writer)
 
     def write_row(self, row):
         """
@@ -39,7 +39,7 @@ class FlatWriter:
         self.file_line_ending = kwargs.get('file_line_ending')
 
     def __repr__(self):
-        return self
+        return str(self.writer)
 
     def write_row(self, row):
         """
@@ -63,7 +63,7 @@ class Writer:
         self.writer = _mapped_writer_class(file_handler, **kwargs)
 
     def __repr__(self):
-        return self
+        return str(self.writer)
 
     def write_row(self, row):
         """
