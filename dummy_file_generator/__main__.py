@@ -77,9 +77,9 @@ class DummyFileGenerator:
         self.file_type = None
         self.header = None
         self.columns = dict()
-        self.csv_file_properties = {"csv_value_separator": None,
-                                    "csv_quoting": None,
-                                    "csv_quote_char": None}
+        self.csv_file_props = {"csv_value_separator": None,
+                               "csv_quoting": None,
+                               "csv_quote_char": None}
 
         self._setup_logging(logging_level=logging_level)
         self._set_vars_from_config_file(config_json_path=config_json_path,
@@ -88,9 +88,6 @@ class DummyFileGenerator:
 
         self.data_files_contents = DummyFileGenerator.load_data_files_content(
             data_files_location=data_files_location)
-
-    def __repr__(self):
-        return self  # FIXME check
 
     def _set_vars_from_config_file(self, config_json_path, project_name):
         """
@@ -111,9 +108,9 @@ class DummyFileGenerator:
             if project['project_name'] == project_name:
                 self.header = project.get('header')
                 self.file_type = project.get('file_type')
-                self.csv_file_properties['csv_value_separator'] = project.get('csv_value_separator')
-                self.csv_file_properties['csv_quoting'] = project.get('csv_quoting')
-                self.csv_file_properties['csv_quote_char'] = project.get('csv_quote_char')
+                self.csv_file_props['csv_value_separator'] = project.get('csv_value_separator')
+                self.csv_file_props['csv_quoting'] = project.get('csv_quoting')
+                self.csv_file_props['csv_quote_char'] = project.get('csv_quote_char')
                 self.columns = project.get('columns')
                 break
         else:
@@ -149,15 +146,15 @@ class DummyFileGenerator:
             raise DummyFileGeneratorException('No header value set in config, '
                                               'supported options are true or false')
 
-        if self.file_type == 'csv' and not self.csv_file_properties.get('csv_value_separator'):
+        if self.file_type == 'csv' and not self.csv_file_props.get('csv_value_separator'):
             raise DummyFileGeneratorException('No csv_value_separator value set in config')
 
         if self.file_type == 'csv' and \
-                self.csv_file_properties.get('csv_quoting') not in QUOTING_MAP.keys():
+                self.csv_file_props.get('csv_quoting') not in QUOTING_MAP.keys():
             raise DummyFileGeneratorException('Invalid or missing csv_quoting value')
 
-        if self.file_type == 'csv' and self.csv_file_properties.get('csv_quoting') != "NONE" and \
-                not self.csv_file_properties.get('csv_quote_char'):
+        if self.file_type == 'csv' and self.csv_file_props.get('csv_quoting') != "NONE" and \
+                not self.csv_file_props.get('csv_quote_char'):
             raise DummyFileGeneratorException('If csv_quoting is not "NONE", '
                                               'csv_quote_char must be set')
 
@@ -199,9 +196,9 @@ class DummyFileGenerator:
 
         data_files_content = dict()
         for data_file in data_files_list:
-            data_files_content[data_file] = get_data_file_content_list_with_item_count(data_file,
-                                                                                       data_files_location=
-                                                                                       data_files_location)
+            data_files_content[data_file] = \
+                get_data_file_content_list_with_item_count(data_file,
+                                                           data_files_location=data_files_location)
         return data_files_content
 
     def write_output_file(self, **file_scope_kwargs):
@@ -236,22 +233,22 @@ class DummyFileGenerator:
 
             writer = Writer(file_type=self.file_type,
                             file_handler=output_file,
-                            **{"csv_value_separator": self.csv_file_properties['csv_value_separator'],
-                               "csv_quoting": self.csv_file_properties['csv_quoting'],
-                               "csv_quote_char": self.csv_file_properties['csv_quote_char'],
+                            **{"csv_value_separator": self.csv_file_props['csv_value_separator'],
+                               "csv_quoting": self.csv_file_props['csv_quoting'],
+                               "csv_quote_char": self.csv_file_props['csv_quote_char'],
                                "file_line_ending": file_line_ending}
                             )
 
-            generator = RowDataGenerator(file_type=self.file_type,
-                                         data_files_contents=self.data_files_contents,
-                                         columns=self.columns)
+            row_data_generator = RowDataGenerator(file_type=self.file_type,
+                                                  data_files_contents=self.data_files_contents,
+                                                  columns=self.columns)
 
             if bool(self.header):
-                writer.write_row(generator.generate_header_row())
+                writer.write_row(row_data_generator.generate_header_row())
 
             rows_written = 0
             while output_file.tell() < file_size or rows_written < row_count:
-                writer.write_row(generator.generate_body_row())
+                writer.write_row(row_data_generator.generate_body_row())
                 rows_written += 1
 
                 if divmod(rows_written, 10000)[1] == 1 and rows_written > 1:

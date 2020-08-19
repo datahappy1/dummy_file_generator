@@ -83,6 +83,8 @@ class TestUnitWriter:
 
         assert open(TEST_FILE_HANDLER_PATH).readline() == expected
 
+        os.remove(TEST_FILE_HANDLER_PATH)
+
 
 class TestUnitRowGenerator:
     @pytest.mark.parametrize("file_type, columns",
