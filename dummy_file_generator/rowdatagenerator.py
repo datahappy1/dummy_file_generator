@@ -70,11 +70,10 @@ class FlatRowDataGenerator:
         """
         _header_row = []
 
-        for _column_values_list, _column_length in zip(self.column_names,
-                                                       self.column_lengths):
-            whitespace = _column_length - len(_column_values_list)
-            _header_row.append(_column_values_list +
-                               FlatRowDataGenerator._whitespace_generator(whitespace))
+        for column in self.columns:
+            whitespace_count = column['column_len'] - len(column['column_name'])
+            _header_row.append(column['column_name'] +
+                               FlatRowDataGenerator._whitespace_generator(whitespace_count))
 
         header_row = "".join(_header_row)
 
@@ -96,8 +95,8 @@ class FlatRowDataGenerator:
                                                   f'column {column.get("column_name")}, '
                                                   f'Key Error: {key_err}')
             value = _column_values_list[randint(0, _column_values_list_item_count - 1)]
-            whitespace = column['column_len'] - len(value)
-            row.append(value + FlatRowDataGenerator._whitespace_generator(whitespace))
+            whitespace_count = column['column_len'] - len(value)
+            row.append(value + FlatRowDataGenerator._whitespace_generator(whitespace_count))
 
         row = "".join(row)
 
