@@ -24,7 +24,7 @@ def test_performance_csv(test_project, test_file_extension, expected_duration):
     :return: assertion result
     """
     filename = "test_run_result_performance" + test_file_extension
-    generated_file_path = os.sep.join(['generated_files', 'tests', filename])
+    generated_file_path = os.sep.join(['tests', 'generated_files', filename])
 
     execution_start_time = datetime.now()
 
