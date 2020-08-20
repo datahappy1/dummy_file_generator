@@ -1,5 +1,5 @@
 # dummy_file_generator
-## version 1.1.15
+## version 1.1.16
 ### Dummy .csv or flat text files generator written in Python 3.7
 
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/rating.svg)
@@ -90,7 +90,6 @@ The dummy file generator imported package can further consume these **OPTIONAL**
 - default_rowcount `--default_rowcount` or `-drc` defining the rowcount fallback value when neither row_count,neither file_size set
 - file_encoding `--file_encoding` or `-fen` defining the generated files encoding
 - file_line_ending `--file_line_ending` or `-fle` defining the file line ending
-- csv_value_separator `--csv_value_separator` or `-cvs` defining the .csv file value separator
 
 >In the example below, `project_scope_kwargs` arguments `project_name`, `data_files_location`, `config_json_path` and `default_rowcount` are used
 to instantiate a DummyFileGenerator class instance. 
@@ -146,6 +145,9 @@ the project JSON object in your config.json would need to be setup like:
       "file_type":"csv",
       "header":true,
       "csv_value_separator": ",",
+      "csv_quoting": "ALL",
+      "csv_quote_char": "\n"",
+      "csv_escape_char": "\\",
       "columns":[
         {
           "column_name":"Name",

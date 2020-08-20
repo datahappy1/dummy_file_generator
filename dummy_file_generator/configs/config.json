@@ -4,7 +4,10 @@
       "project_name": "dummy1",
       "file_type": "csv",
       "header": true,
-      "csv_value_separator": ",",
+      "csv_value_separator": "|",
+      "csv_quoting": "NONE",
+      "csv_quote_char": null,
+      "csv_escape_char": null,
       "columns": [
         {
           "column_name": "firstname",

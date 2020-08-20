@@ -2,24 +2,39 @@
 test units
 """
 import os
+import io
+import pytest
 
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
-from dummy_file_generator.utils import get_data_file_content_list_with_item_count
+from dummy_file_generator.utils import load_data_files_content
+from dummy_file_generator.writer import Writer
+from dummy_file_generator.rowdatagenerator import RowDataGenerator
 
+TEST_FILE_HANDLER_ABS_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'testfile.dummy'])
 CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'test_config.json'])
-DATA_FILES_LOCATION = os.sep.join([os.getcwd(),'tests', 'files'])
+DATA_FILES_LOCATION = os.sep.join([os.getcwd(), 'tests', 'files'])
+DATA_FILES_CONTENTS = load_data_files_content(DATA_FILES_LOCATION)
 LOGGING_LEVEL = 'INFO'
 
-
-project_scope_kwargs = {
+PROJECT_SCOPE_KWARGS_CSV = {
     "project_name": 'test_csv',
     "data_files_location": DATA_FILES_LOCATION,
     "config_json_path": CONFIG_JSON_PATH,
     "default_rowcount": None,
 }
 
-DFG_OBJ = Dfg(LOGGING_LEVEL, **project_scope_kwargs)
-DFG_OBJ._set_vars_from_data_files_content(DATA_FILES_LOCATION)
+DFG_OBJ_CSV = Dfg(LOGGING_LEVEL, **PROJECT_SCOPE_KWARGS_CSV)
+COLUMNS_CSV = DFG_OBJ_CSV.columns
+
+PROJECT_SCOPE_KWARGS_FLAT = {
+    "project_name": 'test_flatfile',
+    "data_files_location": DATA_FILES_LOCATION,
+    "config_json_path": CONFIG_JSON_PATH,
+    "default_rowcount": None,
+}
+
+DFG_OBJ_FLAT = Dfg(LOGGING_LEVEL, **PROJECT_SCOPE_KWARGS_FLAT)
+COLUMNS_FLAT = DFG_OBJ_FLAT.columns
 
 
 def _replace_multiple_str_occurrences_in_str(string, old_value, new_value) -> str:
@@ -36,67 +51,77 @@ def _replace_multiple_str_occurrences_in_str(string, old_value, new_value) -> st
     return string
 
 
-class TestUnitClass:
-    def test_unit_get_data_file_content(self):
-        """
-        unit test load_file_to_list
-        :return: assert load_file_to_list works as expected
-        """
-        expected_output = ['test1', 'test2', 'test3']
-        actual_output = get_data_file_content_list_with_item_count('test.txt',
-                                                                   data_files_location=
-                                                                   DATA_FILES_LOCATION)[0]
-        assert expected_output == actual_output
+def teardown_module():
+    try:
+        os.remove(TEST_FILE_HANDLER_ABS_PATH)
+    except Exception as e:
+        print('Failed to delete %s. Reason: %s' % (TEST_FILE_HANDLER_ABS_PATH, e))
 
-    def test_unit_get_data_file_values_from_dfg_instance(self):
-        """
-        unit test get_data_set
-        :return: assert getting a data set works as expected
-        """
-        expected_output = ['test1', 'test2', 'test3']
-        actual_output = DFG_OBJ.__getattribute__('data_file_test')[0]
 
-        assert expected_output == actual_output
+class TestUnitWriter:
+    @pytest.mark.parametrize("file_type", ["csv", "flat"])
+    def test_init_writer(self, file_type):
+        with io.open(TEST_FILE_HANDLER_ABS_PATH, mode="w") as output_file_handler:
+            writer = Writer(file_type=file_type,
+                            file_handler=output_file_handler,
+                            **{"csv_value_separator": ",",
+                               "csv_quoting": "NONE",
+                               "csv_quote_char": None,
+                               "csv_escape_char": None,
+                               "file_line_ending": "\n"}
+                            )
 
-    def test_unit_flat_writer_flat_row_header(self):
-        """
-        unit test flat header
-        :return: assert flat header output works as expected
-        """
-        expected_output = 'test1 test2  test3   '
-        actual_output = DFG_OBJ.flat_header_row(['test1', 'test2', 'test3'], [6, 7, 8])
+            assert isinstance(writer, Writer)
 
-        assert expected_output == actual_output
+    @pytest.mark.parametrize("file_type, test_input, expected",
+                             [("csv", ["test row"], "test row\n"),
+                              ("flat", "test row", "test row\n")])
+    def test_write_row(self, file_type, test_input, expected):
+        with io.open(TEST_FILE_HANDLER_ABS_PATH, mode="w") as write_output_file_handler:
+            writer = Writer(file_type=file_type,
+                            file_handler=write_output_file_handler,
+                            **{"csv_value_separator": ",",
+                               "csv_quoting": "NONE",
+                               "csv_quote_char": None,
+                               "csv_escape_char": None,
+                               "file_line_ending": "\n"}
+                            )
 
-    def test_unit_csv_writer_csv_row_header(self):
-        """
-        unit test csv header
-        :return: assert csv header output works as expected
-        """
-        expected_output = 'test1,test2,test3'
-        actual_output = DFG_OBJ.csv_header_row('test1, test2, test3')
+            assert writer.write_row(test_input) is None
 
-        assert expected_output == actual_output
+        assert open(TEST_FILE_HANDLER_ABS_PATH).readline() == expected
 
-    def test_unit_flat_writer_flat_row_output(self):
-        """
-        unit test flat row output
-        :return: assert flat row output works as expected
-        """
-        expected_output = DFG_OBJ.flat_row(['test', 'test', 'test'], [6, 7, 8])
-        expected_output = _replace_multiple_str_occurrences_in_str(expected_output, '123', '')
-        actual_output = _replace_multiple_str_occurrences_in_str('test1 test2  test3   ', '123', '')
 
-        assert expected_output == actual_output
+class TestUnitRowGenerator:
+    @pytest.mark.parametrize("file_type, columns",
+                             [("csv", COLUMNS_CSV),
+                              ("flat", COLUMNS_FLAT)])
+    def test_init_generator(self, file_type, columns):
+        generator = RowDataGenerator(file_type=file_type,
+                                     data_files_contents=DATA_FILES_CONTENTS,
+                                     columns=columns)
 
-    def test_unit_csv_writer_csv_row_output(self):
-        """
-        unit test csv row output
-        :return: assert csv row output works as expected
-        """
-        csv_row_separator = '|'
-        expected_output = DFG_OBJ.csv_row('test, test, test', csv_row_separator)
-        expected_output = _replace_multiple_str_occurrences_in_str(expected_output, '123', '')
-        actual_output = _replace_multiple_str_occurrences_in_str('test1|test2|test3', '123', '')
+        assert isinstance(generator, RowDataGenerator)
 
-        assert expected_output == actual_output
+    @pytest.mark.parametrize("file_type, columns, expected",
+                             [("csv", COLUMNS_CSV, ['testcol1', 'testcol2', 'testcol3']),
+                              ("flat", COLUMNS_FLAT, "testcol1  testcol2      testcol3    ")])
+    def test_generator_header_row(self, file_type, columns, expected):
+        generator = RowDataGenerator(file_type=file_type,
+                                     data_files_contents=DATA_FILES_CONTENTS,
+                                     columns=columns)
+
+        assert generator.generate_header_row() == expected
+
+    @pytest.mark.parametrize("file_type, columns, expected",
+                             [("csv", COLUMNS_CSV, ['test', 'test', 'test']),
+                              ("flat", COLUMNS_FLAT, "test     test         test       ")])
+    def test_generator_body_row(self, file_type, columns, expected):
+        generator = RowDataGenerator(file_type=file_type,
+                                     data_files_contents=DATA_FILES_CONTENTS,
+                                     columns=columns)
+
+        _actual = generator.generate_body_row()
+        actual = _replace_multiple_str_occurrences_in_str(str(_actual), '123', '')
+
+        assert actual == str(expected)
