@@ -83,3 +83,17 @@ def load_data_files_content(data_files_location) -> dict:
                                                        data_files_location=data_files_location)
 
     return data_files_content
+
+
+def get_map_value(map_dict, key):
+    """
+    function returning value by key from a mapping dict
+    :param map_dict:
+    :param key:
+    :return:
+    """
+    try:
+        return map_dict[key]
+    except KeyError as key_err:
+        raise DummyFileGeneratorException(f'KeyError {key_err} for provided '
+                                          f'map_dict: {map_dict} and key: {key}')

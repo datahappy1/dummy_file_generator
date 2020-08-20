@@ -12,7 +12,7 @@ from dummy_file_generator.utils import get_path_from_project_sub_folder, \
 from dummy_file_generator.rowdatagenerator import RowDataGenerator
 from dummy_file_generator.settings import DEFAULT_ROW_COUNT, FILE_ENCODING, \
     FILE_LINE_ENDING, LOGGING_LEVEL
-from dummy_file_generator.writer import QUOTING_MAP, Writer
+from dummy_file_generator.writer import Writer
 
 logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
@@ -39,26 +39,24 @@ class DummyFileGenerator:
                            get_path_from_project_sub_folder('configs',
                                                             'config.json')
         project_name = kwargs.get('project_name')
-
         if not project_name:
             raise DummyFileGeneratorException(f'Missing mandatory argument project_name')
 
         self.default_rowcount = kwargs.get('default_rowcount') or DEFAULT_ROW_COUNT
+        self.data_files_contents = load_data_files_content(data_files_location=data_files_location)
 
         self.file_type = None
         self.header = None
         self.columns = dict()
         self.csv_file_props = {"csv_value_separator": None,
                                "csv_quoting": None,
-                               "csv_quote_char": None}
+                               "csv_quote_char": None,
+                               "csv_escape_char": None}
 
         self._setup_logging(logging_level=logging_level)
         self._set_vars_from_config_file(config_json_path=config_json_path,
                                         project_name=project_name)
         self._validate_config_file_data()
-
-        self.data_files_contents = load_data_files_content(
-            data_files_location=data_files_location)
 
     def __repr__(self):
         return str(id(self))
@@ -85,6 +83,7 @@ class DummyFileGenerator:
                 self.csv_file_props['csv_value_separator'] = project.get('csv_value_separator')
                 self.csv_file_props['csv_quoting'] = project.get('csv_quoting')
                 self.csv_file_props['csv_quote_char'] = project.get('csv_quote_char')
+                self.csv_file_props['csv_escape_char'] = project.get('csv_escape_char')
                 self.columns = project.get('columns')
                 break
         else:
@@ -123,9 +122,8 @@ class DummyFileGenerator:
         if self.file_type == 'csv' and not self.csv_file_props.get('csv_value_separator'):
             raise DummyFileGeneratorException('No csv_value_separator value set in config')
 
-        if self.file_type == 'csv' and \
-                self.csv_file_props.get('csv_quoting') not in QUOTING_MAP.keys():
-            raise DummyFileGeneratorException('Invalid or missing csv_quoting value')
+        if self.file_type == 'csv' and not self.csv_file_props.get('csv_quoting'):
+            raise DummyFileGeneratorException('Missing csv_quoting value')
 
         if self.file_type == 'csv' and self.csv_file_props.get('csv_quoting') != "NONE" and \
                 not self.csv_file_props.get('csv_quote_char'):
@@ -173,6 +171,7 @@ class DummyFileGenerator:
                             **{"csv_value_separator": self.csv_file_props['csv_value_separator'],
                                "csv_quoting": self.csv_file_props['csv_quoting'],
                                "csv_quote_char": self.csv_file_props['csv_quote_char'],
+                               "csv_escape_char": self.csv_file_props['csv_escape_char'],
                                "file_line_ending": file_line_ending}
                             )
 

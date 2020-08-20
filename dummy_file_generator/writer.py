@@ -1,6 +1,10 @@
 """writer factory module"""
 import csv
 
+from dummy_file_generator.exceptions import DummyFileGeneratorException
+from dummy_file_generator.utils import get_map_value
+
+
 QUOTING_MAP = {"NONE": csv.QUOTE_NONE,
                "MINIMAL": csv.QUOTE_MINIMAL,
                "NONNUMERIC": csv.QUOTE_NONNUMERIC,
@@ -14,8 +18,9 @@ class CsvWriter:
     def __init__(self, file_handler, **kwargs):
         self.writer = csv.writer(file_handler,
                                  delimiter=kwargs.get('csv_value_separator'),
-                                 quoting=QUOTING_MAP.get(kwargs.get('csv_quoting')),
+                                 quoting=get_map_value(QUOTING_MAP, kwargs['csv_quoting']),
                                  quotechar=kwargs.get('csv_quote_char'),
+                                 escapechar=kwargs.get('csv_escape_char'),
                                  lineterminator=kwargs.get('file_line_ending'))
 
     def __repr__(self):
@@ -27,7 +32,10 @@ class CsvWriter:
         :param row:
         :return:
         """
-        self.writer.writerow(row)
+        try:
+            self.writer.writerow(row)
+        except csv.Error as csv_err:
+            raise DummyFileGeneratorException(f'csv writer error : {csv_err}')
 
 
 class FlatWriter:
@@ -47,8 +55,10 @@ class FlatWriter:
         :param row:
         :return:
         """
-        self.writer.write(row + self.file_line_ending)
-
+        try:
+            self.writer.write(row + self.file_line_ending)
+        except Exception as exc:
+            raise DummyFileGeneratorException(f'flat writer error : {exc}')
 
 class Writer:
     """

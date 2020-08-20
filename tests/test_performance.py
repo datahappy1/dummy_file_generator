@@ -13,7 +13,7 @@ GENERATED_FILE_PATH_BASE = os.sep.join(['tests', 'generated_files'])
 LOGGING_LEVEL = 'INFO'
 
 
-def teardown_module(module):
+def teardown_module():
     for filename in os.listdir(GENERATED_FILE_PATH_BASE):
         file_path = os.path.join(GENERATED_FILE_PATH_BASE, filename)
         try:

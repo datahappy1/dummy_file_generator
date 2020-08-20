@@ -1,5 +1,5 @@
 # dummy_file_generator
-## version 1.1.15
+## version 1.1.16
 ### Dummy .csv or flat text files generator written in Python 3.7
 
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/rating.svg)
@@ -147,6 +147,7 @@ the project JSON object in your config.json would need to be setup like:
       "csv_value_separator": ",",
       "csv_quoting": "ALL",
       "csv_quote_char": "\n"",
+      "csv_escape_char": "\\",
       "columns":[
         {
           "column_name":"Name",

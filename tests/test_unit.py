@@ -51,7 +51,7 @@ def _replace_multiple_str_occurrences_in_str(string, old_value, new_value) -> st
     return string
 
 
-def teardown_module(module):
+def teardown_module():
     try:
         os.remove(TEST_FILE_HANDLER_ABS_PATH)
     except Exception as e:
@@ -66,7 +66,8 @@ class TestUnitWriter:
                             file_handler=output_file_handler,
                             **{"csv_value_separator": ",",
                                "csv_quoting": "NONE",
-                               "csv_quote_char": "",
+                               "csv_quote_char": None,
+                               "csv_escape_char": None,
                                "file_line_ending": "\n"}
                             )
 
@@ -81,15 +82,14 @@ class TestUnitWriter:
                             file_handler=write_output_file_handler,
                             **{"csv_value_separator": ",",
                                "csv_quoting": "NONE",
-                               "csv_quote_char": "",
+                               "csv_quote_char": None,
+                               "csv_escape_char": None,
                                "file_line_ending": "\n"}
                             )
 
             assert writer.write_row(test_input) is None
 
         assert open(TEST_FILE_HANDLER_ABS_PATH).readline() == expected
-
-        # os.remove(TEST_FILE_HANDLER_PATH)
 
 
 class TestUnitRowGenerator:

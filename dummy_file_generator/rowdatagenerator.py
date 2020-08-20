@@ -48,15 +48,6 @@ class FlatRowDataGenerator:
     flat row data generator implementation
     """
 
-    @staticmethod
-    def _whitespace_generator(i) -> str:
-        """
-        whitespaces generator function
-        :param i:
-        :return:
-        """
-        return int(i) * ' '
-
     def __init__(self, data_files_contents, columns):
         self.data_files_contents = data_files_contents
         self.columns = columns
@@ -72,8 +63,7 @@ class FlatRowDataGenerator:
 
         for column in self.columns:
             whitespace_count = column['column_len'] - len(column['column_name'])
-            _header_row.append(column['column_name'] +
-                               FlatRowDataGenerator._whitespace_generator(whitespace_count))
+            _header_row.append(column['column_name'] + whitespace_count * ' ')
 
         header_row = "".join(_header_row)
 
@@ -96,7 +86,7 @@ class FlatRowDataGenerator:
                                                   f'Key Error: {key_err}')
             value = _column_values_list[randint(0, _column_values_list_item_count - 1)]
             whitespace_count = column['column_len'] - len(value)
-            row.append(value + FlatRowDataGenerator._whitespace_generator(whitespace_count))
+            row.append(value + whitespace_count * ' ')
 
         row = "".join(row)
 
