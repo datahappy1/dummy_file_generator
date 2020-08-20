@@ -8,8 +8,19 @@ from datetime import datetime
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 
 CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'test_config.json'])
-DATA_FILES_LOCATION = os.sep.join([os.getcwd(),'tests', 'files'])
+DATA_FILES_LOCATION = os.sep.join([os.getcwd(), 'tests', 'files'])
+GENERATED_FILE_PATH_BASE = os.sep.join(['tests', 'generated_files'])
 LOGGING_LEVEL = 'INFO'
+
+
+def teardown_module(module):
+    for filename in os.listdir(GENERATED_FILE_PATH_BASE):
+        file_path = os.path.join(GENERATED_FILE_PATH_BASE, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 
 @pytest.mark.parametrize(
@@ -24,7 +35,7 @@ def test_performance_csv(test_project, test_file_extension, expected_duration):
     :return: assertion result
     """
     filename = "test_run_result_performance" + test_file_extension
-    generated_file_path = os.sep.join(['tests', 'generated_files', filename])
+    generated_file_abs_path = os.sep.join([GENERATED_FILE_PATH_BASE, filename])
 
     execution_start_time = datetime.now()
 
@@ -38,7 +49,7 @@ def test_performance_csv(test_project, test_file_extension, expected_duration):
     dfg_obj = Dfg(LOGGING_LEVEL, **project_scope_kwargs)
 
     file_scope_kwargs = {
-        "generated_file_path": generated_file_path,
+        "generated_file_path": generated_file_abs_path,
         "file_size": 1024,
         "row_count": None,
         "file_encoding": None,
@@ -52,4 +63,3 @@ def test_performance_csv(test_project, test_file_extension, expected_duration):
 
     assert duration <= expected_duration
 
-    os.remove(generated_file_path)

@@ -10,7 +10,7 @@ from dummy_file_generator.utils import load_data_files_content
 from dummy_file_generator.writer import Writer
 from dummy_file_generator.rowdatagenerator import RowDataGenerator
 
-TEST_FILE_HANDLER_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'testfile'])
+TEST_FILE_HANDLER_ABS_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'testfile.dummy'])
 CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'test_config.json'])
 DATA_FILES_LOCATION = os.sep.join([os.getcwd(), 'tests', 'files'])
 DATA_FILES_CONTENTS = load_data_files_content(DATA_FILES_LOCATION)
@@ -51,10 +51,17 @@ def _replace_multiple_str_occurrences_in_str(string, old_value, new_value) -> st
     return string
 
 
+def teardown_module(module):
+    try:
+        os.remove(TEST_FILE_HANDLER_ABS_PATH)
+    except Exception as e:
+        print('Failed to delete %s. Reason: %s' % (TEST_FILE_HANDLER_ABS_PATH, e))
+
+
 class TestUnitWriter:
     @pytest.mark.parametrize("file_type", ["csv", "flat"])
     def test_init_writer(self, file_type):
-        with io.open(TEST_FILE_HANDLER_PATH, mode="w") as output_file_handler:
+        with io.open(TEST_FILE_HANDLER_ABS_PATH, mode="w") as output_file_handler:
             writer = Writer(file_type=file_type,
                             file_handler=output_file_handler,
                             **{"csv_value_separator": ",",
@@ -69,7 +76,7 @@ class TestUnitWriter:
                              [("csv", ["test row"], "test row\n"),
                               ("flat", "test row", "test row\n")])
     def test_write_row(self, file_type, test_input, expected):
-        with io.open(TEST_FILE_HANDLER_PATH, mode="w") as write_output_file_handler:
+        with io.open(TEST_FILE_HANDLER_ABS_PATH, mode="w") as write_output_file_handler:
             writer = Writer(file_type=file_type,
                             file_handler=write_output_file_handler,
                             **{"csv_value_separator": ",",
@@ -80,9 +87,9 @@ class TestUnitWriter:
 
             assert writer.write_row(test_input) is None
 
-        assert open(TEST_FILE_HANDLER_PATH).readline() == expected
+        assert open(TEST_FILE_HANDLER_ABS_PATH).readline() == expected
 
-        os.remove(TEST_FILE_HANDLER_PATH)
+        # os.remove(TEST_FILE_HANDLER_PATH)
 
 
 class TestUnitRowGenerator:
