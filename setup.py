@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="dummy-file-generator",
-    version="1.1.16",
+    version="1.1.17",
     author="datahappy1",
     author_email="",
     description="dummy flat text/csv file generator, typical usage scenario can be load / stress / performance testing of file-processing data tools",
