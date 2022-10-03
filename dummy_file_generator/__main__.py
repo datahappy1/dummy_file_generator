@@ -105,7 +105,13 @@ class DummyFileGenerator:
                 execution_start_time,
             )
 
-            writer = Writer(
+            row_data_generator = RowDataGenerator(
+                file_type=self.properties.file_type,
+                data_files_contents=self.data_files_contents,
+                columns=self.properties.columns,
+            )
+
+            with Writer(
                 file_type=self.properties.file_type,
                 file_handler=output_file,
                 **{
@@ -115,47 +121,40 @@ class DummyFileGenerator:
                     "csv_escape_char": self.properties.csv_escape_char,
                     "file_line_ending": file_line_ending,
                 },
-            )
+            ) as data_writer:
 
-            row_data_generator = RowDataGenerator(
-                file_type=self.properties.file_type,
-                data_files_contents=self.data_files_contents,
-                columns=self.properties.columns,
-            )
+                if self.properties.header:
+                    data_writer.write_row(row=row_data_generator.generate_header_row())
 
-            if self.properties.header:
-                writer.write_row(row_data_generator.generate_header_row())
+                rows_written = 0
+                while output_file.tell() < file_size or rows_written < row_count:
+                    data_writer.write_row(row=row_data_generator.generate_body_row())
+                    rows_written += 1
 
-            rows_written = 0
-            while output_file.tell() < file_size or rows_written < row_count:
-                writer.write_row(row_data_generator.generate_body_row())
-                rows_written += 1
+                    if divmod(rows_written, 10000)[1] == 1 and rows_written > 1:
+                        logger.info("%s rows written", rows_written)
 
-                if divmod(rows_written, 10000)[1] == 1 and rows_written > 1:
-                    logger.info("%s rows written", rows_written)
+                execution_end_time = datetime.now()
 
-            execution_end_time = datetime.now()
+                duration = DummyFileGenerator._calculate_duration(
+                    start_time=execution_start_time, end_time=execution_end_time
+                )
 
-            duration = DummyFileGenerator._calculate_duration(
-                start_time=execution_start_time, end_time=execution_end_time
-            )
-
-            logger.info(
-                "File %s processing finished at %s",
-                generated_file_path,
-                execution_end_time,
-            )
-            logger.info(
-                "%s kB file with %s rows written in %s",
-                output_file.tell() / 1024,
-                rows_written,
-                duration,
-            )
-
+                logger.info(
+                    "File %s processing finished at %s",
+                    generated_file_path,
+                    execution_end_time,
+                )
+                logger.info(
+                    "%s kB file with %s rows written in %s",
+                    output_file.tell() / 1024,
+                    rows_written,
+                    duration,
+                )
 
 def main():
     """
-    main entrypoint function
+    main entry point function
     :return:
     """
     parsed_args = parse_args()

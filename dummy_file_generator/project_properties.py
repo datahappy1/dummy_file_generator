@@ -26,7 +26,7 @@ class ProjectProperties:
         _data_file_list = [x.get("datafile") for x in self.columns]
         _column_len_list = [x.get("column_len") for x in self.columns]
 
-        if self.file_type not in ("csv", "flat"):
+        if self.file_type not in ("csv", "flat", "json"):
             raise DummyFileGeneratorException(
                 f"Unknown file_type {self.file_type}, "
                 f"supported options are csv or flat"
@@ -44,9 +44,9 @@ class ProjectProperties:
         if any(x is None for x in _data_file_list):
             raise DummyFileGeneratorException("Not all datafile values set in config")
 
-        if not self.header:
+        if not self.header and self.file_type in ("csv", "flat"):
             raise DummyFileGeneratorException(
-                "No header value set in config, " "supported options are true or false"
+                "No header value set in config for csv or flat file, supported options are true or false"
             )
 
         if self.file_type == "csv" and not self.csv_value_separator:

@@ -13,24 +13,25 @@ GENERATED_FILE_PATH_BASE = os.sep.join(['tests', 'generated_files'])
 LOGGING_LEVEL = 'INFO'
 
 
-def teardown_module():
-    for filename in os.listdir(GENERATED_FILE_PATH_BASE):
-        file_path = os.path.join(GENERATED_FILE_PATH_BASE, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
+# def teardown_module():
+#     for filename in os.listdir(GENERATED_FILE_PATH_BASE):
+#         file_path = os.path.join(GENERATED_FILE_PATH_BASE, filename)
+#         try:
+#             if os.path.isfile(file_path) or os.path.islink(file_path):
+#                 os.unlink(file_path)
+#         except Exception as e:
+#             print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 
 @pytest.mark.parametrize(
     "test_project, test_file_extension, expected_duration", [
-        ("test_csv", ".csv", 1),
-        ("test_flatfile", ".txt", 1)
+        # ("test_csv", ".csv", 1),
+        # ("test_flatfile", ".txt", 1),
+        ("test_json", ".json", 1)
     ])
 def test_performance_csv(test_project, test_file_extension, expected_duration):
     """
-    assuming 1MB csv or 1 MB flat text file will get written under 1 or in 1 second,
+    assuming 1MB csv, 1 MB flat text or 1 MB json file will get written under 1 or in 1 second,
     you can alter the referential value "expected_duration" based on your HW resources
     :return: assertion result
     """
