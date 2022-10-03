@@ -12,7 +12,7 @@ class CsvRowDataGenerator:
     def __init__(self, data_files_contents, columns):
         self.data_files_contents = data_files_contents
         self.columns = columns
-        self.column_names = [x.get('column_name') for x in self.columns]
+        self.column_names = [x.get("column_name") for x in self.columns]
 
     def generate_header_row(self):
         """
@@ -30,12 +30,16 @@ class CsvRowDataGenerator:
 
         for column in self.columns:
             try:
-                _column_values_list, _column_values_list_item_count = \
-                    self.data_files_contents[column['datafile']]
+                (
+                    _column_values_list,
+                    _column_values_list_item_count,
+                ) = self.data_files_contents[column["datafile"]]
             except KeyError as key_err:
-                raise DummyFileGeneratorException(f'Cannot find corresponding data_file for '
-                                                  f'column {column.get("column_name")}, '
-                                                  f'Key Error: {key_err}')
+                raise DummyFileGeneratorException(
+                    f"Cannot find corresponding data_file for "
+                    f'column {column.get("column_name")}, '
+                    f"Key Error: {key_err}"
+                )
 
             value = _column_values_list[randint(0, _column_values_list_item_count - 1)]
             row.append(value)
@@ -47,6 +51,7 @@ class FlatRowDataGenerator:
     """
     flat row data generator implementation
     """
+
     @staticmethod
     def _whitespace_value_filler(whitespace_count):
         """
@@ -54,14 +59,14 @@ class FlatRowDataGenerator:
         :param whitespace_count:
         :return:
         """
-        whitespace_char = ' '
+        whitespace_char = " "
         return whitespace_count * whitespace_char
 
     def __init__(self, data_files_contents, columns):
         self.data_files_contents = data_files_contents
         self.columns = columns
-        self.column_names = [x.get('column_name') for x in self.columns]
-        self.column_lengths = [x.get('column_len') for x in self.columns]
+        self.column_names = [x.get("column_name") for x in self.columns]
+        self.column_lengths = [x.get("column_len") for x in self.columns]
 
     def generate_header_row(self):
         """
@@ -71,9 +76,11 @@ class FlatRowDataGenerator:
         _header_row = []
 
         for column in self.columns:
-            whitespace_count = column['column_len'] - len(column['column_name'])
-            _header_row.append(column['column_name'] +
-                               FlatRowDataGenerator._whitespace_value_filler(whitespace_count))
+            whitespace_count = column["column_len"] - len(column["column_name"])
+            _header_row.append(
+                column["column_name"]
+                + FlatRowDataGenerator._whitespace_value_filler(whitespace_count)
+            )
 
         header_row = "".join(_header_row)
 
@@ -88,15 +95,21 @@ class FlatRowDataGenerator:
 
         for column in self.columns:
             try:
-                _column_values_list, _column_values_list_item_count = \
-                    self.data_files_contents[column['datafile']]
+                (
+                    _column_values_list,
+                    _column_values_list_item_count,
+                ) = self.data_files_contents[column["datafile"]]
             except KeyError as key_err:
-                raise DummyFileGeneratorException(f'Cannot find corresponding data_file for '
-                                                  f'column {column.get("column_name")}, '
-                                                  f'Key Error: {key_err}')
+                raise DummyFileGeneratorException(
+                    f"Cannot find corresponding data_file for "
+                    f'column {column.get("column_name")}, '
+                    f"Key Error: {key_err}"
+                )
             value = _column_values_list[randint(0, _column_values_list_item_count - 1)]
-            whitespace_count = column['column_len'] - len(value)
-            row.append(value + FlatRowDataGenerator._whitespace_value_filler(whitespace_count))
+            whitespace_count = column["column_len"] - len(value)
+            row.append(
+                value + FlatRowDataGenerator._whitespace_value_filler(whitespace_count)
+            )
 
         row = "".join(row)
 

@@ -6,7 +6,7 @@ import io
 import pytest
 
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
-from dummy_file_generator.utils import load_data_files_content
+from dummy_file_generator.data_files import load_data_files_content
 from dummy_file_generator.writer import Writer
 from dummy_file_generator.rowdatagenerator import RowDataGenerator
 
@@ -24,7 +24,7 @@ PROJECT_SCOPE_KWARGS_CSV = {
 }
 
 DFG_OBJ_CSV = Dfg(LOGGING_LEVEL, **PROJECT_SCOPE_KWARGS_CSV)
-COLUMNS_CSV = DFG_OBJ_CSV.columns
+COLUMNS_CSV = DFG_OBJ_CSV.properties.columns
 
 PROJECT_SCOPE_KWARGS_FLAT = {
     "project_name": 'test_flatfile',
@@ -34,7 +34,7 @@ PROJECT_SCOPE_KWARGS_FLAT = {
 }
 
 DFG_OBJ_FLAT = Dfg(LOGGING_LEVEL, **PROJECT_SCOPE_KWARGS_FLAT)
-COLUMNS_FLAT = DFG_OBJ_FLAT.columns
+COLUMNS_FLAT = DFG_OBJ_FLAT.properties.columns
 
 
 def _replace_multiple_str_occurrences_in_str(string, old_value, new_value) -> str:
