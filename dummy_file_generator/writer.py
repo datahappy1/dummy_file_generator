@@ -1,7 +1,6 @@
 """writer factory module"""
 import csv
 import json
-import os
 
 from dummy_file_generator.exceptions import DummyFileGeneratorException
 
@@ -54,7 +53,7 @@ class CsvWriter:
     def __exit__(self, exc_type, exc_val, exc_tb):
         return True
 
-    def write_row(self, row):
+    def write_row(self, row, **kwargs):
         """
         write row method
         :param row:
@@ -86,7 +85,7 @@ class FlatWriter:
     def __exit__(self, exc_type, exc_val, exc_tb):
         return True
 
-    def write_row(self, row):
+    def write_row(self, row, **kwargs):
         """
         write row method
         :param row:
@@ -117,7 +116,6 @@ class JSONWriter:
     def __exit__(self, exc_type, exc_val, exc_tb):
         # remove trailing comma by seeking to its position and over-writing
         try:
-            self.writer.seek(self.writer.tell() - 3, os.SEEK_SET)
             self.writer.write("]" + self.file_line_ending)
         except ValueError as val_err:
             raise DummyFileGeneratorException(
@@ -127,14 +125,17 @@ class JSONWriter:
             raise DummyFileGeneratorException(f"json writer exit error: {exc}")
         return True
 
-    def write_row(self, row):
+    def write_row(self, row, **kwargs):
         """
         write row method
         :param row:
         :return:
         """
         try:
-            self.writer.write(json.dumps(row) + "," + self.file_line_ending)
+            if kwargs.get("last", False):
+                self.writer.write(json.dumps(row))
+            else:
+                self.writer.write(json.dumps(row) + "," + self.file_line_ending)
         except Exception as exc:
             raise DummyFileGeneratorException(f"json writer general error : {exc}")
 
@@ -162,10 +163,10 @@ class Writer:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.writer.__exit__(exc_type, exc_val, exc_tb)
 
-    def write_row(self, row):
+    def write_row(self, row, **kwargs):
         """
         write row factory method
         :param row:
         :return:
         """
-        self.writer.write_row(row)
+        self.writer.write_row(row, **kwargs)

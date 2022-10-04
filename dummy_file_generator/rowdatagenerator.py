@@ -24,7 +24,7 @@ class CsvRowDataGenerator:
         """
         return self.column_names
 
-    def generate_body_row(self):
+    def generate_body_row(self, **kwargs):
         """
         generate body row method
         :return:
@@ -87,7 +87,7 @@ class FlatRowDataGenerator:
 
         return "".join(header_row)
 
-    def generate_body_row(self):
+    def generate_body_row(self, **kwargs):
         """
         generate body row method
         :return:
@@ -135,7 +135,7 @@ class DictRowDataGenerator:
             "Cannot generate header row in DictRowDataGenerator"
         )
 
-    def generate_body_row(self):
+    def generate_body_row(self, **kwargs):
         """
         generate body row method
         :return:
@@ -181,9 +181,9 @@ class RowDataGenerator:
         """
         return self.generator.generate_header_row()
 
-    def generate_body_row(self):
+    def generate_body_row(self, **kwargs):
         """
         generate body row factory method
         :return:
         """
-        return self.generator.generate_body_row()
+        return self.generator.generate_body_row(**kwargs)

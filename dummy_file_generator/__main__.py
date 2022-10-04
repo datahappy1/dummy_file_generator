@@ -124,17 +124,19 @@ class DummyFileGenerator:
             ) as data_writer:
 
                 if self.properties.header:
-                    row = row_data_generator.generate_header_row()
-                    data_writer.write_row(row=row)
+                    data_writer.write_row(row=row_data_generator.generate_header_row())
 
                 rows_written = 0
-                while output_file.tell() < file_size or rows_written < row_count:
-                    row = row_data_generator.generate_body_row()
-                    data_writer.write_row(row=row)
+                # checking if (rows_written + 1) < row_count because we use else write_row(row, last=True)
+                # to handle special cases i.e for json writer last row comma removal
+                while (output_file.tell() < file_size) or ((rows_written + 1) < row_count):
+                    data_writer.write_row(row=row_data_generator.generate_body_row())
                     rows_written += 1
 
                     if divmod(rows_written, 10000)[1] == 1 and rows_written > 1:
                         logger.info("%s rows written", rows_written)
+                else:
+                    data_writer.write_row(row=row_data_generator.generate_body_row(), last=True)
 
             execution_end_time = datetime.now()
 
