@@ -135,7 +135,7 @@ class DummyFileGenerator:
                     data_writer.write_row(row=row_data_generator.generate_body_row())
                     rows_written += 1
 
-                    if divmod(rows_written, 10000)[1] == 1 and rows_written > 1:
+                    if divmod(rows_written, 10000)[1] == 0 and rows_written > 1:
                         logger.info("%s rows written", rows_written)
                 else:
                     data_writer.write_row(
