@@ -129,8 +129,6 @@ def get_validated_project_properties_from_config_file(
                     csv_escape_char=project.get("csv_escape_char"),
                 )
             )
-        break
-    else:
-        raise DummyFileGeneratorException(
-            f"Project {project_name} not found in {config_json_path}"
-        )
+    raise DummyFileGeneratorException(
+        f"Project {project_name} not found in {config_json_path}"
+    )

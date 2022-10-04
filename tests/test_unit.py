@@ -5,6 +5,7 @@ import os
 import io
 import pytest
 
+from dummy_file_generator import DummyFileGeneratorException
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 from dummy_file_generator.data_files import load_data_files_content
 from dummy_file_generator.writer import Writer
@@ -37,6 +38,17 @@ DFG_OBJ_FLAT = Dfg(LOGGING_LEVEL, **PROJECT_SCOPE_KWARGS_FLAT)
 COLUMNS_FLAT = DFG_OBJ_FLAT.properties.columns
 
 
+PROJECT_SCOPE_KWARGS_JSON = {
+    "project_name": 'test_json',
+    "data_files_location": DATA_FILES_LOCATION,
+    "config_json_path": CONFIG_JSON_PATH,
+    "default_rowcount": None,
+}
+
+DFG_OBJ_JSON = Dfg(LOGGING_LEVEL, **PROJECT_SCOPE_KWARGS_FLAT)
+COLUMNS_JSON = DFG_OBJ_JSON.properties.columns
+
+
 def _replace_multiple_str_occurrences_in_str(string, old_value, new_value) -> str:
     """
     helper function to replace all occurrences of a string in another string
@@ -59,7 +71,7 @@ def teardown_module():
 
 
 class TestUnitWriter:
-    @pytest.mark.parametrize("file_type", ["csv", "flat"])
+    @pytest.mark.parametrize("file_type", ["csv", "flat", "json"])
     def test_init_writer(self, file_type):
         with io.open(TEST_FILE_HANDLER_ABS_PATH, mode="w") as output_file_handler:
             writer = Writer(file_type=file_type,
@@ -75,7 +87,8 @@ class TestUnitWriter:
 
     @pytest.mark.parametrize("file_type, test_input, expected",
                              [("csv", ["test row"], "test row\n"),
-                              ("flat", "test row", "test row\n")])
+                              ("flat", "test row", "test row\n"),
+                              ("json", "test row", '"test row",\n')])
     def test_write_row(self, file_type, test_input, expected):
         with io.open(TEST_FILE_HANDLER_ABS_PATH, mode="w") as write_output_file_handler:
             writer = Writer(file_type=file_type,
@@ -95,7 +108,8 @@ class TestUnitWriter:
 class TestUnitRowGenerator:
     @pytest.mark.parametrize("file_type, columns",
                              [("csv", COLUMNS_CSV),
-                              ("flat", COLUMNS_FLAT)])
+                              ("flat", COLUMNS_FLAT),
+                              ("json", COLUMNS_JSON)])
     def test_init_generator(self, file_type, columns):
         generator = RowDataGenerator(file_type=file_type,
                                      data_files_contents=DATA_FILES_CONTENTS,
@@ -113,9 +127,19 @@ class TestUnitRowGenerator:
 
         assert generator.generate_header_row() == expected
 
+    @pytest.mark.parametrize("file_type, columns",
+                             [("json", COLUMNS_JSON)])
+    def test_generator_header_row_raises_error(self, file_type, columns):
+        generator = RowDataGenerator(file_type=file_type,
+                                     data_files_contents=DATA_FILES_CONTENTS,
+                                     columns=columns)
+        with pytest.raises(DummyFileGeneratorException):
+            generator.generate_header_row()
+
     @pytest.mark.parametrize("file_type, columns, expected",
                              [("csv", COLUMNS_CSV, ['test', 'test', 'test']),
-                              ("flat", COLUMNS_FLAT, "test     test         test       ")])
+                              ("flat", COLUMNS_FLAT, "test     test         test       "),
+                              ("json", COLUMNS_JSON, "{'testcol': 'test', 'testcol': 'test', 'testcol': 'test'}")])
     def test_generator_body_row(self, file_type, columns, expected):
         generator = RowDataGenerator(file_type=file_type,
                                      data_files_contents=DATA_FILES_CONTENTS,
