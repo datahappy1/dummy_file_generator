@@ -116,6 +116,7 @@ except DummyFileGeneratorException as DFG_ERR:
 file_scope_kwargs = {
     "generated_file_path": "C:\dfg\\bin\\file1.csv",
     "file_size": 1024,
+    #"row_count": 1000, 
     "file_encoding": "utf8",
     "file_line_ending": "\n",
 }
