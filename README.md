@@ -1,13 +1,11 @@
 # dummy_file_generator
-## version 1.1.17
-### Dummy .csv or flat text files generator written in Python 3.7
-
-![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/rating.svg)
+## version 1.1.18
+### Dummy .csv, flat text or json files generator written in Python 3.7
 
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/dfg_logo.PNG)
 
 
-This tool is able to generate dummy csv or flat txt files based on the configuration settings you setup for your project(s).
+This tool is able to generate dummy csv, flat text or json files based on the configuration settings you setup for your project(s).
 
 
 - [How to install and run the tool as CLI](#how-to-install-and-run-the-tool-as-CLI)
@@ -18,7 +16,7 @@ This tool is able to generate dummy csv or flat txt files based on the configura
 
 - [How to add a new source dataset for your project](#How-to-add-a-new-source-dataset-for-your-project)
 
-- [Pytest testing](#Pytest-testing) (for further tool development)
+- [Developer information](#Developer-information) (for further tool development)
 
 # How to install and run the tool as CLI
 One common usage scenario can be load / stress / performance testing of file-processing data tools, allowing you to generate the files needed from a command line.
@@ -72,7 +70,7 @@ One common usage scenario can be load / stress / performance testing of file-pro
 
 ### To run:<br />
 The dummy file generator imported package needs these **MANDATORY** arguments defining: 
-- projectname `--projectname` or `-pn`, based on the projectname, the dummy file specific settings from `config.json` file are loaded,
+- projectname `--projectname` or `-pn`, based on the project name, the dummy file specific settings from `config.json` file are loaded
 - generated_file_path `--generated_file_path` or `gp` defining the full output file path to the file you are about to generate
 
 >Provided arguments have higher precedence than fallback values in `settings.py`
@@ -105,26 +103,26 @@ logging_level = "INFO"
 
 project_scope_kwargs = {
     "project_name": "dummy1",
-    "data_files_location": "c:\\dummy_file_generator\my_data_files",
-    "config_json_path": "c:\\dummy_file_generator\my_configs\config.json",
+    "data_files_location": "c:\\dfg_files\my_data_files",
+    "config_json_path": "c:\\dfg_files\my_configs\config.json",
     "default_rowcount": None,
 }
 
 try:
-    dfg_obj = Dfg(logging_level, **project_scope_kwargs)
+    dfg = Dfg(logging_level, **project_scope_kwargs)
 except DummyFileGeneratorException as DFG_ERR:
     raise DFG_ERR
 
 file_scope_kwargs = {
-    "generated_file_path": "C:\dfg_refact_package_test\\bin\\file1.csv",
+    "generated_file_path": "C:\dfg\\bin\\file1.csv",
     "file_size": 1024,
-    #"row_count": None,
+    #"row_count": 1000, 
     "file_encoding": "utf8",
     "file_line_ending": "\n",
 }
 
 try:
-    dfg_obj.write_output_file(**file_scope_kwargs)
+    dfg.write_output_file(**file_scope_kwargs)
 except DummyFileGeneratorException as DFG_ERR:
     raise DFG_ERR
 ```
@@ -191,6 +189,30 @@ the "project" JSON object in your config.json would need to be setup like:
       ]
     }
 
+### - How to generate a .json file:
+If you need to generate a dummy .json file containing 3 columns for Names, Dates and IDs, 
+the "project" JSON object in your config.json would need to be setup like:
+
+    {
+      "project_name":"dummy1",
+      "file_type":"json",
+      "columns":[
+        {
+          "column_name":"Name",
+          "datafile":"firstnames.txt"
+        },
+        {
+          "column_name":"Date",
+          "datafile":"dates.txt"
+        },
+        {
+          "column_name":"ID",
+          "datafile":"IDs.txt"
+        }      
+      ]
+    }
+
+
 # How to add a new source dataset for your project
 Whenever you need to add a new source .txt file in the data_files folder, just add it to your `data_files` folder.
 **The filename needs to correspond with the datafile value in your config.json file.**
@@ -203,7 +225,8 @@ using the argument `data_files_location`.
 
 Now you can use this new data file in your project setup in `config.json` file. 
 
-# Pytest testing
+# Developer information
+## testing using Pytest
 Pytest unit and performance tests are also a part of this repository.
 You can install Pytest using `pip install pytest`
 

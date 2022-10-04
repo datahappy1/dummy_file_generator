@@ -26,15 +26,16 @@ def teardown_module():
 @pytest.mark.parametrize(
     "test_project, test_file_extension, expected_duration", [
         ("test_csv", ".csv", 1),
-        ("test_flatfile", ".txt", 1)
+        ("test_flatfile", ".txt", 1),
+        ("test_json", ".json", 1)
     ])
-def test_performance_csv(test_project, test_file_extension, expected_duration):
+def test_performance_file_size(test_project, test_file_extension, expected_duration):
     """
-    assuming 1MB csv or 1 MB flat text file will get written under 1 or in 1 second,
+    assuming 1MB csv, flat text or json file will get written under or in 1 second,
     you can alter the referential value "expected_duration" based on your HW resources
     :return: assertion result
     """
-    filename = "test_run_result_performance" + test_file_extension
+    filename = "test_run_result_performance_file_size" + test_file_extension
     generated_file_abs_path = os.sep.join([GENERATED_FILE_PATH_BASE, filename])
 
     execution_start_time = datetime.now()
@@ -63,3 +64,43 @@ def test_performance_csv(test_project, test_file_extension, expected_duration):
 
     assert duration <= expected_duration
 
+
+@pytest.mark.parametrize(
+    "test_project, test_file_extension, expected_duration", [
+        ("test_csv", ".csv", 1),
+        ("test_flatfile", ".txt", 1),
+        ("test_json", ".json", 1)
+    ])
+def test_performance_row_count(test_project, test_file_extension, expected_duration):
+    """
+    assuming 10000 row csv, flat text or json file will get written under or in 1 second,
+    you can alter the referential value "expected_duration" based on your HW resources
+    :return: assertion result
+    """
+    filename = "test_run_result_performance_row_count" + test_file_extension
+    generated_file_abs_path = os.sep.join([GENERATED_FILE_PATH_BASE, filename])
+
+    execution_start_time = datetime.now()
+
+    project_scope_kwargs = {
+        "project_name": test_project,
+        "data_files_location": DATA_FILES_LOCATION,
+        "config_json_path": CONFIG_JSON_PATH,
+        "default_rowcount": None,
+    }
+
+    dfg_obj = Dfg(LOGGING_LEVEL, **project_scope_kwargs)
+
+    file_scope_kwargs = {
+        "generated_file_path": generated_file_abs_path,
+        "row_count": 10000,
+        "file_encoding": None,
+        "file_line_ending": None,
+    }
+
+    dfg_obj.write_output_file(**file_scope_kwargs)
+
+    execution_end_time = datetime.now()
+    duration = (execution_end_time - execution_start_time).seconds
+
+    assert duration <= expected_duration

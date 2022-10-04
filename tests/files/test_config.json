@@ -43,6 +43,24 @@
           "datafile": "test.txt"
         }
       ]
+    },
+    {
+      "project_name": "test_json",
+      "file_type": "json",
+      "columns": [
+        {
+          "column_name": "testcol1",
+          "datafile": "test.txt"
+        },
+        {
+          "column_name": "testcol2",
+          "datafile": "test.txt"
+        },
+        {
+          "column_name": "testcol3",
+          "datafile": "test.txt"
+        }
+      ]
     }
   ]
 }
