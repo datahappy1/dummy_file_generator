@@ -161,7 +161,7 @@ class Writer:
         return self.writer.__enter__()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.writer.__exit__(exc_type, exc_val, exc_tb)
+        return self.writer.__exit__(exc_type, exc_val, exc_tb)
 
     def write_row(self, row, **kwargs):
         """
