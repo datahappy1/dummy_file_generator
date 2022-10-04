@@ -11,6 +11,7 @@ class ProjectProperties:
     """
     ProjectProperties class
     """
+
     def __init__(self, **kwargs):
         self.project_name: str = kwargs["project_name"]
         self.header: bool = kwargs["header"]

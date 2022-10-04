@@ -15,14 +15,13 @@ class CsvRowDataGenerator:
     def __init__(self, data_files_contents, columns):
         self.data_files_contents = data_files_contents
         self.columns = columns
-        self.column_names = [x.get("column_name") for x in self.columns]
 
     def generate_header_row(self):
         """
         generate header row method
         :return:
         """
-        return self.column_names
+        return [x.get("column_name") for x in self.columns]
 
     def generate_body_row(self, **kwargs):
         """
@@ -68,8 +67,6 @@ class FlatRowDataGenerator:
     def __init__(self, data_files_contents, columns):
         self.data_files_contents = data_files_contents
         self.columns = columns
-        self.column_names = [x.get("column_name") for x in self.columns]
-        self.column_lengths = [x.get("column_len") for x in self.columns]
 
     def generate_header_row(self):
         """
@@ -123,8 +120,6 @@ class DictRowDataGenerator:
     def __init__(self, data_files_contents, columns):
         self.data_files_contents = data_files_contents
         self.columns = columns
-        self.column_names = [x.get("column_name") for x in self.columns]
-        self.column_lengths = [x.get("column_len") for x in self.columns]
 
     def generate_header_row(self):
         """
