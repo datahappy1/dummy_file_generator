@@ -26,6 +26,7 @@ One common usage scenario can be load / stress / performance testing of file-pro
 2) `pip install -r requirements.txt`
 
 >You are strongly encouraged to use the Python virtual environment or Pipenv
+>Set PYTHONPATH to c:\dummy_file_generator\ ![tutorial](https://bic-berkeley.github.io/psych-214-fall-2016/using_pythonpath.html)
 
 ### To run:<br />
 The CLI tool needs these **MANDATORY** arguments defining: 
