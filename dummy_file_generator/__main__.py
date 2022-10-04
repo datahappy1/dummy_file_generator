@@ -124,33 +124,36 @@ class DummyFileGenerator:
             ) as data_writer:
 
                 if self.properties.header:
-                    data_writer.write_row(row=row_data_generator.generate_header_row())
+                    row = row_data_generator.generate_header_row()
+                    data_writer.write_row(row=row)
 
                 rows_written = 0
                 while output_file.tell() < file_size or rows_written < row_count:
-                    data_writer.write_row(row=row_data_generator.generate_body_row())
+                    row = row_data_generator.generate_body_row()
+                    data_writer.write_row(row=row)
                     rows_written += 1
 
                     if divmod(rows_written, 10000)[1] == 1 and rows_written > 1:
                         logger.info("%s rows written", rows_written)
 
-                execution_end_time = datetime.now()
+            execution_end_time = datetime.now()
 
-                duration = DummyFileGenerator._calculate_duration(
-                    start_time=execution_start_time, end_time=execution_end_time
-                )
+            duration = DummyFileGenerator._calculate_duration(
+                start_time=execution_start_time, end_time=execution_end_time
+            )
 
-                logger.info(
-                    "File %s processing finished at %s",
-                    generated_file_path,
-                    execution_end_time,
-                )
-                logger.info(
-                    "%s kB file with %s rows written in %s",
-                    output_file.tell() / 1024,
-                    rows_written,
-                    duration,
-                )
+            logger.info(
+                "File %s processing finished at %s",
+                generated_file_path,
+                execution_end_time,
+            )
+            logger.info(
+                "%s kB file with %s rows written in %s",
+                output_file.tell() / 1024,
+                rows_written,
+                duration,
+            )
+
 
 def main():
     """

@@ -1,3 +1,6 @@
+"""
+file_path module
+"""
 import os
 
 from dummy_file_generator.exceptions import DummyFileGeneratorException

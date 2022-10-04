@@ -1,3 +1,6 @@
+"""
+project_properties module
+"""
 import json
 from typing import Optional
 
@@ -5,6 +8,9 @@ from dummy_file_generator.exceptions import DummyFileGeneratorException
 
 
 class ProjectProperties:
+    """
+    ProjectProperties class
+    """
     def __init__(self, **kwargs):
         self.project_name: str = kwargs["project_name"]
         self.header: bool = kwargs["header"]
@@ -46,16 +52,23 @@ class ProjectProperties:
 
         if not self.header and self.file_type in ("csv", "flat"):
             raise DummyFileGeneratorException(
-                "No header value set in config for csv or flat file, supported options are true or false"
+                "No `header` value set in config for `csv` or `flat` file, supported options are `true` or `false`"
+            )
+
+        if self.header and self.file_type == "json":
+            raise DummyFileGeneratorException(
+                "The `header` value cannot be set in config for `json` file type"
             )
 
         if self.file_type == "csv" and not self.csv_value_separator:
             raise DummyFileGeneratorException(
-                "No csv_value_separator value set in config"
+                "No `csv_value_separator` value set in config for `csv` file type"
             )
 
         if self.file_type == "csv" and not self.csv_quoting:
-            raise DummyFileGeneratorException("Missing csv_quoting value")
+            raise DummyFileGeneratorException(
+                "Missing `csv_quoting` value for `csv` file type"
+            )
 
         if (
             self.file_type == "csv"
@@ -63,14 +76,21 @@ class ProjectProperties:
             and not self.csv_quote_char
         ):
             raise DummyFileGeneratorException(
-                'If csv_quoting is not "NONE", ' "csv_quote_char must be set"
+                "If `csv_quoting` is not `NONE`, `csv_quote_char` must be set for `csv` file type"
             )
 
         if self.file_type == "flat" and not _column_len_list:
-            raise DummyFileGeneratorException("No column_len value set in config")
+            raise DummyFileGeneratorException(
+                "No `column_len` value set in config for `flat` file type"
+            )
 
         if self.file_type == "flat" and any(x is None for x in _column_len_list):
-            raise DummyFileGeneratorException("Not all column_len values set in config")
+            raise DummyFileGeneratorException(
+                "Not all `column_len` values set in config for `flat` file type"
+            )
+
+    def __str__(self):
+        return str(self)
 
 
 def get_validated_project_properties_from_config_file(
@@ -109,6 +129,7 @@ def get_validated_project_properties_from_config_file(
                     csv_escape_char=project.get("csv_escape_char"),
                 )
             )
+        break
     else:
         raise DummyFileGeneratorException(
             f"Project {project_name} not found in {config_json_path}"

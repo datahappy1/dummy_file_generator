@@ -131,8 +131,9 @@ class DictRowDataGenerator:
         generate header row method
         :return:
         """
-        logger.info("DictRowDataGenerator cannot generate header row, skipping")
-        pass
+        raise DummyFileGeneratorException(
+            "Cannot generate header row in DictRowDataGenerator"
+        )
 
     def generate_body_row(self):
         """
@@ -154,7 +155,7 @@ class DictRowDataGenerator:
                     f"Key Error: {key_err}"
                 )
             value = _column_values_list[randint(0, _column_values_list_item_count - 1)]
-            row[column['column_name']] = value
+            row[column["column_name"]] = value
 
         return row
 

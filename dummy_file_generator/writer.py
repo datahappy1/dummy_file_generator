@@ -37,7 +37,9 @@ class CsvWriter:
         self.writer = csv.writer(
             file_handler,
             delimiter=kwargs.get("csv_value_separator"),
-            quoting=CsvWriter._get_map_value(CsvWriter.CSV_QUOTING_MAP, kwargs["csv_quoting"]),
+            quoting=CsvWriter._get_map_value(
+                CsvWriter.CSV_QUOTING_MAP, kwargs["csv_quoting"]
+            ),
             quotechar=kwargs.get("csv_quote_char"),
             escapechar=kwargs.get("csv_escape_char"),
             lineterminator=kwargs.get("file_line_ending"),
@@ -50,7 +52,7 @@ class CsvWriter:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        return True
 
     def write_row(self, row):
         """
@@ -61,7 +63,9 @@ class CsvWriter:
         try:
             self.writer.writerow(row)
         except csv.Error as csv_err:
-            raise DummyFileGeneratorException(f"csv writer error : {csv_err}")
+            raise DummyFileGeneratorException(f"csv writer csv error : {csv_err}")
+        except Exception as exc:
+            raise DummyFileGeneratorException(f"csv writer general error : {exc}")
 
 
 class FlatWriter:
@@ -80,7 +84,7 @@ class FlatWriter:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        return True
 
     def write_row(self, row):
         """
@@ -91,7 +95,7 @@ class FlatWriter:
         try:
             self.writer.write(row + self.file_line_ending)
         except Exception as exc:
-            raise DummyFileGeneratorException(f"flat writer error : {exc}")
+            raise DummyFileGeneratorException(f"flat writer general error : {exc}")
 
 
 class JSONWriter:
@@ -107,14 +111,21 @@ class JSONWriter:
         return str(self.writer)
 
     def __enter__(self):
-        self.writer.write("[" + self.file_line_ending)
+        self.writer.write("[")
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        # TODO
-        # remove trailing comma by seeking to its position by moving
-        self.writer.seek(self.writer.tell() - 3, os.SEEK_SET)
-        self.writer.write("]" + self.file_line_ending)
+        # remove trailing comma by seeking to its position and over-writing
+        try:
+            self.writer.seek(self.writer.tell() - 3, os.SEEK_SET)
+            self.writer.write("]" + self.file_line_ending)
+        except ValueError as val_err:
+            raise DummyFileGeneratorException(
+                f"json writer exit value error: {val_err}"
+            )
+        except Exception as exc:
+            raise DummyFileGeneratorException(f"json writer exit error: {exc}")
+        return True
 
     def write_row(self, row):
         """
@@ -125,7 +136,7 @@ class JSONWriter:
         try:
             self.writer.write(json.dumps(row) + "," + self.file_line_ending)
         except Exception as exc:
-            raise DummyFileGeneratorException(f"json writer error : {exc}")
+            raise DummyFileGeneratorException(f"json writer general error : {exc}")
 
 
 class Writer:
@@ -137,7 +148,7 @@ class Writer:
         _mapped_writer_class = {
             "csv": CsvWriter,
             "flat": FlatWriter,
-            "json": JSONWriter
+            "json": JSONWriter,
         }[file_type]
 
         self.writer = _mapped_writer_class(file_handler, **kwargs)

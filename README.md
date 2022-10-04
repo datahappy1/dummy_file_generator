@@ -2,8 +2,6 @@
 ## version 1.1.18
 ### Dummy .csv, flat text or json files generator written in Python 3.7
 
-![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/rating.svg)
-
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/dfg_logo.PNG)
 
 
@@ -72,7 +70,7 @@ One common usage scenario can be load / stress / performance testing of file-pro
 
 ### To run:<br />
 The dummy file generator imported package needs these **MANDATORY** arguments defining: 
-- projectname `--projectname` or `-pn`, based on the projectname, the dummy file specific settings from `config.json` file are loaded,
+- projectname `--projectname` or `-pn`, based on the project name, the dummy file specific settings from `config.json` file are loaded
 - generated_file_path `--generated_file_path` or `gp` defining the full output file path to the file you are about to generate
 
 >Provided arguments have higher precedence than fallback values in `settings.py`
@@ -105,25 +103,25 @@ logging_level = "INFO"
 
 project_scope_kwargs = {
     "project_name": "dummy1",
-    "data_files_location": "c:\\dummy_file_generator\my_data_files",
-    "config_json_path": "c:\\dummy_file_generator\my_configs\config.json",
+    "data_files_location": "c:\\dfg_files\my_data_files",
+    "config_json_path": "c:\\dfg_files\my_configs\config.json",
     "default_rowcount": None,
 }
 
 try:
-    dfg_obj = Dfg(logging_level, **project_scope_kwargs)
+    dfg = Dfg(logging_level, **project_scope_kwargs)
 except DummyFileGeneratorException as DFG_ERR:
     raise DFG_ERR
 
 file_scope_kwargs = {
-    "generated_file_path": "C:\dfg_refact_package_test\\bin\\file1.csv",
+    "generated_file_path": "C:\dfg\\bin\\file1.csv",
     "file_size": 1024,
     "file_encoding": "utf8",
     "file_line_ending": "\n",
 }
 
 try:
-    dfg_obj.write_output_file(**file_scope_kwargs)
+    dfg.write_output_file(**file_scope_kwargs)
 except DummyFileGeneratorException as DFG_ERR:
     raise DFG_ERR
 ```
