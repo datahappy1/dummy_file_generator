@@ -141,6 +141,7 @@ class DummyFileGenerator:
                     data_writer.write_row(
                         row=row_data_generator.generate_body_row(), last=True
                     )
+                    rows_written += 1
 
             execution_end_time = datetime.now()
 
