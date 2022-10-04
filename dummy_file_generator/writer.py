@@ -169,4 +169,4 @@ class Writer:
         :param row:
         :return:
         """
-        self.writer.write_row(row, **kwargs)
+        return self.writer.write_row(row, **kwargs)
