@@ -23,9 +23,7 @@ One common usage scenario can be load / stress / performance testing of file-pro
 
 ### To install:
 1) `git clone https://github.com/datahappy1/dummy_file_generator c:\dummy_file_generator\`
-2) `pip install -r requirements.txt`
-
->You are strongly encouraged to use the Python virtual environment or Pipenv
+2) Set PYTHONPATH to c:\dummy_file_generator\ [tutorial](https://bic-berkeley.github.io/psych-214-fall-2016/using_pythonpath.html)
 
 ### To run:<br />
 The CLI tool needs these **MANDATORY** arguments defining: 
@@ -67,6 +65,8 @@ One common usage scenario can be load / stress / performance testing of file-pro
 
 ### To install:
 1) `pip install dummy-file-generator`
+
+>You are strongly encouraged to use the Python virtual environment or Pipenv
 
 ### To run:<br />
 The dummy file generator imported package needs these **MANDATORY** arguments defining: 
