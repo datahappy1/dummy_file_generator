@@ -114,7 +114,6 @@ class JSONWriter:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        # remove trailing comma by seeking to its position and over-writing
         try:
             self.writer.write("]" + self.file_line_ending)
         except ValueError as val_err:
