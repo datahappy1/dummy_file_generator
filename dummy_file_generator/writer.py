@@ -131,7 +131,7 @@ class JSONWriter:
         :return:
         """
         try:
-            if kwargs.get("last", False):
+            if kwargs.get("last", False) is True:
                 self.writer.write(json.dumps(row))
             else:
                 self.writer.write(json.dumps(row) + "," + self.file_line_ending)
