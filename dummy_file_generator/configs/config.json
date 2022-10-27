@@ -1,47 +1,103 @@
 {
   "project": [
     {
-      "project_name": "dummy1",
-      "file_type": "csv",
-      "header": true,
-      "csv_value_separator": "|",
-      "csv_quoting": "NONE",
-      "csv_quote_char": null,
-      "csv_escape_char": null,
-      "columns": [
+      "project_name":"dummy1",
+      "file_type":"csv",
+      "header":true,
+      "csv_value_separator": ",",
+      "csv_quoting": "ALL",
+      "csv_quote_char": "'",
+      "csv_escape_char": "\\",
+      "columns":[
         {
-          "column_name": "firstname",
-          "datafile": "first_names.txt"
+          "column_name":"Name",
+          "datafile":"first_names.txt"
         },
         {
-          "column_name": "lastname",
-          "datafile": "last_names.txt"
+          "column_name":"Date",
+          "datafile":"dates.txt"
         },
         {
-          "column_name": "dateofregistration",
-          "datafile": "dates.txt"
+          "column_name":"ID",
+          "datafile":"ids.txt"
         }
       ]
     },
     {
-      "project_name": "dummy2",
-      "file_type": "flat",
-      "header": true,
+      "project_name":"dummy2",
+      "file_type":"flat",
+      "header":true,
+      "columns":[
+        {
+          "column_name":"Name",
+          "column_len":10,
+          "datafile":"first_names.txt"
+        },
+        {
+          "column_name":"Date",
+          "column_len":12,
+          "datafile":"dates.txt"
+        },
+        {
+          "column_name":"ID",
+          "column_len":9,
+          "datafile":"ids.txt"
+        }
+      ]
+    },
+    {
+      "project_name":"dummy3",
+      "file_type":"json",
+      "columns":[
+        {
+          "column_name":"Name",
+          "datafile":"first_names.txt"
+        },
+        {
+          "column_name":"Date",
+          "datafile":"dates.txt"
+        },
+        {
+          "column_name":"ID",
+          "datafile":"ids.txt"
+        }
+      ]
+    },
+    {
+      "project_name": "dummy4",
+      "file_type": "json",
       "columns": [
         {
-          "column_name": "Identifier",
-          "column_len": 13,
+          "column_name": "Name",
+          "datafile": "first_names.txt"
+        },
+        {
+          "column_name": "Date",
+          "datafile": "dates.txt"
+        },
+        {
+          "column_name": "ID",
           "datafile": "ids.txt"
         },
         {
-          "column_name": "lastname",
-          "column_len": 14,
-          "datafile": "last_names.txt"
-        },
-        {
-          "column_name": "dateofbirth",
-          "column_len": 12,
-          "datafile": "dates.txt"
+          "column_name": "Rankings",
+          "__array_columns": [
+            {
+              "datafile": "ids.txt"
+            },
+            {
+              "columns": [
+                {
+                  "column_name": "Ranking1",
+                  "datafile": "ids.txt"
+                },
+                {
+                  "column_name": "Ranking2",
+                  "datafile": "ids.txt"
+                }
+              ]
+            }
+          ]
         }
       ]
     }

@@ -32,6 +32,14 @@ class ProjectProperties:
         _column_name_list = [x.get("column_name") for x in self.columns]
         _data_file_list = [x.get("datafile") for x in self.columns]
         _column_len_list = [x.get("column_len") for x in self.columns]
+        _array_columns_list = [x.get("__array_columns") for x in self.columns]
+        _array_columns_list_flat = [
+            item
+            for sublist in [
+                w for w in [x.get("__array_columns") for x in self.columns if x] if w
+            ]
+            for item in sublist
+        ]
 
         if self.file_type not in ("csv", "flat", "json"):
             raise DummyFileGeneratorException(
@@ -48,7 +56,16 @@ class ProjectProperties:
         if not _data_file_list:
             raise DummyFileGeneratorException("No datafile value set in config")
 
-        if any(x is None for x in _data_file_list):
+        if any(x is None for x in _data_file_list) and self.file_type in (
+            "csv",
+            "flat",
+        ):
+            raise DummyFileGeneratorException("Not all datafile values set in config")
+
+        if (
+            len([x is None for x in _data_file_list]) != len(_array_columns_list)
+            and self.file_type == "json"
+        ):
             raise DummyFileGeneratorException("Not all datafile values set in config")
 
         if not self.header and self.file_type in ("csv", "flat"):
@@ -89,6 +106,28 @@ class ProjectProperties:
             raise DummyFileGeneratorException(
                 "Not all `column_len` values set in config for `flat` file type"
             )
+
+        if self.file_type == "json":
+            for col in _array_columns_list_flat:
+                for key, val in col.items():
+                    if "__array_columns" in (key, val):
+                        raise DummyFileGeneratorException(
+                            "Multiple nested levels of__array_columns"
+                        )
+                    if isinstance(val, list):
+                        for nested_col in val:
+                            if isinstance(nested_col, list):
+                                raise DummyFileGeneratorException(
+                                    "Multiple nested levels"
+                                )
+                            if "__array_columns" in nested_col.keys():
+                                raise DummyFileGeneratorException(
+                                    "Multiple nested levels of __array_columns"
+                                )
+                            if "__array_columns" in nested_col.values():
+                                raise DummyFileGeneratorException(
+                                    "Multiple nested levels of __array_columns"
+                                )
 
     def __str__(self):
         return str(self)

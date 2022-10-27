@@ -1,15 +1,16 @@
 """
 test units
 """
-import os
 import io
+import os
+
 import pytest
 
 from dummy_file_generator import DummyFileGeneratorException
 from dummy_file_generator.__main__ import DummyFileGenerator as Dfg
 from dummy_file_generator.data_files import load_data_files_content
-from dummy_file_generator.writer import Writer
 from dummy_file_generator.rowdatagenerator import RowDataGenerator
+from dummy_file_generator.writer import Writer
 
 TEST_FILE_HANDLER_ABS_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'testfile.dummy'])
 CONFIG_JSON_PATH = os.sep.join([os.getcwd(), 'tests', 'files', 'test_config.json'])
@@ -37,16 +38,25 @@ PROJECT_SCOPE_KWARGS_FLAT = {
 DFG_OBJ_FLAT = Dfg(LOGGING_LEVEL, **PROJECT_SCOPE_KWARGS_FLAT)
 COLUMNS_FLAT = DFG_OBJ_FLAT.properties.columns
 
-
-PROJECT_SCOPE_KWARGS_JSON = {
-    "project_name": 'test_json',
+PROJECT_SCOPE_KWARGS_JSON_SIMPLE = {
+    "project_name": 'test_json_simple',
     "data_files_location": DATA_FILES_LOCATION,
     "config_json_path": CONFIG_JSON_PATH,
     "default_rowcount": None,
 }
 
-DFG_OBJ_JSON = Dfg(LOGGING_LEVEL, **PROJECT_SCOPE_KWARGS_FLAT)
-COLUMNS_JSON = DFG_OBJ_JSON.properties.columns
+DFG_OBJ_JSON_SIMPLE = Dfg(LOGGING_LEVEL, **PROJECT_SCOPE_KWARGS_JSON_SIMPLE)
+COLUMNS_JSON_SIMPLE = DFG_OBJ_JSON_SIMPLE.properties.columns
+
+PROJECT_SCOPE_KWARGS_JSON_COMPLEX = {
+    "project_name": 'test_json_complex',
+    "data_files_location": DATA_FILES_LOCATION,
+    "config_json_path": CONFIG_JSON_PATH,
+    "default_rowcount": None,
+}
+
+DFG_OBJ_JSON_COMPLEX = Dfg(LOGGING_LEVEL, **PROJECT_SCOPE_KWARGS_JSON_COMPLEX)
+COLUMNS_JSON_COMPLEX = DFG_OBJ_JSON_COMPLEX.properties.columns
 
 
 def _replace_multiple_str_occurrences_in_str(string, old_value, new_value) -> str:
@@ -109,7 +119,8 @@ class TestUnitRowGenerator:
     @pytest.mark.parametrize("file_type, columns",
                              [("csv", COLUMNS_CSV),
                               ("flat", COLUMNS_FLAT),
-                              ("json", COLUMNS_JSON)])
+                              ("json", COLUMNS_JSON_SIMPLE),
+                              ("json", COLUMNS_JSON_COMPLEX)])
     def test_init_generator(self, file_type, columns):
         generator = RowDataGenerator(file_type=file_type,
                                      data_files_contents=DATA_FILES_CONTENTS,
@@ -118,8 +129,8 @@ class TestUnitRowGenerator:
         assert isinstance(generator, RowDataGenerator)
 
     @pytest.mark.parametrize("file_type, columns, expected",
-                             [("csv", COLUMNS_CSV, ['testcol1', 'testcol2', 'testcol3']),
-                              ("flat", COLUMNS_FLAT, "testcol1  testcol2      testcol3    ")])
+                             [("csv", COLUMNS_CSV, ['testcol_a', 'testcol_b', 'testcol_c']),
+                              ("flat", COLUMNS_FLAT, "testcol_a testcol_b     testcol_c   ")])
     def test_generator_header_row(self, file_type, columns, expected):
         generator = RowDataGenerator(file_type=file_type,
                                      data_files_contents=DATA_FILES_CONTENTS,
@@ -128,7 +139,8 @@ class TestUnitRowGenerator:
         assert generator.generate_header_row() == expected
 
     @pytest.mark.parametrize("file_type, columns",
-                             [("json", COLUMNS_JSON)])
+                             [("json", COLUMNS_JSON_SIMPLE),
+                              ("json", COLUMNS_JSON_COMPLEX)])
     def test_generator_header_row_raises_error(self, file_type, columns):
         generator = RowDataGenerator(file_type=file_type,
                                      data_files_contents=DATA_FILES_CONTENTS,
@@ -139,13 +151,20 @@ class TestUnitRowGenerator:
     @pytest.mark.parametrize("file_type, columns, expected",
                              [("csv", COLUMNS_CSV, ['test', 'test', 'test']),
                               ("flat", COLUMNS_FLAT, "test     test         test       "),
-                              ("json", COLUMNS_JSON, "{'testcol': 'test', 'testcol': 'test', 'testcol': 'test'}")])
+                              ("json", COLUMNS_JSON_SIMPLE, "{'testcol_a': 'test', 'testcol_b': 'test', 'testcol_c': 'test'}"),
+                              ("json", COLUMNS_JSON_COMPLEX, "{'testcol_a': 'test', 'testcol_b': 'test', 'testcol_c': 'test', "
+                                                             "'arrayColumnExample_a': ['test', {'testcol_ad': 'test', 'testcol_ab': "
+                                                             "'test', 'testcol_ac': 'test'}, 'test', 'test', 'test', {'testcol_ad': "
+                                                             "'test', 'testcol_ae': 'test'}, 'test'], 'testcol_d': 'test', "
+                                                             "'arrayColumnExample_b': [{'testcol_ba': 'test', 'testcol_bb': 'test', "
+                                                             "'testcol_bc': 'test'}, 'test', 'test']}")])
     def test_generator_body_row(self, file_type, columns, expected):
         generator = RowDataGenerator(file_type=file_type,
                                      data_files_contents=DATA_FILES_CONTENTS,
                                      columns=columns)
 
         _actual = generator.generate_body_row()
+        # replace occurrences of 1,2 or 3 as the generated values from the test.txt are randomly picked
         actual = _replace_multiple_str_occurrences_in_str(str(_actual), '123', '')
 
         assert actual == str(expected)

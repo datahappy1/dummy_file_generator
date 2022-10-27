@@ -1,5 +1,5 @@
 # dummy_file_generator
-## version 1.1.18
+## version 1.1.19
 ### Dummy .csv, flat text or json files generator written in Python 3.7
 
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/dfg_logo.PNG)
@@ -144,12 +144,12 @@ the project JSON object in your config.json would need to be setup like:
       "header":true,
       "csv_value_separator": ",",
       "csv_quoting": "ALL",
-      "csv_quote_char": "\n"",
+      "csv_quote_char": "'",
       "csv_escape_char": "\\",
       "columns":[
         {
           "column_name":"Name",
-          "datafile":"firstnames.txt"
+          "datafile":"first_names.txt"
         },
         {
           "column_name":"Date",
@@ -157,49 +157,63 @@ the project JSON object in your config.json would need to be setup like:
         },
         {
           "column_name":"ID",
-          "datafile":"IDs.txt"
-        }      
+          "datafile":"ids.txt"
+        }
       ]
     }
+
+This configuration generates a file like this sample:
+
+    'Name','Date','ID'
+    'Hank','2004-05-22','23432'
+    'Joe','2000-03-12','445'
+
 
 ### - How to generate a .txt flat file:
 If you need to generate a dummy .txt flat file containing 3 columns for Names, Dates and IDs with specific column lengths defined, 
 the "project" JSON object in your config.json would need to be setup like:
 
     {
-      "project_name":"dummy1",
+      "project_name":"dummy2",
       "file_type":"flat",
       "header":true,
       "columns":[
         {
           "column_name":"Name",
-          "column_len":6,
-          "datafile":"firstnames.txt"
+          "column_len":10,
+          "datafile":"first_names.txt"
         },
         {
           "column_name":"Date",
-          "column_len":10,
+          "column_len":12,
           "datafile":"dates.txt"
         },
         {
           "column_name":"ID",
           "column_len":9,
-          "datafile":"IDs.txt"
+          "datafile":"ids.txt"
         }      
       ]
     }
+
+This configuration generates a file like this sample:
+
+    Name      Date        ID       
+    Hank      2004-05-22  23432    
+    Joe       2000-03-12  445
+
 
 ### - How to generate a .json file:
 If you need to generate a dummy .json file containing 3 columns for Names, Dates and IDs, 
 the "project" JSON object in your config.json would need to be setup like:
 
     {
-      "project_name":"dummy1",
+      "project_name":"dummy3",
       "file_type":"json",
       "columns":[
         {
           "column_name":"Name",
-          "datafile":"firstnames.txt"
+          "datafile":"first_names.txt"
         },
         {
           "column_name":"Date",
@@ -207,10 +221,64 @@ the "project" JSON object in your config.json would need to be setup like:
         },
         {
           "column_name":"ID",
-          "datafile":"IDs.txt"
+          "datafile":"ids.txt"
         }      
       ]
     }
+
+This configuration generates a file like this sample:
+
+    [{"Name": "Hank", "Date": "2004-05-22", "ID": "23432"},
+    {"Name": "Joe", "Date": "2000-03-12", "ID": "445"}]
+
+
+If you need to generate a more complex dummy .json file containing 3 columns for Names, Dates and ids, 
+an array-like column Rankings containing random IDs element and a object containing Ranking1 and Ranking2 attributes, 
+the "project" JSON object in your config.json would need to be setup like:
+
+    {
+      "project_name": "dummy4",
+      "file_type": "json",
+      "columns": [
+        {
+          "column_name": "Name",
+          "datafile": "first_names.txt"
+        },
+        {
+          "column_name": "Date",
+          "datafile": "dates.txt"
+        },
+        {
+          "column_name": "ID",
+          "datafile": "ids.txt"
+        },
+        {
+          "column_name": "rankings",
+          "__array_columns": [
+            {
+              "datafile": "ids.txt"
+            },
+            {
+              "columns": [
+                {
+                  "column_name": "Ranking1",
+                  "datafile": "ids.txt"
+                },
+                {
+                  "column_name": "Ranking2",
+                  "datafile": "ids.txt"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+
+This configuration generates a file like this sample:
+    
+    [{"Name": "Hank", "Date": "2004-05-22", "ID": "23432", "Rankings": ["445", {"Ranking1": "11111", "Ranking2": "145546566345"}]},
+    {"Name": "Joe", "Date": "2000-03-12", "ID": "445", "Rankings": ["11111", {"Ranking1": "145546566345", "Ranking2": "156765"}]}]
 
 
 # How to add a new source dataset for your project

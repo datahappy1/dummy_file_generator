@@ -9,15 +9,15 @@
       "csv_quote_char": null,
       "columns": [
         {
-          "column_name": "testcol1",
+          "column_name": "testcol_a",
           "datafile": "test.txt"
         },
         {
-          "column_name": "testcol2",
+          "column_name": "testcol_b",
           "datafile": "test.txt"
         },
         {
-          "column_name": "testcol3",
+          "column_name": "testcol_c",
           "datafile": "test.txt"
         }
       ]
@@ -28,37 +28,134 @@
       "header": true,
       "columns": [
         {
-          "column_name": "testcol1",
+          "column_name": "testcol_a",
           "column_len": 10,
           "datafile": "test.txt"
         },
         {
-          "column_name": "testcol2",
+          "column_name": "testcol_b",
           "column_len": 14,
           "datafile": "test.txt"
         },
         {
-          "column_name": "testcol3",
+          "column_name": "testcol_c",
           "column_len": 12,
           "datafile": "test.txt"
         }
       ]
     },
     {
-      "project_name": "test_json",
+      "project_name": "test_json_simple",
       "file_type": "json",
       "columns": [
         {
-          "column_name": "testcol1",
+          "column_name": "testcol_a",
           "datafile": "test.txt"
         },
         {
-          "column_name": "testcol2",
+          "column_name": "testcol_b",
           "datafile": "test.txt"
         },
         {
-          "column_name": "testcol3",
+          "column_name": "testcol_c",
           "datafile": "test.txt"
+        }
+      ]
+    },
+    {
+      "project_name": "test_json_complex",
+      "file_type": "json",
+      "columns": [
+        {
+          "column_name": "testcol_a",
+          "datafile": "test.txt"
+        },
+        {
+          "column_name": "testcol_b",
+          "datafile": "test.txt"
+        },
+        {
+          "column_name": "testcol_c",
+          "datafile": "test.txt"
+        },
+        {
+          "column_name": "arrayColumnExample_a",
+          "__array_columns": [
+            {
+              "datafile": "test.txt"
+            },
+            {
+              "columns": [
+                {
+                  "column_name": "testcol_ad",
+                  "datafile": "test.txt"
+                },
+                {
+                  "column_name": "testcol_ab",
+                  "datafile": "test.txt"
+                },
+                {
+                  "column_name": "testcol_ac",
+                  "datafile": "test.txt"
+                }
+              ]
+            },
+            {
+              "datafile": "test.txt"
+            },
+            {
+              "datafile": "test.txt"
+            },
+            {
+              "datafile": "test.txt"
+            },
+            {
+              "columns": [
+                {
+                  "column_name": "testcol_ad",
+                  "datafile": "test.txt"
+                },
+                {
+                  "column_name": "testcol_ae",
+                  "datafile": "test.txt"
+                }
+              ]
+            },
+            {
+              "datafile": "test.txt"
+            }
+          ]
+        },
+        {
+          "column_name": "testcol_d",
+          "datafile": "test.txt"
+        },
+        {
+          "column_name": "arrayColumnExample_b",
+          "__array_columns": [
+            {
+              "columns": [
+                {
+                  "column_name": "testcol_ba",
+                  "datafile": "test.txt"
+                },
+                {
+                  "column_name": "testcol_bb",
+                  "datafile": "test.txt"
+                },
+                {
+                  "column_name": "testcol_bc",
+                  "datafile": "test.txt"
+                }
+              ]
+            },
+            {
+              "datafile": "test.txt"
+            },
+            {
+              "datafile": "test.txt"
+            }
+          ]
         }
       ]
     }

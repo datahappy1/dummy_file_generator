@@ -51,7 +51,8 @@ class CsvWriter:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        return True
+        # return True
+        return
 
     def write_row(self, row, **kwargs):
         """
@@ -83,7 +84,8 @@ class FlatWriter:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        return True
+        # return True
+        return
 
     def write_row(self, row, **kwargs):
         """
@@ -122,7 +124,7 @@ class JSONWriter:
             )
         except Exception as exc:
             raise DummyFileGeneratorException(f"json writer exit error: {exc}")
-        return True
+        # return True
 
     def write_row(self, row, **kwargs):
         """

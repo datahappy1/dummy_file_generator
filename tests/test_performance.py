@@ -27,7 +27,8 @@ def teardown_module():
     "test_project, test_file_extension, expected_duration", [
         ("test_csv", ".csv", 1),
         ("test_flatfile", ".txt", 1),
-        ("test_json", ".json", 1)
+        ("test_json_simple", ".json", 1),
+        ("test_json_complex", ".json", 1)
     ])
 def test_performance_file_size(test_project, test_file_extension, expected_duration):
     """
@@ -69,7 +70,8 @@ def test_performance_file_size(test_project, test_file_extension, expected_durat
     "test_project, test_file_extension, expected_duration", [
         ("test_csv", ".csv", 1),
         ("test_flatfile", ".txt", 1),
-        ("test_json", ".json", 1)
+        ("test_json_simple", ".json", 1),
+        ("test_json_complex", ".json", 1)
     ])
 def test_performance_row_count(test_project, test_file_extension, expected_duration):
     """
