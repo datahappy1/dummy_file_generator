@@ -80,7 +80,7 @@
           "datafile": "ids.txt"
         },
         {
-          "column_name": "Rankings",
+          "column_name": "Identifiers",
           "__array_columns": [
             {
               "datafile": "ids.txt"
@@ -88,11 +88,11 @@
             {
               "columns": [
                 {
-                  "column_name": "Ranking1",
+                  "column_name": "ID1",
                   "datafile": "ids.txt"
                 },
                 {
-                  "column_name": "Ranking2",
+                  "column_name": "ID2",
                   "datafile": "ids.txt"
                 }
               ]
