@@ -232,8 +232,8 @@ This configuration generates a file like this sample:
     {"Name": "Joe", "Date": "2000-03-12", "ID": "445"}]
 
 
-If you need to generate a more complex dummy .json file containing 3 columns for Names, Dates and ids, 
-an array-like column Identifiers containing one random IDs array element and a object containing ID1 and ID2 attributes, 
+If you need to generate a more complex dummy .json file containing 3 columns for Names, Dates, IDs 
+and an array-like column Identifiers containing one IDs array element and an object containing ID1 and ID2 attributes, 
 the "project" JSON object in your config.json would need to be setup like:
 
     {
@@ -280,7 +280,7 @@ This configuration generates a file like this sample:
     [{"Name": "Hank", "Date": "2004-05-22", "ID": "23432", "Identifiers": ["445", {"ID1": "11111", "ID2": "145546566345"}]},
     {"Name": "Joe", "Date": "2000-03-12", "ID": "445", "Identifiers": ["11111", {"ID1": "145546566345", "ID2": "156765"}]}]
 
->JSON file configuration allows only one depth level of nested objects that have to be in an array defined in __array_columns
+>JSON file configuration allows only one level deep nested objects, that have to be defined in the __array_columns array
 
 # How to add a new source dataset for your project
 Whenever you need to add a new source .txt file in the data_files folder, just add it to your `data_files` folder.
