@@ -261,11 +261,11 @@ the "project" JSON object in your config.json would need to be setup like:
             {
               "columns": [
                 {
-                  "column_name": "Ranking1",
+                  "column_name": "ID1",
                   "datafile": "ids.txt"
                 },
                 {
-                  "column_name": "Ranking2",
+                  "column_name": "ID2",
                   "datafile": "ids.txt"
                 }
               ]
