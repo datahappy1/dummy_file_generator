@@ -1,5 +1,5 @@
 # dummy_file_generator
-## version 1.1.19
+## version 1.1.21
 ### Dummy .csv, flat text or json files generator written in Python 3.7
 
 ![](https://github.com/datahappy1/dummy_file_generator/blob/master/docs/img/dfg_logo.PNG)
